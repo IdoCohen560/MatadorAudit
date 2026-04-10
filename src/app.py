@@ -1010,11 +1010,11 @@ def _qa_openrouter(system_prompt):
         return
 
     model = st.selectbox("Model", [
-        "meta-llama/llama-3.1-8b-instruct:free",
-        "google/gemma-2-9b-it:free",
-        "mistralai/mistral-7b-instruct:free",
-        "qwen/qwen-2-7b-instruct:free",
-    ], help="All models marked :free have no usage cost")
+        "nvidia/nemotron-nano-9b-v2:free",
+        "openai/gpt-oss-20b:free",
+        "google/gemma-4-26b-a4b-it:free",
+        "liquid/lfm-2.5-1.2b-instruct:free",
+    ], help="All models are free — no usage cost")
 
     # Chat history
     if 'qa_or_messages' not in st.session_state:
@@ -1031,40 +1031,70 @@ def _qa_openrouter(system_prompt):
 
         with st.chat_message('assistant'):
             with st.spinner("Thinking..."):
-                try:
-                    import urllib.request
-                    import json
-                    messages = [{'role': 'system', 'content': system_prompt}]
-                    messages += [{'role': m['role'], 'content': m['content']}
-                                 for m in st.session_state.qa_or_messages]
-                    payload = json.dumps({
-                        'model': model,
-                        'messages': messages,
-                        'max_tokens': 1500,
-                        'temperature': 0.7,
-                    }).encode('utf-8')
-                    req = urllib.request.Request(
-                        'https://openrouter.ai/api/v1/chat/completions',
-                        data=payload,
-                        headers={
-                            'Content-Type': 'application/json',
-                            'Authorization': f'Bearer {api_key}',
-                            'HTTP-Referer': 'https://matadoraudit.netlify.app',
-                            'X-Title': 'MatadorAudit',
-                        },
-                    )
-                    resp = urllib.request.urlopen(req, timeout=60)
-                    data = json.loads(resp.read())
-                    reply = data['choices'][0]['message']['content']
-                except Exception as e:
-                    error_msg = str(e)
-                    if '429' in error_msg or 'rate' in error_msg.lower():
-                        reply = ("Rate limit reached. Please wait a moment and try again, "
-                                 "or enter your own free OpenRouter API key above.")
-                    else:
-                        reply = f"Error: {error_msg}"
+                reply = _openrouter_call(api_key, model, system_prompt,
+                                         st.session_state.qa_or_messages)
             st.markdown(reply)
         st.session_state.qa_or_messages.append({'role': 'assistant', 'content': reply})
+
+
+def _openrouter_call(api_key, model, system_prompt, chat_messages):
+    """Call OpenRouter API with automatic model fallback on rate limits."""
+    import urllib.request
+    import urllib.error
+    import json
+
+    fallback_models = [
+        model,
+        "nvidia/nemotron-nano-9b-v2:free",
+        "openai/gpt-oss-20b:free",
+        "liquid/lfm-2.5-1.2b-instruct:free",
+        "google/gemma-4-26b-a4b-it:free",
+    ]
+    # Deduplicate while preserving order
+    seen = set()
+    models_to_try = []
+    for m in fallback_models:
+        if m not in seen:
+            seen.add(m)
+            models_to_try.append(m)
+
+    messages = [{'role': 'system', 'content': system_prompt}]
+    messages += [{'role': m['role'], 'content': m['content']} for m in chat_messages]
+
+    last_error = ""
+    for try_model in models_to_try:
+        try:
+            payload = json.dumps({
+                'model': try_model,
+                'messages': messages,
+                'max_tokens': 1500,
+                'temperature': 0.7,
+            }).encode('utf-8')
+            req = urllib.request.Request(
+                'https://openrouter.ai/api/v1/chat/completions',
+                data=payload,
+                headers={
+                    'Content-Type': 'application/json',
+                    'Authorization': f'Bearer {api_key}',
+                    'HTTP-Referer': 'https://matadoraudit.netlify.app',
+                    'X-Title': 'MatadorAudit',
+                },
+            )
+            resp = urllib.request.urlopen(req, timeout=60)
+            data = json.loads(resp.read())
+            return data['choices'][0]['message']['content']
+        except urllib.error.HTTPError as e:
+            last_error = f"HTTP {e.code}"
+            if e.code == 429:
+                continue  # Try next model
+            body = e.read().decode()[:200]
+            return f"Error ({e.code}): {body}"
+        except Exception as e:
+            last_error = str(e)
+            continue
+
+    return (f"All free models are currently rate-limited ({last_error}). "
+            "Please wait a minute and try again, or enter your own OpenRouter API key above.")
 
 
 def _qa_ollama(system_prompt):
