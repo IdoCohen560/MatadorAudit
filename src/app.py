@@ -15,10 +15,11 @@ from report_generator import ReportGenerator
 # Resolve paths relative to the repo root (works locally and on Streamlit Cloud)
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DATA_DIR = os.path.join(ROOT_DIR, 'data')
+LOGO_PATH = os.path.join(ROOT_DIR, 'site', 'assets', 'csun-matador-audit-logo.png')
 
 st.set_page_config(
     page_title="MatadorAudit",
-    page_icon="🎯",
+    page_icon=LOGO_PATH if os.path.isfile(LOGO_PATH) else "🎯",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -49,8 +50,10 @@ st.markdown("""
 
 
 def main():
-    st.sidebar.image("https://upload.wikimedia.org/wikipedia/en/thumb/b/b2/CSUN_Seal.svg/150px-CSUN_Seal.svg.png", width=80)
-    st.sidebar.title("MatadorAudit")
+    if os.path.isfile(LOGO_PATH):
+        st.sidebar.image(LOGO_PATH, use_container_width=True)
+    else:
+        st.sidebar.title("MatadorAudit")
     st.sidebar.markdown("AI-Powered Fairness Auditing")
 
     page = st.sidebar.radio("Navigate", [

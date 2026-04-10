@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MatadorAudit — AI-Powered Fairness Auditing</title>
+<link rel="icon" href="assets/csun-matador-audit-logo.png" type="image/png">
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -34,7 +35,9 @@
 
   /* Nav */
   nav{position:fixed;top:0;width:100%;background:rgba(6,6,11,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);z-index:100;padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:68px}
-  .nav-logo{font-size:22px;font-weight:900;letter-spacing:-0.5px}.nav-logo span{color:var(--red)}
+  .nav-brand{display:flex;align-items:center;text-decoration:none;color:inherit}
+  .nav-logo-wrap{background:#fff;border-radius:10px;padding:4px 12px 4px 8px;display:flex;align-items:center;box-shadow:0 1px 0 rgba(0,0,0,0.2)}
+  .nav-logo-img{height:44px;width:auto;display:block}
   .nav-links{display:flex;gap:36px;align-items:center}
   .nav-links a{color:var(--text-dim);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;transition:color 0.2s}
   .nav-links a:hover{color:var(--text)}
@@ -168,6 +171,7 @@
     .hero-stats{flex-direction:column;gap:24px}
     .metrics-row,.sim-metrics{grid-template-columns:1fr}
     nav{padding:0 20px}.nav-links{display:none}
+    .nav-logo-img{height:34px}.nav-logo-wrap{padding:3px 8px 3px 6px}
     section{padding:60px 20px}
     .hero{padding:120px 20px 60px}
   }
@@ -176,7 +180,11 @@
 <body>
 
 <nav>
-  <div class="nav-logo">Matador<span>Audit</span></div>
+  <a href="#" class="nav-brand" aria-label="CSUN Matador Audit — home">
+    <span class="nav-logo-wrap">
+      <img class="nav-logo-img" src="assets/csun-matador-audit-logo.png" alt="CSUN Matador Audit" width="240" height="80" decoding="async">
+    </span>
+  </a>
   <div class="nav-links">
     <a href="#features">Features</a>
     <a href="#dashboard">Dashboard</a>
