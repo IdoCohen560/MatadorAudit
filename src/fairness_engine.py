@@ -1,7 +1,29 @@
-"""Core fairness metrics engine using Fairlearn and scipy."""
+"""Core fairness metrics engine."""
+import math
 import pandas as pd
 import numpy as np
-from scipy import stats
+
+
+def _point_biserial(binary, continuous):
+    """Point-biserial correlation (pure numpy, no scipy needed)."""
+    n = len(binary)
+    m1 = continuous[binary == 1].mean()
+    m0 = continuous[binary == 0].mean()
+    n1 = (binary == 1).sum()
+    n0 = (binary == 0).sum()
+    if n1 == 0 or n0 == 0:
+        return 0.0, 1.0
+    s = continuous.std(ddof=0)
+    if s == 0:
+        return 0.0, 1.0
+    r = (m1 - m0) / s * math.sqrt(n1 * n0 / (n * n))
+    # t-test for significance
+    if abs(r) >= 1.0:
+        return float(r), 0.0
+    t = r * math.sqrt((n - 2) / (1 - r * r))
+    # Approximate p-value using large-sample normal approximation
+    p = 2 * math.exp(-0.717 * abs(t) - 0.416 * t * t) if abs(t) < 6 else 0.0
+    return float(r), max(0.0, min(1.0, p))
 
 
 class FairnessEngine:
@@ -95,7 +117,7 @@ class FairnessEngine:
                     mask = ~(np.isnan(values) | np.isnan(membership))
                     if mask.sum() < 30:
                         continue
-                    corr, p_val = stats.pointbiserialr(membership[mask], values[mask])
+                    corr, p_val = _point_biserial(membership[mask].values, values[mask].values)
                     if abs(corr) > abs(best_corr):
                         best_corr = corr
                         best_p = p_val
