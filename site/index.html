@@ -201,7 +201,6 @@
 <div class="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
-  <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false"><img src="assets/csun-matador-audit-logo.png" alt="MatadorAudit" style="height:220px;width:auto;margin-bottom:32px;animation:fadeIn 0.6s ease" loading="eager"></a>
   <div class="hero-badge">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
     CSUN AI Jam 2026
@@ -447,11 +446,11 @@
   <div class="card-grid reveal reveal-delay-2" style="grid-template-columns:repeat(2,1fr)">
     <div class="card">
       <h3>Synthetic Data Only</h3>
-      <p>All data used in this project is synthetic. No real CSUN student data was accessed, uploaded, or shared with any AI platform. Our synthetic dataset is modeled on publicly available institutional data from CSUN Institutional Research, the CSUN Fact Sheet, IPEDS, and the US Department of Education College Scorecard.</p>
+      <p>All data used in MatadorAudit is synthetic. No real CSUN student data was accessed, uploaded, or shared with any platform. Our synthetic dataset is modeled on publicly available institutional data from CSUN Institutional Research, the CSUN Fact Sheet, IPEDS, and the US Department of Education College Scorecard. The demographic weights (56.2% Hispanic/Latino, 58% Pell-eligible, 47% first-generation) are drawn directly from these published sources.</p>
     </div>
     <div class="card">
       <h3>AI Usage Disclosure</h3>
-      <p>Claude AI is used solely for generating natural-language fairness reports from aggregate statistical summaries. No student records or personally identifiable information are transmitted to any external API. All fairness metrics are computed locally using our own implementation.</p>
+      <p>MatadorAudit uses the Anthropic Claude API to generate plain-English fairness reports from aggregate statistical summaries. Microsoft Copilot and Google Gemini are available as secondary interfaces for administrator follow-up questions. No student records or personally identifiable information are sent to any external API. All fairness metrics (demographic parity, disparate impact, equalized odds, proxy detection) are computed locally using our own implementation based on peer-reviewed research.</p>
     </div>
   </div>
   <div class="reveal reveal-delay-3" style="margin-top:32px">
