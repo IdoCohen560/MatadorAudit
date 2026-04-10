@@ -36,8 +36,9 @@
   /* Nav */
   nav{position:fixed;top:0;width:100%;background:rgba(6,6,11,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);z-index:100;padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:68px}
   .nav-brand{display:flex;align-items:center;text-decoration:none;color:inherit}
+  nav{height:80px}
   .nav-logo-wrap{display:flex;align-items:center;cursor:pointer;text-decoration:none}
-  .nav-logo-img{height:56px;width:auto;display:block}
+  .nav-logo-img{height:72px;width:auto;display:block}
   .nav-links{display:flex;gap:36px;align-items:center}
   .nav-links a{color:var(--text-dim);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;transition:color 0.2s}
   .nav-links a:hover{color:var(--text)}
@@ -173,7 +174,8 @@
     .hero-stats{flex-direction:column;gap:24px}
     .metrics-row,.sim-metrics{grid-template-columns:1fr}
     nav{padding:0 20px}.nav-links{display:none}
-    .nav-logo-img{height:40px}
+    nav{height:64px}
+    .nav-logo-img{height:52px}
     section{padding:60px 20px}
     .hero{padding:120px 20px 60px}
   }
@@ -193,7 +195,7 @@
     <a href="#sources">Sources</a>
     <a href="#disclosure">Disclosure</a>
     <a href="#about">About</a>
-    <a href="#" class="nav-cta" id="live-tool-link">Try Live Tool</a>
+    <a href="https://matadoraudit.streamlit.app" target="_blank" rel="noopener" class="nav-cta" id="live-tool-link">Try Live Tool</a>
   </div>
 </nav>
 
