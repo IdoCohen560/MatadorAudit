@@ -937,6 +937,53 @@ def qa_page():
             font-size: 13px;
         }
         .qa-context strong { color: #CF0A2C; }
+
+        /* Chat input styling */
+        @keyframes borderPulse {
+            0%, 100% { border-color: rgba(207, 10, 44, 0.3); box-shadow: 0 0 0 0 rgba(207, 10, 44, 0); }
+            50% { border-color: rgba(207, 10, 44, 0.6); box-shadow: 0 0 12px 2px rgba(207, 10, 44, 0.15); }
+        }
+        .stChatInput {
+            position: relative;
+        }
+        .stChatInput > div {
+            border: 2px solid rgba(207, 10, 44, 0.3) !important;
+            border-radius: 16px !important;
+            background: rgba(18, 18, 26, 0.95) !important;
+            padding: 4px !important;
+            animation: borderPulse 3s ease-in-out infinite;
+            transition: all 0.3s ease !important;
+        }
+        .stChatInput > div:focus-within {
+            border-color: #CF0A2C !important;
+            box-shadow: 0 0 20px 4px rgba(207, 10, 44, 0.25) !important;
+            animation: none;
+        }
+        .stChatInput textarea {
+            font-size: 15px !important;
+            padding: 12px 16px !important;
+            color: #e4e4e7 !important;
+        }
+        .stChatInput button[kind="primary"] {
+            background-color: #CF0A2C !important;
+            border-radius: 12px !important;
+            transition: transform 0.2s, box-shadow 0.2s !important;
+        }
+        .stChatInput button[kind="primary"]:hover {
+            transform: scale(1.05) !important;
+            box-shadow: 0 4px 16px rgba(207, 10, 44, 0.4) !important;
+        }
+
+        /* Chat messages styling */
+        .stChatMessage {
+            border-radius: 14px !important;
+            padding: 16px !important;
+            margin-bottom: 8px !important;
+        }
+        [data-testid="stChatMessageContent"] {
+            font-size: 14px !important;
+            line-height: 1.7 !important;
+        }
         .qa-suggestion {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.08);
