@@ -914,10 +914,11 @@ def qa_page():
 
     # Provider selection
     provider = st.selectbox("Choose AI Provider", [
-        "Ollama (Local - Free)",
+        "Groq (Free - Recommended)",
         "Claude (Anthropic)",
         "ChatGPT (OpenAI)",
         "Gemini (Google)",
+        "Ollama (Local)",
         "Copilot (Microsoft)",
     ])
 
@@ -949,7 +950,9 @@ Always explain technical terms. When recommending actions, be specific about who
 
 {audit_context}"""
 
-    if provider == "Ollama (Local - Free)":
+    if provider == "Groq (Free - Recommended)":
+        _qa_groq(system_prompt)
+    elif provider == "Ollama (Local)":
         _qa_ollama(system_prompt)
     elif provider == "Claude (Anthropic)":
         _qa_claude(system_prompt)
@@ -959,6 +962,78 @@ Always explain technical terms. When recommending actions, be specific about who
         _qa_external(provider, system_prompt, "https://gemini.google.com", "Google AI API key", "google")
     elif provider == "Copilot (Microsoft)":
         _qa_external(provider, system_prompt, "https://copilot.microsoft.com", "Microsoft API key", "microsoft")
+
+
+def _qa_groq(system_prompt):
+    """Groq-powered Q&A — free tier, extremely fast, no credit card required."""
+    st.success("Groq is free to use — no credit card required. Get a free API key at console.groq.com in 30 seconds.")
+
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        api_key = st.text_input("Groq API Key", type="password",
+                                help="Free at console.groq.com. No credit card needed.")
+    with col2:
+        model = st.selectbox("Model", [
+            "llama-3.3-70b-versatile",
+            "llama-3.1-8b-instant",
+            "mixtral-8x7b-32768",
+            "gemma2-9b-it",
+        ], help="All models are free on Groq")
+
+    if not api_key:
+        st.info("Get your free API key: [console.groq.com](https://console.groq.com) (no credit card required)")
+        with st.expander("How to get a Groq API key"):
+            st.markdown("""
+            1. Go to [console.groq.com](https://console.groq.com)
+            2. Sign up with Google or email (free, no credit card)
+            3. Click **API Keys** in the sidebar
+            4. Click **Create API Key**, give it a name, copy the key
+            5. Paste it above and start chatting
+            """)
+        return
+
+    # Chat history
+    if 'qa_groq_messages' not in st.session_state:
+        st.session_state.qa_groq_messages = []
+
+    for msg in st.session_state.qa_groq_messages:
+        with st.chat_message(msg['role']):
+            st.markdown(msg['content'])
+
+    if prompt := st.chat_input("Ask a question about your fairness audit..."):
+        st.session_state.qa_groq_messages.append({'role': 'user', 'content': prompt})
+        with st.chat_message('user'):
+            st.markdown(prompt)
+
+        with st.chat_message('assistant'):
+            with st.spinner("Thinking..."):
+                try:
+                    import urllib.request
+                    import json
+                    messages = [{'role': 'system', 'content': system_prompt}]
+                    messages += [{'role': m['role'], 'content': m['content']}
+                                 for m in st.session_state.qa_groq_messages]
+                    payload = json.dumps({
+                        'model': model,
+                        'messages': messages,
+                        'max_tokens': 1500,
+                        'temperature': 0.7,
+                    }).encode('utf-8')
+                    req = urllib.request.Request(
+                        'https://api.groq.com/openai/v1/chat/completions',
+                        data=payload,
+                        headers={
+                            'Content-Type': 'application/json',
+                            'Authorization': f'Bearer {api_key}',
+                        },
+                    )
+                    resp = urllib.request.urlopen(req, timeout=30)
+                    data = json.loads(resp.read())
+                    reply = data['choices'][0]['message']['content']
+                except Exception as e:
+                    reply = f"Error connecting to Groq: {str(e)}\n\nCheck that your API key is correct."
+            st.markdown(reply)
+        st.session_state.qa_groq_messages.append({'role': 'assistant', 'content': reply})
 
 
 def _qa_ollama(system_prompt):
