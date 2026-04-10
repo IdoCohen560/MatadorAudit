@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <linearGradient id="beam-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#CF0A2C" stop-opacity="0.8"/>
+    </linearGradient>
+    <radialGradient id="pan-glow-l" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pan-glow-r" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#CF0A2C" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#CF0A2C" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+
+  <!-- Center pillar -->
+  <line x1="400" y1="180" x2="400" y2="480" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
+  <circle cx="400" cy="180" r="8" fill="#CF0A2C"/>
+  <circle cx="400" cy="180" r="4" fill="#fff" opacity="0.6"/>
+
+  <!-- Base -->
+  <rect x="340" y="470" width="120" height="6" rx="3" fill="rgba(255,255,255,0.06)"/>
+
+  <!-- Beam (tilted - right side heavier = bias) -->
+  <line x1="180" y1="220" x2="620" y2="280" stroke="url(#beam-grad)" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Left pan (fair side - higher) -->
+  <line x1="180" y1="220" x2="130" y2="320" stroke="rgba(34,197,94,0.3)" stroke-width="1"/>
+  <line x1="180" y1="220" x2="230" y2="320" stroke="rgba(34,197,94,0.3)" stroke-width="1"/>
+  <ellipse cx="180" cy="325" rx="60" ry="12" fill="rgba(34,197,94,0.1)" stroke="rgba(34,197,94,0.3)" stroke-width="1"/>
+  <circle cx="180" cy="325" r="80" fill="url(#pan-glow-l)" filter="url(#glow)"/>
+  <!-- Fair data points -->
+  <circle cx="160" cy="310" r="4" fill="#22c55e" opacity="0.7"/>
+  <circle cx="180" cy="305" r="4" fill="#22c55e" opacity="0.7"/>
+  <circle cx="200" cy="310" r="4" fill="#22c55e" opacity="0.7"/>
+  <circle cx="170" cy="295" r="3" fill="#4ade80" opacity="0.5"/>
+  <circle cx="190" cy="295" r="3" fill="#4ade80" opacity="0.5"/>
+
+  <!-- Right pan (biased side - lower/heavier) -->
+  <line x1="620" y1="280" x2="570" y2="380" stroke="rgba(207,10,44,0.3)" stroke-width="1"/>
+  <line x1="620" y1="280" x2="670" y2="380" stroke="rgba(207,10,44,0.3)" stroke-width="1"/>
+  <ellipse cx="620" cy="385" rx="60" ry="12" fill="rgba(207,10,44,0.1)" stroke="rgba(207,10,44,0.3)" stroke-width="1"/>
+  <circle cx="620" cy="385" r="80" fill="url(#pan-glow-r)" filter="url(#glow)"/>
+  <!-- Biased data points (more, heavier) -->
+  <circle cx="600" cy="370" r="5" fill="#CF0A2C" opacity="0.8"/>
+  <circle cx="620" cy="362" r="5" fill="#CF0A2C" opacity="0.8"/>
+  <circle cx="640" cy="370" r="5" fill="#CF0A2C" opacity="0.8"/>
+  <circle cx="610" cy="355" r="4" fill="#ef4444" opacity="0.6"/>
+  <circle cx="630" cy="355" r="4" fill="#ef4444" opacity="0.6"/>
+  <circle cx="620" cy="345" r="4" fill="#f87171" opacity="0.5"/>
+  <circle cx="605" cy="345" r="3" fill="#f87171" opacity="0.4"/>
+  <circle cx="635" cy="345" r="3" fill="#f87171" opacity="0.4"/>
+
+  <!-- Floating particles -->
+  <circle cx="150" cy="250" r="1.5" fill="#22c55e" opacity="0.3"/>
+  <circle cx="210" cy="270" r="1" fill="#22c55e" opacity="0.2"/>
+  <circle cx="650" cy="310" r="1.5" fill="#CF0A2C" opacity="0.3"/>
+  <circle cx="590" cy="330" r="1" fill="#CF0A2C" opacity="0.2"/>
+  <circle cx="400" cy="140" r="2" fill="#f59e0b" opacity="0.3"/>
+  <circle cx="380" cy="250" r="1" fill="#8b5cf6" opacity="0.2"/>
+  <circle cx="420" cy="350" r="1" fill="#3b82f6" opacity="0.2"/>
+</svg>

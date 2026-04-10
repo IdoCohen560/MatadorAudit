@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <linearGradient id="bull-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#CF0A2C"/>
+      <stop offset="100%" stop-color="#A00823"/>
+    </linearGradient>
+    <radialGradient id="core-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#CF0A2C" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#CF0A2C" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="gl"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+
+  <!-- Central glow -->
+  <circle cx="400" cy="280" r="180" fill="url(#core-glow)" filter="url(#gl)"/>
+
+  <!-- Bull head silhouette made of geometric shapes -->
+  <!-- Head outline -->
+  <path d="M340 320 Q340 260 370 230 Q390 210 400 210 Q410 210 430 230 Q460 260 460 320 Q460 350 440 370 Q420 385 400 390 Q380 385 360 370 Q340 350 340 320Z"
+        fill="url(#bull-grad)" opacity="0.15" stroke="#CF0A2C" stroke-width="1.5" stroke-opacity="0.4"/>
+
+  <!-- Left horn -->
+  <path d="M340 270 Q310 230 270 200 Q250 190 240 195"
+        stroke="#CF0A2C" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+  <circle cx="240" cy="195" r="4" fill="#CF0A2C" opacity="0.6"/>
+
+  <!-- Right horn -->
+  <path d="M460 270 Q490 230 530 200 Q550 190 560 195"
+        stroke="#CF0A2C" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+  <circle cx="560" cy="195" r="4" fill="#CF0A2C" opacity="0.6"/>
+
+  <!-- Eyes -->
+  <circle cx="375" cy="290" r="6" fill="#CF0A2C" opacity="0.8"/>
+  <circle cx="375" cy="290" r="3" fill="#fff" opacity="0.5"/>
+  <circle cx="425" cy="290" r="6" fill="#CF0A2C" opacity="0.8"/>
+  <circle cx="425" cy="290" r="3" fill="#fff" opacity="0.5"/>
+
+  <!-- Nostrils -->
+  <circle cx="390" cy="340" r="4" fill="#CF0A2C" opacity="0.3"/>
+  <circle cx="410" cy="340" r="4" fill="#CF0A2C" opacity="0.3"/>
+
+  <!-- Data streams flowing from the bull -->
+  <!-- Left stream -->
+  <circle cx="280" cy="240" r="2.5" fill="#3b82f6" opacity="0.6"/>
+  <circle cx="260" cy="260" r="2" fill="#3b82f6" opacity="0.5"/>
+  <circle cx="240" cy="285" r="1.5" fill="#3b82f6" opacity="0.4"/>
+  <circle cx="225" cy="310" r="1.5" fill="#3b82f6" opacity="0.3"/>
+  <circle cx="215" cy="340" r="1" fill="#3b82f6" opacity="0.2"/>
+
+  <!-- Right stream -->
+  <circle cx="520" cy="240" r="2.5" fill="#22c55e" opacity="0.6"/>
+  <circle cx="540" cy="260" r="2" fill="#22c55e" opacity="0.5"/>
+  <circle cx="555" cy="285" r="1.5" fill="#22c55e" opacity="0.4"/>
+  <circle cx="570" cy="310" r="1.5" fill="#22c55e" opacity="0.3"/>
+  <circle cx="580" cy="340" r="1" fill="#22c55e" opacity="0.2"/>
+
+  <!-- Top stream -->
+  <circle cx="400" cy="180" r="2" fill="#f59e0b" opacity="0.5"/>
+  <circle cx="390" cy="155" r="1.5" fill="#f59e0b" opacity="0.4"/>
+  <circle cx="410" cy="135" r="1.5" fill="#f59e0b" opacity="0.3"/>
+  <circle cx="400" cy="115" r="1" fill="#f59e0b" opacity="0.2"/>
+
+  <!-- Bottom dispersion -->
+  <circle cx="370" cy="410" r="2" fill="#8b5cf6" opacity="0.4"/>
+  <circle cx="400" cy="420" r="2" fill="#8b5cf6" opacity="0.4"/>
+  <circle cx="430" cy="410" r="2" fill="#8b5cf6" opacity="0.4"/>
+  <circle cx="350" cy="435" r="1.5" fill="#8b5cf6" opacity="0.3"/>
+  <circle cx="400" cy="445" r="1.5" fill="#8b5cf6" opacity="0.3"/>
+  <circle cx="450" cy="435" r="1.5" fill="#8b5cf6" opacity="0.3"/>
+  <circle cx="330" cy="460" r="1" fill="#8b5cf6" opacity="0.2"/>
+  <circle cx="400" cy="470" r="1" fill="#8b5cf6" opacity="0.2"/>
+  <circle cx="470" cy="460" r="1" fill="#8b5cf6" opacity="0.2"/>
+
+  <!-- Orbiting particles -->
+  <circle cx="310" cy="180" r="2" fill="#CF0A2C" opacity="0.3"/>
+  <circle cx="490" cy="180" r="2" fill="#CF0A2C" opacity="0.3"/>
+  <circle cx="200" cy="350" r="1.5" fill="#22c55e" opacity="0.2"/>
+  <circle cx="600" cy="350" r="1.5" fill="#3b82f6" opacity="0.2"/>
+  <circle cx="300" cy="450" r="1" fill="#f59e0b" opacity="0.2"/>
+  <circle cx="500" cy="450" r="1" fill="#f59e0b" opacity="0.2"/>
+</svg>
