@@ -661,11 +661,33 @@ def about_page():
     | [US Dept of Education College Scorecard](https://collegescorecard.ed.gov/) | Federal completion, earnings, financial aid data |
     | [IPEDS (NCES)](https://nces.ed.gov/ipeds/) | National enrollment and graduation data |
 
+    ### Methodology References
+
+    Our fairness metrics are based on established academic research and legal standards:
+
+    | Metric | Source |
+    |--------|--------|
+    | **Demographic Parity** | Dwork et al., "Fairness through Awareness," ITCS 2012 |
+    | **Disparate Impact (Four-Fifths Rule)** | EEOC Uniform Guidelines, 29 C.F.R. Part 1607 (1978); *Griggs v. Duke Power Co.*, 401 U.S. 424 (1971) |
+    | **Equalized Odds** | Hardt, Price & Srebro, "Equality of Opportunity in Supervised Learning," NeurIPS 2016 |
+    | **Proxy Discrimination** | Datta, Tschantz & Datta, "Automated Experiments on Ad Privacy Settings," PoPETs 2015 |
+    | **Impossibility Theorem** | Chouldechova, "Fair Prediction with Disparate Impact," *Big Data* 5(2), 2017 |
+
+    ### Data Disclosure
+
+    All data used in this tool is **synthetic**. No real CSUN student data was
+    accessed, uploaded, or shared with any AI platform. Our synthetic dataset is
+    modeled on publicly available institutional data from the sources listed above.
+
+    Claude AI is used solely for generating natural-language fairness reports.
+    No student records or personally identifiable information are sent to any
+    external API. Only aggregate statistical summaries are transmitted.
+
     ### Why CSUN
 
     CSUN is a **Hispanic-Serving Institution** with one of the most diverse student
-    bodies in the CSU system. With 61% Hispanic/Latino students, 56% Pell-eligible,
-    and 45% first-generation, we have a responsibility to ensure AI tools serve
+    bodies in the CSU system. With 56.2% Hispanic/Latino students, 58% Pell-eligible,
+    and 47% first-generation, we have a responsibility to ensure AI tools serve
     all students equitably.
 
     ---

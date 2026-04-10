@@ -190,6 +190,7 @@
     <a href="#dashboard">Dashboard</a>
     <a href="#methodology">Methodology</a>
     <a href="#sources">Sources</a>
+    <a href="#disclosure">Disclosure</a>
     <a href="#about">About</a>
     <a href="#" class="nav-cta" id="live-tool-link">Try Live Tool</a>
   </div>
@@ -319,7 +320,7 @@
         <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
       <div class="method-body">
-        <p>Measures the difference in positive outcome rates between the most and least favored demographic groups.</p>
+        <p>Measures the difference in positive outcome rates between the most and least favored demographic groups. Based on Dwork et al., "Fairness through Awareness" (ITCS 2012).</p>
         <div class="method-formula">Gap = max(group_rate) - min(group_rate)</div>
         <p>A gap of 0 means perfect parity. The larger the gap, the greater the disparity between groups.</p>
         <div class="method-threshold">
@@ -353,7 +354,7 @@
         <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
       <div class="method-body">
-        <p>Measures whether the true positive rate (and false positive rate) are equal across demographic groups. A system satisfies equalized odds when it performs equally well for all groups, not just overall.</p>
+        <p>Measures whether the true positive rate (and false positive rate) are equal across demographic groups. A system satisfies equalized odds when it performs equally well for all groups, not just overall. Based on Hardt, Price & Srebro, "Equality of Opportunity in Supervised Learning" (NeurIPS 2016).</p>
         <div class="method-formula">EO Gap = max(TPR_group) - min(TPR_group)</div>
         <p>This is especially important for decisions that affect opportunities: financial aid, admissions, and course recommendations.</p>
       </div>
@@ -365,7 +366,7 @@
         <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
       <div class="method-body">
-        <p>Uses point-biserial correlation to measure the relationship between each feature and protected demographic membership. Even when race is not used as an input, variables like zip code, high school ranking, or "predicted persistence" scores can act as proxies.</p>
+        <p>Uses point-biserial correlation (Pearson, 1909) to measure the relationship between each feature and protected demographic membership. Even when race is not used as an input, variables like zip code, high school ranking, or "predicted persistence" scores can act as proxies. Based on Datta, Tschantz & Datta, "Automated Experiments on Ad Privacy Settings" (PoPETs 2015).</p>
         <div class="method-formula">r_pb = (M1 - M0) / S * sqrt(n1 * n0 / N^2)</div>
         <p>A variable with a strong correlation to a protected attribute is a potential proxy, meaning the system may effectively "know" a student's race through supposedly neutral data.</p>
         <div class="method-threshold">
@@ -405,6 +406,50 @@
       <div class="source-icon"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
       <div><h4>IPEDS / NCES</h4><p>National enrollment, retention, and graduation data by demographics from the federal Integrated Postsecondary Education Data System</p></div>
     </a>
+  </div>
+</section>
+
+<!-- Data Disclosure -->
+<section id="disclosure" style="border-top:1px solid var(--border)">
+  <div class="section-header">
+    <h2 class="reveal">Data <span>Disclosure</span></h2>
+    <p class="reveal reveal-delay-1">Transparency about our data practices, AI usage, and academic foundations.</p>
+  </div>
+  <div class="card-grid reveal reveal-delay-2" style="grid-template-columns:repeat(2,1fr)">
+    <div class="card">
+      <h3>Synthetic Data Only</h3>
+      <p>All data used in this project is synthetic. No real CSUN student data was accessed, uploaded, or shared with any AI platform. Our synthetic dataset is modeled on publicly available institutional data from CSUN Institutional Research, the CSUN Fact Sheet, IPEDS, and the US Department of Education College Scorecard.</p>
+    </div>
+    <div class="card">
+      <h3>AI Usage Disclosure</h3>
+      <p>Claude AI is used solely for generating natural-language fairness reports from aggregate statistical summaries. No student records or personally identifiable information are transmitted to any external API. All fairness metrics are computed locally using our own implementation.</p>
+    </div>
+  </div>
+  <div class="reveal reveal-delay-3" style="margin-top:32px">
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:20px">Methodology References</h3>
+    <p style="color:var(--text-dim);font-size:14px;margin-bottom:20px">Our fairness metrics are based on peer-reviewed research and established legal standards:</p>
+    <div style="display:grid;gap:12px">
+      <div class="card" style="padding:20px">
+        <h3 style="font-size:15px;color:var(--red)">Demographic Parity</h3>
+        <p>Dwork, C., Hardt, M., Pitassi, T., Reingold, O., & Zemel, R. (2012). "Fairness through Awareness." <em>Innovations in Theoretical Computer Science (ITCS)</em>. ACM.</p>
+      </div>
+      <div class="card" style="padding:20px">
+        <h3 style="font-size:15px;color:var(--red)">Disparate Impact / Four-Fifths Rule</h3>
+        <p>Equal Employment Opportunity Commission. (1978). <em>Uniform Guidelines on Employee Selection Procedures</em>, 29 C.F.R. Part 1607. Legal precedent: <em>Griggs v. Duke Power Co.</em>, 401 U.S. 424 (1971).</p>
+      </div>
+      <div class="card" style="padding:20px">
+        <h3 style="font-size:15px;color:var(--red)">Equalized Odds</h3>
+        <p>Hardt, M., Price, E., & Srebro, N. (2016). "Equality of Opportunity in Supervised Learning." <em>Advances in Neural Information Processing Systems (NeurIPS)</em>, 29.</p>
+      </div>
+      <div class="card" style="padding:20px">
+        <h3 style="font-size:15px;color:var(--red)">Proxy Discrimination Detection</h3>
+        <p>Datta, A., Tschantz, M. C., & Datta, A. (2015). "Automated Experiments on Ad Privacy Settings." <em>Proceedings on Privacy Enhancing Technologies (PoPETs)</em>, 2015(1). Point-biserial correlation: Pearson, K. (1909).</p>
+      </div>
+      <div class="card" style="padding:20px">
+        <h3 style="font-size:15px;color:var(--red)">Impossibility Theorem</h3>
+        <p>Chouldechova, A. (2017). "Fair Prediction with Disparate Impact: A Study of Bias in Recidivism Prediction Instruments." <em>Big Data</em>, 5(2), 153-163. Establishes that certain fairness metrics are mutually exclusive.</p>
+      </div>
+    </div>
   </div>
 </section>
 

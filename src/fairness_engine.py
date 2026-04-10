@@ -1,4 +1,25 @@
-"""Core fairness metrics engine."""
+"""Core fairness metrics engine.
+
+Metrics implemented are based on established fairness research and legal standards:
+
+- Demographic Parity (Statistical Parity):
+  Dwork et al., "Fairness through Awareness," ITCS 2012.
+  Measures equal positive outcome rates across groups.
+
+- Disparate Impact Ratio (Four-Fifths Rule):
+  EEOC Uniform Guidelines on Employee Selection Procedures, 29 C.F.R. Part 1607 (1978).
+  Griggs v. Duke Power Co., 401 U.S. 424 (1971).
+  A selection rate ratio below 0.80 constitutes prima facie evidence of adverse impact.
+
+- Equalized Odds:
+  Hardt, Price & Srebro, "Equality of Opportunity in Supervised Learning," NeurIPS 2016.
+  Requires equal true positive and false positive rates across groups.
+
+- Proxy Discrimination Detection (Point-Biserial Correlation):
+  Pearson, K. (1909). "On a New Method of Determining Correlation."
+  Datta, Tschantz & Datta, "Automated Experiments on Ad Privacy Settings," PoPETs 2015.
+  Detects when neutral variables act as proxies for protected attributes.
+"""
 import math
 import pandas as pd
 import numpy as np
