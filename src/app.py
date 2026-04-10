@@ -1078,8 +1078,12 @@ def _openrouter_call(api_key, model, system_prompt, chat_messages):
                 },
             )
             resp = urllib.request.urlopen(req, timeout=60)
-            data = json.loads(resp.read())
-            return data['choices'][0]['message']['content']
+            raw = resp.read().decode().strip()
+            data = json.loads(raw)
+            content = data.get('choices', [{}])[0].get('message', {}).get('content', '')
+            if content and content.strip():
+                return content.strip()
+            continue  # Empty response, try next model
         except urllib.error.HTTPError as e:
             last_error = f"HTTP {e.code}"
             if e.code == 429:
