@@ -1,10 +1,7 @@
 [build]
+  base = "site"
   publish = "site"
-  command = "echo 'Static site, no build needed'"
-  ignore = "exit 0"
-
-[build.environment]
-  PYTHON_VERSION = "0"
+  command = "echo done"
 
 [[redirects]]
   from = "/*"

@@ -1,10 +1,20 @@
 """MatadorAudit — AI-Powered Fairness Auditing Dashboard."""
+import os
+import sys
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+
+# Ensure src/ is on the path for imports
+sys.path.insert(0, os.path.dirname(__file__))
+
 from fairness_engine import FairnessEngine
 from report_generator import ReportGenerator
+
+# Resolve paths relative to the repo root (works locally and on Streamlit Cloud)
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+DATA_DIR = os.path.join(ROOT_DIR, 'data')
 
 st.set_page_config(
     page_title="MatadorAudit",
@@ -86,7 +96,7 @@ def upload_page():
 
     with col2:
         if st.button("🎓 Load CSUN Demo Data", use_container_width=True):
-            st.session_state.df = pd.read_csv("data/csun_synthetic_students.csv")
+            st.session_state.df = pd.read_csv(os.path.join(DATA_DIR, "csun_synthetic_students.csv"))
             st.success(f"Loaded {len(st.session_state.df)} synthetic CSUN student records")
 
     if st.session_state.df is not None:
