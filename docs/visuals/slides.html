@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MatadorAudit — CSUN AI Jam 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --csun-red: #CF0A2C;
+    --csun-red-dark: #A00823;
+    --csun-black: #1a1a1a;
+    --csun-white: #ffffff;
+    --csun-gray: #f4f4f4;
+    --csun-gray-dark: #666;
+    --accent-blue: #2563eb;
+    --accent-green: #16a34a;
+    --accent-amber: #d97706;
+    --accent-purple: #7c3aed;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--csun-black);
+    color: var(--csun-white);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .slide {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    padding: 60px 80px;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .slide.active { display: flex; }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    bottom: 30px;
+    right: 40px;
+    z-index: 100;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .nav button {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+  }
+  .nav button:hover { background: var(--csun-red); border-color: var(--csun-red); }
+  .nav .counter { font-size: 14px; opacity: 0.6; }
+
+  /* Progress bar */
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background: var(--csun-red);
+    transition: width 0.3s;
+    z-index: 100;
+  }
+
+  /* Slide Styles */
+  .slide-title {
+    background: linear-gradient(135deg, var(--csun-red) 0%, var(--csun-red-dark) 100%);
+  }
+  .slide-title h1 {
+    font-size: 72px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .slide-title .subtitle {
+    font-size: 28px;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 48px;
+  }
+  .slide-title .team {
+    font-size: 18px;
+    opacity: 0.7;
+  }
+
+  .slide-content { background: var(--csun-black); }
+  .slide-content h2 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    letter-spacing: -1px;
+  }
+  .slide-content h2 .accent { color: var(--csun-red); }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 20px;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .stat-card .number {
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--csun-red);
+    line-height: 1;
+  }
+  .stat-card .label {
+    font-size: 15px;
+    margin-top: 12px;
+    opacity: 0.7;
+    line-height: 1.4;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .feature-list li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  .feature-list .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .icon-red { background: rgba(207, 10, 44, 0.2); }
+  .icon-blue { background: rgba(37, 99, 235, 0.2); }
+  .icon-green { background: rgba(22, 163, 74, 0.2); }
+  .icon-amber { background: rgba(217, 119, 6, 0.2); }
+  .icon-purple { background: rgba(124, 58, 237, 0.2); }
+
+  .quote-box {
+    background: rgba(255,255,255,0.05);
+    border-left: 4px solid var(--csun-red);
+    padding: 28px 32px;
+    border-radius: 0 12px 12px 0;
+    font-size: 17px;
+    line-height: 1.7;
+    margin-top: 20px;
+  }
+  .quote-box .risk {
+    display: inline-block;
+    background: var(--csun-red);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 13px;
+    margin-top: 12px;
+  }
+
+  .arch-diagram {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+  .arch-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .arch-box {
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    min-width: 140px;
+  }
+  .arch-arrow {
+    font-size: 24px;
+    opacity: 0.4;
+  }
+
+  .timeline {
+    display: flex;
+    gap: 0;
+    margin-top: 20px;
+  }
+  .timeline-item {
+    flex: 1;
+    padding: 24px;
+    position: relative;
+    border-top: 3px solid rgba(255,255,255,0.1);
+  }
+  .timeline-item.active { border-top-color: var(--csun-red); }
+  .timeline-item .phase {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.5;
+    margin-bottom: 8px;
+  }
+  .timeline-item h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .timeline-item p {
+    font-size: 14px;
+    opacity: 0.6;
+    line-height: 1.5;
+  }
+
+  .table-grid {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 16px;
+  }
+  .table-grid th {
+    text-align: left;
+    padding: 14px 20px;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.6;
+  }
+  .table-grid td {
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .closing h1 {
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 24px;
+  }
+  .closing .tagline {
+    font-size: 28px;
+    color: var(--csun-red);
+    font-weight: 600;
+    margin-bottom: 48px;
+  }
+
+  .risk-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .risk-high { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+  .risk-med { background: rgba(217, 119, 6, 0.2); color: #fcd34d; }
+  .risk-low { background: rgba(22, 163, 74, 0.2); color: #86efac; }
+
+  .mockup-frame {
+    background: #0f0f0f;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .mockup-titlebar {
+    background: rgba(255,255,255,0.05);
+    padding: 10px 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .mockup-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .mockup-body {
+    padding: 24px;
+  }
+
+  .metric-bar {
+    height: 24px;
+    border-radius: 4px;
+    margin: 6px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .metric-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s;
+  }
+  .metric-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    opacity: 0.8;
+  }
+
+  .ethics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .ethics-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .ethics-card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ethics-card p {
+    font-size: 14px;
+    opacity: 0.65;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- SLIDE 1: Title -->
+<div class="slide slide-title active" id="slide-1">
+  <h1>Matador<br>Audit</h1>
+  <div class="subtitle">AI-Powered Fairness Auditing<br>for University Systems</div>
+  <div class="team">Ido Cohen &middot; Zach Bar &middot; CSUN AI Jam 2026</div>
+</div>
+
+<!-- SLIDE 2: The Problem -->
+<div class="slide slide-content" id="slide-2">
+  <h2>The <span class="accent">Problem</span></h2>
+  <p style="font-size: 22px; opacity: 0.8; margin-bottom: 32px; max-width: 800px; line-height: 1.6;">
+    Universities deploy AI across critical decisions — but nobody checks if those systems treat all students fairly.
+  </p>
+  <table class="table-grid">
+    <thead>
+      <tr><th>System</th><th>Decision</th><th>Who's at Risk</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Course Recommendations</td><td>Which classes students see first</td><td>Students channeled away from STEM</td></tr>
+      <tr><td>Admissions Screening</td><td>Which applicants advance</td><td>First-gen and low-income applicants</td></tr>
+      <tr><td>Financial Aid Models</td><td>How funds are distributed</td><td>Students whose data is "non-traditional"</td></tr>
+      <tr><td>Plagiarism Detection</td><td>Who gets flagged</td><td>Non-native English speakers</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SLIDE 3: Why CSUN -->
+<div class="slide slide-content" id="slide-3">
+  <h2>Why <span class="accent">CSUN</span></h2>
+  <p style="font-size: 20px; opacity: 0.7; margin-bottom: 32px;">
+    As a Hispanic-Serving Institution, fairness isn't optional — it's our responsibility.
+  </p>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="number">61%</div>
+      <div class="label">Hispanic / Latino<br>student body</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">56%</div>
+      <div class="label">Pell Grant<br>eligible</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">45%</div>
+      <div class="label">First-generation<br>college students</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">38K</div>
+      <div class="label">Students whose<br>outcomes are at stake</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: Solution Overview -->
+<div class="slide slide-content" id="slide-4">
+  <h2>The <span class="accent">Solution</span></h2>
+  <div class="two-col">
+    <div>
+      <p style="font-size: 18px; opacity: 0.8; line-height: 1.7; margin-bottom: 28px;">
+        MatadorAudit empowers non-technical administrators to audit AI systems for fairness — no coding required.
+      </p>
+      <ul class="feature-list">
+        <li>
+          <div class="icon icon-red">&#x1F50D;</div>
+          <div><strong>Automated Fairness Analysis</strong><br><span style="opacity:0.6">Upload data, get instant disparity detection across all demographics</span></div>
+        </li>
+        <li>
+          <div class="icon icon-blue">&#x1F517;</div>
+          <div><strong>Proxy Discrimination Detection</strong><br><span style="opacity:0.6">Finds hidden correlations (zip code → race, GPA weighting → income)</span></div>
+        </li>
+        <li>
+          <div class="icon icon-green">&#x1F4DD;</div>
+          <div><strong>Plain-English Report Card</strong><br><span style="opacity:0.6">AI-generated narrative reports any administrator can understand</span></div>
+        </li>
+        <li>
+          <div class="icon icon-purple">&#x1F39B;</div>
+          <div><strong>What-If Simulator</strong><br><span style="opacity:0.6">Adjust thresholds, watch fairness metrics update in real time</span></div>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <div class="mockup-frame">
+        <div class="mockup-titlebar">
+          <div class="mockup-dot" style="background:#ff5f57"></div>
+          <div class="mockup-dot" style="background:#ffbd2e"></div>
+          <div class="mockup-dot" style="background:#28c940"></div>
+          <span style="margin-left:12px;font-size:13px;opacity:0.5">MatadorAudit Dashboard</span>
+        </div>
+        <div class="mockup-body">
+          <div style="font-size:13px;opacity:0.5;margin-bottom:16px">FAIRNESS REPORT CARD</div>
+          <div style="font-size:20px;font-weight:700;margin-bottom:20px">Financial Aid Allocation — Fall 2026</div>
+
+          <div class="metric-label"><span>Demographic Parity</span><span class="risk-badge risk-high">HIGH RISK</span></div>
+          <div class="metric-bar" style="background:rgba(239,68,68,0.15)">
+            <div class="metric-bar-fill" style="width:38%;background:#ef4444"></div>
+          </div>
+
+          <div class="metric-label" style="margin-top:16px"><span>Equalized Odds</span><span class="risk-badge risk-med">MEDIUM</span></div>
+          <div class="metric-bar" style="background:rgba(217,119,6,0.15)">
+            <div class="metric-bar-fill" style="width:62%;background:#d97706"></div>
+          </div>
+
+          <div class="metric-label" style="margin-top:16px"><span>Disparate Impact Ratio</span><span class="risk-badge risk-low">PASSING</span></div>
+          <div class="metric-bar" style="background:rgba(22,163,74,0.15)">
+            <div class="metric-bar-fill" style="width:84%;background:#16a34a"></div>
+          </div>
+
+          <div style="margin-top:20px;padding:16px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:13px;line-height:1.6;opacity:0.7">
+            <strong style="color:var(--csun-red)">AI Finding:</strong> Hispanic/Latino students are 2.3x more likely to be denied aid renewal. Proxy analysis shows "predicted persistence" correlates 0.78 with zip code.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: Sample Report -->
+<div class="slide slide-content" id="slide-5">
+  <h2>AI-Generated <span class="accent">Report Card</span></h2>
+  <p style="font-size: 18px; opacity: 0.7; margin-bottom: 28px;">
+    Claude AI transforms raw statistics into plain-English findings that any administrator can act on.
+  </p>
+  <div class="quote-box">
+    <strong>Finding:</strong> Hispanic/Latino students are <strong>2.3x more likely</strong> to be denied financial aid renewal than white students with equivalent GPAs. This disparity persists after controlling for credit hours and enrollment status.<br><br>
+    <strong>Root Cause:</strong> The "predicted persistence" variable in the allocation model correlates <strong>0.78 with zip code</strong>, which correlates <strong>0.71 with race/ethnicity</strong> in the CSUN student population. This constitutes proxy discrimination.<br><br>
+    <strong>Recommended Action:</strong> Remove or re-weight the "predicted persistence" variable. Use the What-If Simulator to model alternative thresholds that maintain prediction accuracy while reducing demographic disparity.
+    <br><span class="risk">HIGH RISK — IMMEDIATE ACTION RECOMMENDED</span>
+  </div>
+  <p style="font-size: 14px; opacity: 0.4; margin-top: 20px;">
+    No statistics PhD required. No Python. No command line. Just answers.
+  </p>
+</div>
+
+<!-- SLIDE 6: Architecture -->
+<div class="slide slide-content" id="slide-6">
+  <h2>Technical <span class="accent">Architecture</span></h2>
+  <div class="arch-diagram">
+    <div class="arch-row">
+      <div class="arch-box" style="background:rgba(207,10,44,0.2);border:1px solid rgba(207,10,44,0.4)">Web Dashboard<br><small style="opacity:0.6">Streamlit + Plotly</small></div>
+    </div>
+    <div class="arch-arrow">&#x25BC;</div>
+    <div class="arch-row">
+      <div class="arch-box" style="background:rgba(37,99,235,0.2);border:1px solid rgba(37,99,235,0.3)">Upload &<br>Ingest</div>
+      <div class="arch-box" style="background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.3)">Fairness<br>Engine</div>
+      <div class="arch-box" style="background:rgba(22,163,74,0.2);border:1px solid rgba(22,163,74,0.3)">What-If<br>Simulator</div>
+      <div class="arch-box" style="background:rgba(217,119,6,0.2);border:1px solid rgba(217,119,6,0.3)">Report<br>Generator</div>
+    </div>
+    <div class="arch-arrow">&#x25BC;</div>
+    <div class="arch-row">
+      <div class="arch-box" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15)">Fairlearn<br><small style="opacity:0.6">Metrics</small></div>
+      <div class="arch-box" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15)">AIF360<br><small style="opacity:0.6">Mitigation</small></div>
+      <div class="arch-box" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15)">Claude API<br><small style="opacity:0.6">NL Reports</small></div>
+      <div class="arch-box" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15)">Copilot / Gemini<br><small style="opacity:0.6">Follow-up Q&A</small></div>
+    </div>
+    <div class="arch-arrow">&#x25BC;</div>
+    <div class="arch-row">
+      <div class="arch-box" style="background:rgba(207,10,44,0.1);border:1px solid rgba(207,10,44,0.2);min-width:400px">University Data (Synthetic or De-identified)</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: What-If Simulator -->
+<div class="slide slide-content" id="slide-7">
+  <h2>What-If <span class="accent">Simulator</span></h2>
+  <div class="two-col">
+    <div>
+      <p style="font-size: 18px; opacity: 0.8; line-height: 1.7; margin-bottom: 24px;">
+        Don't just find bias — <strong>explore what fixing it looks like.</strong>
+      </p>
+      <ul class="feature-list">
+        <li>
+          <div class="icon icon-amber">&#x1F39A;</div>
+          <div><strong>Adjust Thresholds</strong><br><span style="opacity:0.6">Move the GPA cutoff from 3.0 to 2.8 — see who gets included</span></div>
+        </li>
+        <li>
+          <div class="icon icon-purple">&#x2696;</div>
+          <div><strong>Toggle Variables</strong><br><span style="opacity:0.6">Remove "predicted persistence" — how do fairness metrics change?</span></div>
+        </li>
+        <li>
+          <div class="icon icon-green">&#x1F4CA;</div>
+          <div><strong>Real-Time Updates</strong><br><span style="opacity:0.6">Watch demographic parity, equalized odds, and accuracy shift live</span></div>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <div class="mockup-frame">
+        <div class="mockup-titlebar">
+          <div class="mockup-dot" style="background:#ff5f57"></div>
+          <div class="mockup-dot" style="background:#ffbd2e"></div>
+          <div class="mockup-dot" style="background:#28c940"></div>
+          <span style="margin-left:12px;font-size:13px;opacity:0.5">What-If Simulator</span>
+        </div>
+        <div class="mockup-body">
+          <div style="font-size:13px;opacity:0.5;margin-bottom:16px">SIMULATION: GPA THRESHOLD ADJUSTMENT</div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:14px">GPA Cutoff</span>
+            <span style="font-size:14px;font-weight:700;color:var(--csun-red)">2.8</span>
+          </div>
+          <div style="height:8px;background:rgba(255,255,255,0.1);border-radius:4px;margin-bottom:24px;position:relative">
+            <div style="position:absolute;left:40%;width:16px;height:16px;background:var(--csun-red);border-radius:50%;top:-4px"></div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
+            <div style="background:rgba(22,163,74,0.1);padding:16px;border-radius:8px;text-align:center">
+              <div style="font-size:28px;font-weight:900;color:#16a34a">+12%</div>
+              <div style="font-size:12px;opacity:0.6;margin-top:4px">Hispanic inclusion</div>
+            </div>
+            <div style="background:rgba(37,99,235,0.1);padding:16px;border-radius:8px;text-align:center">
+              <div style="font-size:28px;font-weight:900;color:#2563eb">0.87</div>
+              <div style="font-size:12px;opacity:0.6;margin-top:4px">Demographic parity</div>
+            </div>
+            <div style="background:rgba(217,119,6,0.1);padding:16px;border-radius:8px;text-align:center">
+              <div style="font-size:28px;font-weight:900;color:#d97706">-2%</div>
+              <div style="font-size:12px;opacity:0.6;margin-top:4px">Accuracy trade-off</div>
+            </div>
+            <div style="background:rgba(124,58,237,0.1);padding:16px;border-radius:8px;text-align:center">
+              <div style="font-size:28px;font-weight:900;color:#7c3aed">0.91</div>
+              <div style="font-size:12px;opacity:0.6;margin-top:4px">Equalized odds</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: Proxy Detection -->
+<div class="slide slide-content" id="slide-8">
+  <h2>Proxy <span class="accent">Discrimination</span></h2>
+  <p style="font-size: 20px; opacity: 0.8; margin-bottom: 32px; max-width: 800px; line-height: 1.6;">
+    AI systems don't need to use race directly to discriminate. MatadorAudit catches the hidden connections.
+  </p>
+  <div class="two-col">
+    <div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:28px">
+        <h3 style="font-size:18px;margin-bottom:20px;opacity:0.9">Correlation Matrix — Detected Proxies</h3>
+        <table style="width:100%;font-size:14px;border-collapse:collapse">
+          <tr>
+            <td style="padding:8px;opacity:0.5"></td>
+            <td style="padding:8px;font-weight:700;text-align:center">Race</td>
+            <td style="padding:8px;font-weight:700;text-align:center">Income</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;font-weight:600">Zip Code</td>
+            <td style="padding:8px;text-align:center"><span style="color:#ef4444;font-weight:900;font-size:18px">0.71</span></td>
+            <td style="padding:8px;text-align:center"><span style="color:#ef4444;font-weight:900;font-size:18px">0.68</span></td>
+          </tr>
+          <tr style="border-top:1px solid rgba(255,255,255,0.06)">
+            <td style="padding:8px;font-weight:600">HS Ranking</td>
+            <td style="padding:8px;text-align:center"><span style="color:#d97706;font-weight:700;font-size:18px">0.54</span></td>
+            <td style="padding:8px;text-align:center"><span style="color:#d97706;font-weight:700;font-size:18px">0.61</span></td>
+          </tr>
+          <tr style="border-top:1px solid rgba(255,255,255,0.06)">
+            <td style="padding:8px;font-weight:600">Pred. Persistence</td>
+            <td style="padding:8px;text-align:center"><span style="color:#ef4444;font-weight:900;font-size:18px">0.78</span></td>
+            <td style="padding:8px;text-align:center"><span style="color:#d97706;font-weight:700;font-size:18px">0.59</span></td>
+          </tr>
+          <tr style="border-top:1px solid rgba(255,255,255,0.06)">
+            <td style="padding:8px;font-weight:600">SAT Score</td>
+            <td style="padding:8px;text-align:center"><span style="color:#d97706;font-weight:700;font-size:18px">0.48</span></td>
+            <td style="padding:8px;text-align:center"><span style="color:#d97706;font-weight:700;font-size:18px">0.52</span></td>
+          </tr>
+        </table>
+        <p style="font-size:12px;opacity:0.4;margin-top:12px">Red = strong proxy (>0.65) &middot; Amber = moderate proxy (>0.45)</p>
+      </div>
+    </div>
+    <div>
+      <div class="quote-box">
+        <strong>What this means:</strong> Even if the financial aid model never sees a student's race, it effectively "knows" race through zip code (r=0.71) and predicted persistence score (r=0.78).<br><br>
+        Removing race from the input doesn't remove racial bias from the output. <strong>MatadorAudit makes this visible.</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: Ethics -->
+<div class="slide slide-content" id="slide-9">
+  <h2>Ethics & <span class="accent">Responsibility</span></h2>
+  <div class="ethics-grid">
+    <div class="ethics-card">
+      <h3>&#x1F512; Data Privacy</h3>
+      <p>Operates on synthetic or de-identified data. No student PII sent to external APIs. Claude receives only statistical summaries, never raw records.</p>
+    </div>
+    <div class="ethics-card">
+      <h3>&#x26A0;&#xFE0F; Known Limitations</h3>
+      <p>Fairness metrics can conflict mathematically. We present multiple metrics and let humans choose trade-offs. Small subgroup sizes are flagged.</p>
+    </div>
+    <div class="ethics-card">
+      <h3>&#x1F6E1;&#xFE0F; Human Oversight</h3>
+      <p>No automated "debiasing" without review. The What-If Simulator is labeled as exploratory. All changes require institutional approval.</p>
+    </div>
+    <div class="ethics-card">
+      <h3>&#x267F; Inclusive Design</h3>
+      <p>WCAG 2.1 AA accessible dashboard. Plain-English reports. Multiple export formats for different stakeholders.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10: Feasibility -->
+<div class="slide slide-content" id="slide-10">
+  <h2><span class="accent">Feasibility</span> & Cost</h2>
+  <div class="two-col">
+    <div>
+      <table class="table-grid" style="font-size:15px">
+        <thead>
+          <tr><th>Component</th><th>Cost</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Python + Streamlit</td><td style="color:#16a34a;font-weight:700">Free</td></tr>
+          <tr><td>Microsoft Fairlearn</td><td style="color:#16a34a;font-weight:700">Free (MIT)</td></tr>
+          <tr><td>IBM AIF360</td><td style="color:#16a34a;font-weight:700">Free (Apache 2.0)</td></tr>
+          <tr><td>Claude API</td><td style="color:#16a34a;font-weight:700">~$0.01/report</td></tr>
+          <tr><td>Plotly</td><td style="color:#16a34a;font-weight:700">Free</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:20px;font-size:16px;opacity:0.7">
+        Total annual cost: <strong style="color:var(--csun-red)">&lt; $500</strong> for typical audit volumes.
+      </p>
+    </div>
+    <div>
+      <div class="timeline" style="flex-direction:column;gap:0">
+        <div class="timeline-item active">
+          <div class="phase">Phase 1 — Summer 2026</div>
+          <h3>Pilot</h3>
+          <p>Deploy with CSUN Financial Aid for one audit cycle</p>
+        </div>
+        <div class="timeline-item">
+          <div class="phase">Phase 2 — Fall 2026</div>
+          <h3>Expand</h3>
+          <p>Add Admissions & Academic Advising</p>
+        </div>
+        <div class="timeline-item">
+          <div class="phase">Phase 3 — Spring 2027</div>
+          <h3>Institutionalize</h3>
+          <p>Integrate into annual equity review</p>
+        </div>
+        <div class="timeline-item">
+          <div class="phase">Phase 4 — 2027-2028</div>
+          <h3>Scale</h3>
+          <p>Package for all 23 CSU campuses</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: Impact -->
+<div class="slide slide-content" id="slide-11">
+  <h2>Campus <span class="accent">Impact</span></h2>
+  <div class="stat-grid" style="grid-template-columns: repeat(2, 1fr); gap: 28px;">
+    <div class="stat-card" style="text-align:left;padding:28px">
+      <div style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--csun-red)">Financial Aid Office</div>
+      <p style="font-size:15px;opacity:0.7;line-height:1.6">Audit predictive models for aid allocation. Ensure "predicted persistence" doesn't penalize first-gen students.</p>
+    </div>
+    <div class="stat-card" style="text-align:left;padding:28px">
+      <div style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent-blue)">Admissions</div>
+      <p style="font-size:15px;opacity:0.7;line-height:1.6">Test screening tools for equitable outcomes across racial, income, and disability demographics.</p>
+    </div>
+    <div class="stat-card" style="text-align:left;padding:28px">
+      <div style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent-green)">Academic Advising</div>
+      <p style="font-size:15px;opacity:0.7;line-height:1.6">Verify course recommendation engines don't channel students of color away from STEM majors.</p>
+    </div>
+    <div class="stat-card" style="text-align:left;padding:28px">
+      <div style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent-purple)">Academic Integrity</div>
+      <p style="font-size:15px;opacity:0.7;line-height:1.6">Analyze Turnitin for disparate false-positive rates among non-native English speakers.</p>
+    </div>
+  </div>
+  <p style="font-size:18px;opacity:0.7;margin-top:32px;text-align:center">
+    Long-term: a template for all <strong>23 CSU campuses</strong> serving <strong>460,000+ students</strong>.
+  </p>
+</div>
+
+<!-- SLIDE 12: Closing -->
+<div class="slide slide-title" id="slide-12" style="text-align:center;justify-content:center;align-items:center">
+  <div class="closing">
+    <h1>Every Matador<br>Deserves a<br>Fair Shot.</h1>
+    <div class="tagline">MatadorAudit</div>
+    <div class="team" style="font-size:20px;opacity:0.8">Ido Cohen &middot; Zach Bar</div>
+    <div class="team" style="margin-top:8px">CSUN AI Jam 2026</div>
+  </div>
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <span class="counter" id="counter">1 / 12</span>
+  <button onclick="prev()">&#x25C0;</button>
+  <button onclick="next()">&#x25B6;</button>
+</div>
+
+<script>
+  let current = 1;
+  const total = 12;
+
+  function show(n) {
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    document.getElementById('slide-' + n).classList.add('active');
+    document.getElementById('counter').textContent = n + ' / ' + total;
+    document.getElementById('progress').style.width = (n / total * 100) + '%';
+  }
+
+  function next() { if (current < total) { current++; show(current); } }
+  function prev() { if (current > 1) { current--; show(current); } }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  });
+</script>
+
+</body>
+</html>
