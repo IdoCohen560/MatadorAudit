@@ -273,33 +273,60 @@
     </div>
     <div class="dash-body">
       <div class="dash-panel active" id="panel-report">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px">
+          <h3 style="font-size:17px;margin-bottom:8px">What you are looking at</h3>
+          <p style="color:var(--text-dim);font-size:14px;line-height:1.7;margin:0">This is a fairness audit of <strong style="color:var(--text)">financial aid decisions</strong> across 5,000 synthetic CSUN student records. The three metrics below measure whether students from different racial and ethnic backgrounds receive aid at equal rates. <strong style="color:var(--text)">Green = fair. Red = disparity detected.</strong> The bar chart shows the actual approval rate for each group, and the report below explains the findings in plain English.</p>
+        </div>
         <div class="metrics-row" id="metrics-row"></div>
         <div class="chart-container" id="chart-rates"></div>
         <div class="report-box" id="report-text"></div>
       </div>
       <div class="dash-panel" id="panel-proxy">
-        <h3 style="margin-bottom:8px">Proxy Correlation with Race/Ethnicity</h3>
-        <p style="color:var(--text-dim);margin-bottom:20px;font-size:14px">Variables that correlate with race can reproduce racial bias in AI decisions, even when race is not used directly.</p>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px">
+          <h3 style="font-size:17px;margin-bottom:8px">What is proxy discrimination?</h3>
+          <p style="color:var(--text-dim);font-size:14px;line-height:1.7;margin:0">Many AI systems do not use race as an input, but they use variables that <strong style="color:var(--text)">correlate with race</strong>, like zip code or high school ranking. This means the system can effectively "know" a student's ethnicity without ever seeing it directly. The bars below show how strongly each variable correlates with race. <strong style="color:var(--text)">Longer red bars = stronger proxy = higher risk of hidden bias.</strong></p>
+        </div>
         <div id="proxy-list"></div>
         <div class="chart-container" id="chart-proxy"></div>
       </div>
       <div class="dash-panel" id="panel-simulator">
-        <h3 style="margin-bottom:8px">Predicted Persistence Threshold</h3>
-        <p style="color:var(--text-dim);margin-bottom:20px;font-size:14px">Adjust the decision threshold and watch how it affects fairness across groups.</p>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px">
+          <h3 style="font-size:17px;margin-bottom:8px">How the simulator works</h3>
+          <p style="color:var(--text-dim);font-size:14px;line-height:1.7;margin:0">Financial aid decisions often use a "predicted persistence" score to decide who gets funding. <strong style="color:var(--text)">Drag the slider below</strong> to change the minimum score required for approval. Watch how different thresholds affect each group differently. The goal: find a threshold where the "4/5 Rule" shows <strong style="color:#4ade80">PASS</strong>, meaning no group is approved at less than 80% the rate of the best-performing group.</p>
+        </div>
         <div class="sim-slider-wrap">
-          <label>Threshold: <strong id="threshold-val">0.55</strong></label>
+          <label>Minimum persistence score required for aid approval: <strong id="threshold-val">0.55</strong></label>
           <input type="range" class="sim-slider" id="threshold-slider" min="0.30" max="0.78" step="0.02" value="0.55">
         </div>
         <div class="sim-metrics" id="sim-metrics"></div>
         <div class="chart-container" id="chart-sim"></div>
       </div>
       <div class="dash-panel" id="panel-audits">
-        <h3 style="margin-bottom:20px">Multiple System Audits</h3>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px">
+          <h3 style="font-size:17px;margin-bottom:8px">Auditing multiple university systems</h3>
+          <p style="color:var(--text-dim);font-size:14px;line-height:1.7;margin:0">Bias can appear in any AI-driven system. Below are four additional audits showing outcome rates by race/ethnicity. <strong style="color:var(--text)">When bars are roughly equal across groups, the system is fair. When one group's bar is significantly lower, there is a disparity that needs investigation.</strong></p>
+        </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" id="audits-grid">
-          <div><h4 style="margin-bottom:12px;color:var(--blue);font-weight:800">STEM Recommendation Quality</h4><div id="chart-stem"></div></div>
-          <div><h4 style="margin-bottom:12px;color:var(--purple);font-weight:800">Plagiarism Flag Rates</h4><div id="chart-plag"></div></div>
-          <div><h4 style="margin-bottom:12px;color:var(--green);font-weight:800">Admissions Screening</h4><div id="chart-admissions"></div></div>
-          <div><h4 style="margin-bottom:12px;color:var(--amber);font-weight:800">At-Risk Flagging</h4><div id="chart-atrisk"></div></div>
+          <div>
+            <h4 style="margin-bottom:4px;color:var(--blue);font-weight:800">STEM Recommendation Quality</h4>
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Rate of students receiving high-quality STEM course recommendations</p>
+            <div id="chart-stem"></div>
+          </div>
+          <div>
+            <h4 style="margin-bottom:4px;color:var(--purple);font-weight:800">Plagiarism Flag Rates</h4>
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Rate at which students are flagged by plagiarism detection (lower is better)</p>
+            <div id="chart-plag"></div>
+          </div>
+          <div>
+            <h4 style="margin-bottom:4px;color:var(--green);font-weight:800">Admissions Screening</h4>
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Rate of students advancing past initial admissions screening</p>
+            <div id="chart-admissions"></div>
+          </div>
+          <div>
+            <h4 style="margin-bottom:4px;color:var(--amber);font-weight:800">At-Risk Flagging</h4>
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Rate of students flagged as "at risk" of not completing courses (lower is better)</p>
+            <div id="chart-atrisk"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -543,8 +570,8 @@ function toggleMethod(header){
   if(!isOpen){body.classList.add('open');header.classList.add('open')}
 }
 
-const plotLayout={paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#71717a',family:'Inter'},xaxis:{gridcolor:'rgba(255,255,255,0.03)'},yaxis:{gridcolor:'rgba(255,255,255,0.03)'},margin:{t:40,b:80,l:50,r:20}};
-const plotConfig={responsive:true,displayModeBar:false};
+const plotLayout={paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#71717a',family:'Inter'},xaxis:{gridcolor:'rgba(255,255,255,0.03)',fixedrange:true},yaxis:{gridcolor:'rgba(255,255,255,0.03)',fixedrange:true},margin:{t:40,b:80,l:50,r:20},dragmode:false};
+const plotConfig={responsive:true,displayModeBar:false,scrollZoom:false,doubleClick:false,staticPlot:false};
 
 function riskBadge(val,type){
   if(type==='di'){
