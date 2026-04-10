@@ -47,7 +47,7 @@
 
 [SCREEN: Switch to the Streamlit app, navigate to the Proxy Detection tab, show the correlation bar chart]
 
-**IDO:** "We also built an AI Q&A Assistant directly into the tool. After running any audit, users can ask follow-up questions in plain English -- like 'Why is the gap so large for Hispanic students?' or 'What should I do next?' The assistant is powered by OpenRouter, which is completely free with no setup required. Users can also connect Claude, ChatGPT, Gemini, or Ollama if they prefer."
+**IDO:** "We also built an AI Q&A Assistant directly into the tool. After running any audit, users can ask follow-up questions in plain English -- like 'Why is the gap so large for Hispanic students?' or 'What should I do next?' The assistant is powered by OpenRouter, which is completely free with no setup required. Users can also connect Claude, ChatGPT, Gemini if they prefer."
 
 [SCREEN: Navigate to the AI Q&A Assistant page, show OpenRouter selected, type a sample question and display the response]
 
