@@ -62,6 +62,7 @@ def main():
         "Fairness Report Card",
         "Proxy Detection",
         "What-If Simulator",
+        "AI Q&A Assistant",
         "Export Report",
         "About",
     ])
@@ -82,6 +83,8 @@ def main():
         proxy_page()
     elif page == "What-If Simulator":
         simulator_page()
+    elif page == "AI Q&A Assistant":
+        qa_page()
     elif page == "Export Report":
         export_page()
     elif page == "About":
@@ -896,6 +899,184 @@ def render_report_inline(engine):
            systems using the Multi-Audit Dashboard. A passing result here does not guarantee
            fairness in other systems.
         """)
+
+
+def qa_page():
+    st.title("AI Q&A Assistant")
+    st.markdown("""
+    Ask follow-up questions about your fairness audit results using your preferred AI assistant.
+    Choose a provider, enter your API key, and ask anything about your audit findings.
+    """)
+
+    if st.session_state.engine is None:
+        st.warning("Run an analysis first from the Upload & Analyze tab to give the AI context about your audit.")
+        st.info("You can still use this page without audit data, but the AI will not have specific findings to reference.")
+
+    # Provider selection
+    provider = st.selectbox("Choose AI Provider", [
+        "Claude (Anthropic)",
+        "ChatGPT (OpenAI)",
+        "Gemini (Google)",
+        "Copilot (Microsoft)",
+    ])
+
+    # Build context from current audit results
+    audit_context = ""
+    if st.session_state.engine is not None:
+        engine = st.session_state.engine
+        r = engine.results
+        rates = engine.group_rates()
+        best = rates.loc[rates['rate'].idxmax()]
+        worst = rates.loc[rates['rate'].idxmin()]
+        audit_context = f"""
+Current audit results:
+- Auditing: {engine.outcome_col} by {engine.demo_col}
+- Records: {len(engine.df):,}
+- Demographic Parity Gap: {r['demographic_parity']['disparity']:.4f}
+- Disparate Impact Ratio: {r['disparate_impact']['ratio']:.4f} ({'PASSES' if r['disparate_impact']['ratio'] >= 0.8 else 'FAILS'} four-fifths rule)
+- Equalized Odds Gap: {r['equalized_odds']['gap']:.4f}
+- Highest outcome group: {best['group']} at {best['rate']:.1%}
+- Lowest outcome group: {worst['group']} at {worst['rate']:.1%}
+- Gap: {best['rate'] - worst['rate']:.1%}
+"""
+
+    system_prompt = f"""You are a fairness auditing expert helping a university administrator at CSUN
+(California State University, Northridge), a Hispanic-Serving Institution. You are embedded in
+MatadorAudit, an AI-powered fairness auditing tool. Answer questions clearly and simply.
+Always explain technical terms. When recommending actions, be specific about who to contact
+(Financial Aid Director, Office of Equity and Diversity, Institutional Research, etc.).
+
+{audit_context}"""
+
+    if provider == "Claude (Anthropic)":
+        _qa_claude(system_prompt)
+    elif provider == "ChatGPT (OpenAI)":
+        _qa_external(provider, system_prompt, "https://chat.openai.com", "OpenAI API key", "openai")
+    elif provider == "Gemini (Google)":
+        _qa_external(provider, system_prompt, "https://gemini.google.com", "Google AI API key", "google")
+    elif provider == "Copilot (Microsoft)":
+        _qa_external(provider, system_prompt, "https://copilot.microsoft.com", "Microsoft API key", "microsoft")
+
+
+def _qa_claude(system_prompt):
+    """Claude-powered Q&A with direct API integration."""
+    api_key = st.text_input("Anthropic API Key", type="password",
+                            help="Your key is never stored. It is used only for this session.")
+
+    if not api_key:
+        st.info("Enter your Anthropic API key above to start chatting. Your key is used only for this session and is never saved.")
+        return
+
+    # Chat history
+    if 'qa_messages' not in st.session_state:
+        st.session_state.qa_messages = []
+
+    # Display chat history
+    for msg in st.session_state.qa_messages:
+        with st.chat_message(msg['role']):
+            st.markdown(msg['content'])
+
+    # Chat input
+    if prompt := st.chat_input("Ask a question about your fairness audit..."):
+        st.session_state.qa_messages.append({'role': 'user', 'content': prompt})
+        with st.chat_message('user'):
+            st.markdown(prompt)
+
+        with st.chat_message('assistant'):
+            with st.spinner("Thinking..."):
+                import anthropic
+                client = anthropic.Anthropic(api_key=api_key)
+                messages = [{'role': m['role'], 'content': m['content']}
+                            for m in st.session_state.qa_messages]
+                response = client.messages.create(
+                    model="claude-sonnet-4-20250514",
+                    max_tokens=1500,
+                    system=system_prompt,
+                    messages=messages,
+                )
+                reply = response.content[0].text
+            st.markdown(reply)
+        st.session_state.qa_messages.append({'role': 'assistant', 'content': reply})
+
+
+def _qa_external(provider, system_prompt, web_url, key_label, provider_id):
+    """Q&A for external providers — offers both API and copy-paste options."""
+
+    mode = st.radio("How do you want to use this?", [
+        f"Chat directly (requires {key_label})",
+        f"Copy prompt to {provider} web interface",
+    ], horizontal=True)
+
+    if "Copy prompt" in mode:
+        st.markdown(f"**Step 1:** Copy the pre-built prompt below")
+        st.markdown(f"**Step 2:** Open [{provider}]({web_url}) in a new tab")
+        st.markdown(f"**Step 3:** Paste the prompt and ask your question")
+
+        user_question = st.text_area("Your question about the audit:",
+                                      placeholder="e.g., What should I do about the disparity in financial aid?")
+
+        full_prompt = f"""{system_prompt}
+
+The administrator is asking: {user_question if user_question else '[paste your question here]'}
+
+Please answer in plain English. Explain any technical terms. Be specific about who to contact and what steps to take."""
+
+        st.code(full_prompt, language=None)
+        st.caption(f"Copy the text above and paste it into {provider}.")
+
+    else:
+        api_key = st.text_input(key_label, type="password",
+                                help="Your key is never stored.")
+
+        if not api_key:
+            st.info(f"Enter your {key_label} above, or switch to the copy-paste mode.")
+            return
+
+        if 'qa_ext_messages' not in st.session_state:
+            st.session_state.qa_ext_messages = []
+
+        for msg in st.session_state.qa_ext_messages:
+            with st.chat_message(msg['role']):
+                st.markdown(msg['content'])
+
+        if prompt := st.chat_input(f"Ask {provider}..."):
+            st.session_state.qa_ext_messages.append({'role': 'user', 'content': prompt})
+            with st.chat_message('user'):
+                st.markdown(prompt)
+
+            with st.chat_message('assistant'):
+                with st.spinner("Thinking..."):
+                    try:
+                        if provider_id == "openai":
+                            from openai import OpenAI
+                            client = OpenAI(api_key=api_key)
+                            messages = [{'role': 'system', 'content': system_prompt}]
+                            messages += [{'role': m['role'], 'content': m['content']}
+                                         for m in st.session_state.qa_ext_messages]
+                            resp = client.chat.completions.create(
+                                model="gpt-4o",
+                                messages=messages,
+                                max_tokens=1500,
+                            )
+                            reply = resp.choices[0].message.content
+
+                        elif provider_id == "google":
+                            import google.generativeai as genai
+                            genai.configure(api_key=api_key)
+                            model = genai.GenerativeModel('gemini-1.5-flash')
+                            full = system_prompt + "\n\nUser: " + prompt
+                            resp = model.generate_content(full)
+                            reply = resp.text
+
+                        elif provider_id == "microsoft":
+                            reply = ("Microsoft Copilot does not have a public API for direct integration. "
+                                     "Please use the copy-paste mode to interact with Copilot through "
+                                     "copilot.microsoft.com.")
+                    except Exception as e:
+                        reply = f"Error connecting to {provider}: {str(e)}\n\nTry using the copy-paste mode instead."
+
+                st.markdown(reply)
+            st.session_state.qa_ext_messages.append({'role': 'assistant', 'content': reply})
 
 
 def export_page():
