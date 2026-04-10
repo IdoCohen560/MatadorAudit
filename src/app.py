@@ -929,7 +929,7 @@ def qa_page():
 
     # Provider selection
     provider = st.selectbox("Choose AI Provider", [
-        "Groq (Free - Recommended)",
+        "OpenRouter (Free - Recommended)",
         "Claude (Anthropic)",
         "ChatGPT (OpenAI)",
         "Gemini (Google)",
@@ -965,8 +965,8 @@ Always explain technical terms. When recommending actions, be specific about who
 
 {audit_context}"""
 
-    if provider == "Groq (Free - Recommended)":
-        _qa_groq(system_prompt)
+    if provider == "OpenRouter (Free - Recommended)":
+        _qa_openrouter(system_prompt)
     elif provider == "Ollama (Local)":
         _qa_ollama(system_prompt)
     elif provider == "Claude (Anthropic)":
@@ -979,16 +979,16 @@ Always explain technical terms. When recommending actions, be specific about who
         _qa_external(provider, system_prompt, "https://copilot.microsoft.com", "Microsoft API key", "microsoft")
 
 
-def _qa_groq(system_prompt):
-    """Groq-powered Q&A — free for all users, no setup required."""
+def _qa_openrouter(system_prompt):
+    """OpenRouter-powered Q&A — free models, no credit card required."""
     # Try to load built-in key from Streamlit secrets
     builtin_key = None
     try:
-        builtin_key = st.secrets.get("GROQ_API_KEY", None)
+        builtin_key = st.secrets.get("OPENROUTER_API_KEY", None)
     except Exception:
         pass
 
-    custom_key = st.text_input("Use your own Groq API key (optional — leave blank to use the built-in free key)",
+    custom_key = st.text_input("Use your own OpenRouter API key (optional — leave blank to use the built-in free key)",
                                type="password")
 
     if custom_key:
@@ -998,26 +998,34 @@ def _qa_groq(system_prompt):
         api_key = builtin_key
         st.success("AI Q&A is ready — ask any question about your audit results.")
     else:
-        st.info("Enter a Groq API key to chat. Free at [console.groq.com](https://console.groq.com) — no credit card required.")
+        st.info("Enter an OpenRouter API key to chat. Free at [openrouter.ai](https://openrouter.ai) — sign up with Google, no credit card required.")
+        with st.expander("How to get a free OpenRouter API key"):
+            st.markdown("""
+            1. Go to [openrouter.ai](https://openrouter.ai)
+            2. Sign up with Google or GitHub (free, no credit card)
+            3. Go to **Keys** in your dashboard
+            4. Click **Create Key**, copy it
+            5. Paste it above and start chatting
+            """)
         return
 
     model = st.selectbox("Model", [
-        "llama-3.3-70b-versatile",
-        "llama-3.1-8b-instant",
-        "mixtral-8x7b-32768",
-        "gemma2-9b-it",
-    ], help="All models are free on Groq")
+        "meta-llama/llama-3.1-8b-instruct:free",
+        "google/gemma-2-9b-it:free",
+        "mistralai/mistral-7b-instruct:free",
+        "qwen/qwen-2-7b-instruct:free",
+    ], help="All models marked :free have no usage cost")
 
     # Chat history
-    if 'qa_groq_messages' not in st.session_state:
-        st.session_state.qa_groq_messages = []
+    if 'qa_or_messages' not in st.session_state:
+        st.session_state.qa_or_messages = []
 
-    for msg in st.session_state.qa_groq_messages:
+    for msg in st.session_state.qa_or_messages:
         with st.chat_message(msg['role']):
             st.markdown(msg['content'])
 
     if prompt := st.chat_input("Ask a question about your fairness audit..."):
-        st.session_state.qa_groq_messages.append({'role': 'user', 'content': prompt})
+        st.session_state.qa_or_messages.append({'role': 'user', 'content': prompt})
         with st.chat_message('user'):
             st.markdown(prompt)
 
@@ -1028,7 +1036,7 @@ def _qa_groq(system_prompt):
                     import json
                     messages = [{'role': 'system', 'content': system_prompt}]
                     messages += [{'role': m['role'], 'content': m['content']}
-                                 for m in st.session_state.qa_groq_messages]
+                                 for m in st.session_state.qa_or_messages]
                     payload = json.dumps({
                         'model': model,
                         'messages': messages,
@@ -1036,26 +1044,27 @@ def _qa_groq(system_prompt):
                         'temperature': 0.7,
                     }).encode('utf-8')
                     req = urllib.request.Request(
-                        'https://api.groq.com/openai/v1/chat/completions',
+                        'https://openrouter.ai/api/v1/chat/completions',
                         data=payload,
                         headers={
                             'Content-Type': 'application/json',
                             'Authorization': f'Bearer {api_key}',
+                            'HTTP-Referer': 'https://matadoraudit.netlify.app',
+                            'X-Title': 'MatadorAudit',
                         },
                     )
-                    resp = urllib.request.urlopen(req, timeout=30)
+                    resp = urllib.request.urlopen(req, timeout=60)
                     data = json.loads(resp.read())
                     reply = data['choices'][0]['message']['content']
                 except Exception as e:
                     error_msg = str(e)
                     if '429' in error_msg or 'rate' in error_msg.lower():
-                        reply = ("The built-in API key has hit its rate limit. "
-                                 "Enter your own free Groq API key above to continue. "
-                                 "Get one at [console.groq.com](https://console.groq.com) — no credit card needed.")
+                        reply = ("Rate limit reached. Please wait a moment and try again, "
+                                 "or enter your own free OpenRouter API key above.")
                     else:
-                        reply = f"Error connecting to Groq: {error_msg}"
+                        reply = f"Error: {error_msg}"
             st.markdown(reply)
-        st.session_state.qa_groq_messages.append({'role': 'assistant', 'content': reply})
+        st.session_state.qa_or_messages.append({'role': 'assistant', 'content': reply})
 
 
 def _qa_ollama(system_prompt):
