@@ -988,14 +988,18 @@ def _qa_groq(system_prompt):
     except Exception:
         pass
 
-    if builtin_key:
-        st.success("AI Q&A is ready — powered by Groq. Ask any question about your audit results.")
+    custom_key = st.text_input("Use your own Groq API key (optional — leave blank to use the built-in free key)",
+                               type="password")
+
+    if custom_key:
+        api_key = custom_key
+        st.success("Using your API key.")
+    elif builtin_key:
         api_key = builtin_key
+        st.success("AI Q&A is ready — ask any question about your audit results.")
     else:
         st.info("Enter a Groq API key to chat. Free at [console.groq.com](https://console.groq.com) — no credit card required.")
-        api_key = st.text_input("Groq API Key", type="password")
-        if not api_key:
-            return
+        return
 
     model = st.selectbox("Model", [
         "llama-3.3-70b-versatile",
@@ -1043,7 +1047,13 @@ def _qa_groq(system_prompt):
                     data = json.loads(resp.read())
                     reply = data['choices'][0]['message']['content']
                 except Exception as e:
-                    reply = f"Error connecting to Groq: {str(e)}\n\nCheck that your API key is correct."
+                    error_msg = str(e)
+                    if '429' in error_msg or 'rate' in error_msg.lower():
+                        reply = ("The built-in API key has hit its rate limit. "
+                                 "Enter your own free Groq API key above to continue. "
+                                 "Get one at [console.groq.com](https://console.groq.com) — no credit card needed.")
+                    else:
+                        reply = f"Error connecting to Groq: {error_msg}"
             st.markdown(reply)
         st.session_state.qa_groq_messages.append({'role': 'assistant', 'content': reply})
 
