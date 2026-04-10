@@ -54,12 +54,12 @@ def main():
     st.sidebar.markdown("AI-Powered Fairness Auditing")
 
     page = st.sidebar.radio("Navigate", [
-        "📊 Upload & Analyze",
-        "📋 Fairness Report Card",
-        "🔗 Proxy Detection",
-        "🎛️ What-If Simulator",
-        "📄 Export Report",
-        "ℹ️ About",
+        "Upload & Analyze",
+        "Fairness Report Card",
+        "Proxy Detection",
+        "What-If Simulator",
+        "Export Report",
+        "About",
     ])
 
     # Data loading
@@ -68,22 +68,22 @@ def main():
         st.session_state.engine = None
         st.session_state.report = None
 
-    if page == "📊 Upload & Analyze":
+    if page == "Upload & Analyze":
         upload_page()
-    elif page == "📋 Fairness Report Card":
+    elif page == "Fairness Report Card":
         report_page()
-    elif page == "🔗 Proxy Detection":
+    elif page == "Proxy Detection":
         proxy_page()
-    elif page == "🎛️ What-If Simulator":
+    elif page == "What-If Simulator":
         simulator_page()
-    elif page == "📄 Export Report":
+    elif page == "Export Report":
         export_page()
-    elif page == "ℹ️ About":
+    elif page == "About":
         about_page()
 
 
 def upload_page():
-    st.title("📊 Upload & Analyze")
+    st.title("Upload & Analyze")
     st.markdown("Upload a dataset or use our synthetic CSUN demo data to begin a fairness audit.")
 
     col1, col2 = st.columns(2)
@@ -95,9 +95,10 @@ def upload_page():
             st.success(f"Loaded {len(st.session_state.df)} records")
 
     with col2:
-        if st.button("🎓 Load CSUN Demo Data", use_container_width=True):
+        if st.button("Load CSUN Demo Data", use_container_width=True):
             st.session_state.df = pd.read_csv(os.path.join(DATA_DIR, "csun_synthetic_students.csv"))
             st.success(f"Loaded {len(st.session_state.df)} synthetic CSUN student records")
+        st.caption("Synthetic data modeled on publicly available CSUN institutional data. See About page for sources.")
 
     if st.session_state.df is not None:
         df = st.session_state.df
@@ -132,7 +133,7 @@ def upload_page():
         selected_demo = st.selectbox("Primary demographic column", demo_cols, index=0)
         selected_outcome = st.selectbox("Outcome column to audit", outcome_cols, index=0)
 
-        if st.button("🔍 Run Fairness Analysis", type="primary", use_container_width=True):
+        if st.button("Run Fairness Analysis", type="primary", use_container_width=True):
             with st.spinner("Computing fairness metrics..."):
                 engine = FairnessEngine(df, selected_demo, selected_outcome)
                 engine.compute_all()
@@ -189,7 +190,7 @@ def upload_page():
 
 
 def report_page():
-    st.title("📋 Fairness Report Card")
+    st.title("Fairness Report Card")
 
     if st.session_state.engine is None:
         st.warning("Run an analysis first from the Upload & Analyze tab.")
@@ -209,18 +210,21 @@ def report_page():
         st.markdown(f"### Demographic Parity")
         st.markdown(f"## {dp['disparity']:.3f}")
         st.markdown(f"**{risk} RISK**")
+        st.caption("Gap between highest and lowest group outcome rates. >0.10 = concern.")
 
     with c2:
         risk = risk_level(eo['gap'])
         st.markdown(f"### Equalized Odds Gap")
         st.markdown(f"## {eo['gap']:.3f}")
         st.markdown(f"**{risk} RISK**")
+        st.caption("Difference in true positive rates across groups.")
 
     with c3:
         di_risk = "LOW" if di['ratio'] >= 0.8 else ("MEDIUM" if di['ratio'] >= 0.6 else "HIGH")
         st.markdown(f"### Disparate Impact Ratio")
         st.markdown(f"## {di['ratio']:.3f}")
         st.markdown(f"**{di_risk} RISK**")
+        st.caption("Ratio of lowest to highest group rate. <0.80 fails the EEOC four-fifths rule.")
 
     st.markdown("---")
 
@@ -258,7 +262,7 @@ def report_page():
 
 
 def proxy_page():
-    st.title("🔗 Proxy Discrimination Detection")
+    st.title("Proxy Discrimination Detection")
 
     if st.session_state.df is None:
         st.warning("Load data first from the Upload & Analyze tab.")
@@ -270,7 +274,7 @@ def proxy_page():
     demo_cols = detect_demographic_cols(df)
     selected = st.selectbox("Check proxies for:", demo_cols, index=0)
 
-    if st.button("🔍 Run Proxy Analysis", type="primary"):
+    if st.button("Run Proxy Analysis", type="primary"):
         with st.spinner("Analyzing correlations..."):
             from fairness_engine import FairnessEngine
             correlations = FairnessEngine.proxy_detection(df, selected)
@@ -321,7 +325,7 @@ def proxy_page():
 
 
 def simulator_page():
-    st.title("🎛️ What-If Simulator")
+    st.title("What-If Simulator")
 
     if st.session_state.df is None or st.session_state.engine is None:
         st.warning("Run an analysis first from the Upload & Analyze tab.")
@@ -475,7 +479,7 @@ def generate_template_report(engine):
 
 
 def export_page():
-    st.title("📄 Export Fairness Report")
+    st.title("Export Fairness Report")
 
     if st.session_state.engine is None:
         st.warning("Run an analysis first from the Upload & Analyze tab.")
@@ -643,6 +647,16 @@ def about_page():
     | **Anthropic Claude API** | Plain-English report generation |
     | **Streamlit + Plotly** | Interactive dashboard |
     | **Microsoft Copilot / Google Gemini** | Follow-up Q&A for administrators |
+
+    ### Data Sources
+
+    | Source | Description |
+    |--------|-------------|
+    | [CSUN Institutional Research](https://www.csun.edu/counts/demographic.php) | Official student demographic breakdowns |
+    | [CSUN Fact Sheet](https://www.csun.edu/about/facts) | Enrollment, HSI designation, Pell and first-gen rates |
+    | [CSU System Data Center](https://www.calstate.edu/data-center) | CSU-wide graduation and retention data |
+    | [US Dept of Education College Scorecard](https://collegescorecard.ed.gov/) | Federal completion, earnings, financial aid data |
+    | [IPEDS (NCES)](https://nces.ed.gov/ipeds/) | National enrollment and graduation data |
 
     ### Why CSUN
 

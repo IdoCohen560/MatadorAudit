@@ -6,336 +6,170 @@
 <title>MatadorAudit — AI-Powered Fairness Auditing</title>
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --red:#CF0A2C;--red-dark:#A00823;--red-glow:rgba(207,10,44,0.25);
+    --bg:#06060b;--surface:#0e0e18;--surface2:#151522;--surface3:#1c1c2e;
+    --border:rgba(255,255,255,0.06);--border-hover:rgba(255,255,255,0.12);
+    --text:#e4e4e7;--text-dim:#71717a;--text-muted:#52525b;
+    --green:#22c55e;--amber:#f59e0b;--blue:#3b82f6;--purple:#8b5cf6;
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --red: #CF0A2C;
-    --red-dark: #A00823;
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --surface2: #1a1a26;
-    --border: rgba(255,255,255,0.08);
-    --text: #e4e4e7;
-    --text-dim: #71717a;
-    --green: #22c55e;
-    --amber: #f59e0b;
-    --blue: #3b82f6;
-    --purple: #8b5cf6;
-  }
+  /* Animations */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+  @keyframes countUp{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+  @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  @keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
 
-  body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  .reveal-delay-1{transition-delay:0.1s}.reveal-delay-2{transition-delay:0.2s}
+  .reveal-delay-3{transition-delay:0.3s}.reveal-delay-4{transition-delay:0.4s}
 
-  /* Navigation */
-  nav {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background: rgba(10,10,15,0.85);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    z-index: 100;
-    padding: 0 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-  }
-  .nav-logo {
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-  }
-  .nav-logo span { color: var(--red); }
-  .nav-links { display: flex; gap: 32px; }
-  .nav-links a {
-    color: var(--text-dim);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--text); }
-  .nav-cta {
-    background: var(--red) !important;
-    color: white !important;
-    padding: 8px 20px;
-    border-radius: 8px;
-    font-weight: 600 !important;
-  }
+  /* Nav */
+  nav{position:fixed;top:0;width:100%;background:rgba(6,6,11,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);z-index:100;padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:68px}
+  .nav-logo{font-size:22px;font-weight:900;letter-spacing:-0.5px}.nav-logo span{color:var(--red)}
+  .nav-links{display:flex;gap:36px;align-items:center}
+  .nav-links a{color:var(--text-dim);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;transition:color 0.2s}
+  .nav-links a:hover{color:var(--text)}
+  .nav-cta{background:var(--red)!important;color:white!important;padding:10px 24px;border-radius:10px;transition:transform 0.2s,box-shadow 0.2s!important}
+  .nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 20px var(--red-glow)}
 
   /* Hero */
-  .hero {
-    padding: 140px 40px 80px;
-    text-align: center;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  .hero-badge {
-    display: inline-block;
-    background: rgba(207,10,44,0.12);
-    color: var(--red);
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 24px;
-    border: 1px solid rgba(207,10,44,0.2);
-  }
-  .hero h1 {
-    font-size: 60px;
-    font-weight: 900;
-    letter-spacing: -2px;
-    line-height: 1.1;
-    margin-bottom: 20px;
-  }
-  .hero h1 span { color: var(--red); }
-  .hero p {
-    font-size: 20px;
-    color: var(--text-dim);
-    max-width: 640px;
-    margin: 0 auto 40px;
-    line-height: 1.7;
-  }
-  .hero-stats {
-    display: flex;
-    justify-content: center;
-    gap: 48px;
-    margin-top: 48px;
-  }
-  .hero-stat .num {
-    font-size: 42px;
-    font-weight: 900;
-    color: var(--red);
-  }
-  .hero-stat .label {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-top: 4px;
-  }
+  .hero{position:relative;padding:160px 48px 100px;text-align:center;overflow:hidden}
+  .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(207,10,44,0.08) 0%,transparent 60%);pointer-events:none}
+  .hero-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(207,10,44,0.1);color:var(--red);padding:8px 20px;border-radius:24px;font-size:13px;font-weight:700;margin-bottom:32px;border:1px solid rgba(207,10,44,0.2);animation:fadeIn 0.8s ease}
+  .hero-badge svg{width:16px;height:16px}
+  .hero h1{font-size:72px;font-weight:900;letter-spacing:-3px;line-height:1.05;margin-bottom:24px;animation:fadeUp 0.8s ease}
+  .hero h1 span{background:linear-gradient(135deg,var(--red),#ff4d6d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .hero p{font-size:20px;color:var(--text-dim);max-width:640px;margin:0 auto 56px;line-height:1.7;animation:fadeUp 0.8s ease 0.1s both}
+  .hero-stats{display:flex;justify-content:center;gap:64px;animation:fadeUp 0.8s ease 0.2s both}
+  .hero-stat{text-align:center}
+  .hero-stat .num{font-size:52px;font-weight:900;background:linear-gradient(135deg,var(--red),#ff4d6d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+  .hero-stat .label{font-size:12px;color:var(--text-muted);margin-top:8px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase}
 
   /* Sections */
-  section {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 80px 40px;
-  }
-  .section-header {
-    text-align: center;
-    margin-bottom: 48px;
-  }
-  .section-header h2 {
-    font-size: 36px;
-    font-weight: 800;
-    letter-spacing: -1px;
-    margin-bottom: 12px;
-  }
-  .section-header h2 span { color: var(--red); }
-  .section-header p {
-    color: var(--text-dim);
-    font-size: 17px;
-    max-width: 600px;
-    margin: 0 auto;
-  }
+  section{max-width:1200px;margin:0 auto;padding:100px 48px}
+  .section-header{text-align:center;margin-bottom:56px}
+  .section-header h2{font-size:42px;font-weight:900;letter-spacing:-1.5px;margin-bottom:16px}
+  .section-header h2 span{color:var(--red)}
+  .section-header p{color:var(--text-dim);font-size:18px;max-width:560px;margin:0 auto}
+
+  /* SVG Icons */
+  .icon-wrap{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:transform 0.3s}
+  .icon-wrap svg{width:24px;height:24px;stroke-width:1.5}
 
   /* Cards */
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-  }
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-    transition: border-color 0.2s;
-  }
-  .card:hover { border-color: rgba(255,255,255,0.15); }
-  .card-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    margin-bottom: 16px;
-  }
-  .card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-  .card p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:32px;transition:all 0.35s ease;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(207,10,44,0.03),transparent);opacity:0;transition:opacity 0.35s}
+  .card:hover{border-color:var(--border-hover);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.3)}
+  .card:hover::before{opacity:1}
+  .card:hover .icon-wrap{transform:scale(1.1)}
+  .card h3{font-size:18px;font-weight:800;margin-bottom:10px;position:relative}
+  .card p{font-size:14px;color:var(--text-dim);line-height:1.7;position:relative}
 
-  /* Dashboard Section */
-  .dashboard {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    overflow: hidden;
-  }
-  .dash-titlebar {
-    background: var(--surface2);
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-  .dash-dot { width: 12px; height: 12px; border-radius: 50%; }
-  .dash-tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .dash-tab {
-    padding: 14px 24px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-dim);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    background: none;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-  }
-  .dash-tab:hover { color: var(--text); }
-  .dash-tab.active { color: var(--red); border-bottom-color: var(--red); }
-  .dash-body { padding: 32px; }
-  .dash-panel { display: none; }
-  .dash-panel.active { display: block; }
+  /* Dashboard */
+  .dashboard{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.2)}
+  .dash-titlebar{background:var(--surface2);padding:16px 20px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+  .dash-dot{width:12px;height:12px;border-radius:50%}
+  .dash-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);overflow-x:auto}
+  .dash-tab{padding:16px 24px;font-size:13px;font-weight:600;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.25s;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap}
+  .dash-tab:hover{color:var(--text);background:rgba(255,255,255,0.02)}
+  .dash-tab.active{color:var(--red);border-bottom-color:var(--red)}
+  .dash-body{padding:36px}
+  .dash-panel{display:none;animation:fadeIn 0.3s ease}
+  .dash-panel.active{display:block}
 
-  /* Metrics row */
-  .metrics-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 28px;
-  }
-  .metric-box {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-  }
-  .metric-box .val { font-size: 32px; font-weight: 900; }
-  .metric-box .lbl { font-size: 12px; color: var(--text-dim); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
-  .risk-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 800;
-    margin-top: 6px;
-  }
-  .risk-high { background: rgba(239,68,68,0.15); color: #f87171; }
-  .risk-med { background: rgba(245,158,11,0.15); color: #fbbf24; }
-  .risk-low { background: rgba(34,197,94,0.15); color: #4ade80; }
+  /* Metrics */
+  .metrics-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
+  .metric-box{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;transition:border-color 0.3s}
+  .metric-box:hover{border-color:var(--border-hover)}
+  .metric-box .val{font-size:36px;font-weight:900;line-height:1}
+  .metric-box .lbl{font-size:11px;color:var(--text-muted);margin-top:6px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700}
+  .metric-box .desc{font-size:11px;color:var(--text-dim);margin-top:8px;line-height:1.5;font-style:italic}
+  .risk-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:800;margin-top:8px;letter-spacing:0.5px}
+  .risk-high{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.2)}
+  .risk-med{background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.2)}
+  .risk-low{background:rgba(34,197,94,0.12);color:#4ade80;border:1px solid rgba(34,197,94,0.2)}
+  .risk-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+  .risk-dot.high{background:#ef4444;animation:pulse 1.5s ease infinite}
+  .risk-dot.med{background:#f59e0b}.risk-dot.low{background:#22c55e}
 
-  /* Report box */
-  .report-box {
-    background: var(--surface2);
-    border-left: 4px solid var(--red);
-    border-radius: 0 12px 12px 0;
-    padding: 24px;
-    margin-top: 24px;
-    font-size: 15px;
-    line-height: 1.8;
-  }
-  .report-box strong { color: var(--text); }
+  /* Report */
+  .report-box{background:var(--surface2);border-left:4px solid var(--red);border-radius:0 14px 14px 0;padding:28px;margin-top:24px;font-size:15px;line-height:1.8}
 
-  /* Proxy bar */
-  .proxy-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 14px;
-    margin: 8px 0;
-    background: var(--surface2);
-    border-radius: 10px;
-    border-left: 4px solid var(--red);
-  }
-  .proxy-name { min-width: 200px; font-weight: 600; font-size: 14px; }
-  .proxy-bar-wrap { flex: 1; height: 20px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; }
-  .proxy-bar { height: 100%; border-radius: 4px; }
-  .proxy-val { min-width: 60px; text-align: right; font-weight: 800; font-size: 15px; }
-  .proxy-risk { min-width: 70px; text-align: center; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 4px; }
+  /* Proxy */
+  .proxy-item{display:flex;align-items:center;gap:16px;padding:16px;margin:8px 0;background:var(--surface2);border-radius:12px;border-left:4px solid var(--red);transition:transform 0.2s}
+  .proxy-item:hover{transform:translateX(4px)}
+  .proxy-name{min-width:200px;font-weight:700;font-size:14px}
+  .proxy-bar-wrap{flex:1;height:22px;background:rgba(255,255,255,0.03);border-radius:6px;overflow:hidden}
+  .proxy-bar{height:100%;border-radius:6px;transition:width 0.8s ease}
+  .proxy-val{min-width:60px;text-align:right;font-weight:800;font-size:15px;font-family:'Inter',monospace}
+  .proxy-risk{min-width:70px;text-align:center;font-size:11px;font-weight:800;padding:4px 10px;border-radius:6px}
 
   /* Simulator */
-  .sim-controls { margin-bottom: 24px; }
-  .sim-slider-wrap {
-    background: var(--surface2);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
-  }
-  .sim-slider-wrap label { font-size: 14px; font-weight: 600; display: block; margin-bottom: 12px; }
-  .sim-slider {
-    width: 100%;
-    -webkit-appearance: none;
-    height: 8px;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.1);
-    outline: none;
-  }
-  .sim-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--red);
-    cursor: pointer;
-  }
-  .sim-metrics {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-  .sim-metric {
-    background: var(--surface2);
-    border-radius: 10px;
-    padding: 16px;
-    text-align: center;
-  }
-  .sim-metric .val { font-size: 28px; font-weight: 900; }
-  .sim-metric .lbl { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+  .sim-slider-wrap{background:var(--surface2);border-radius:14px;padding:28px;margin-bottom:24px;border:1px solid var(--border)}
+  .sim-slider-wrap label{font-size:14px;font-weight:700;display:block;margin-bottom:16px}
+  .sim-slider{width:100%;-webkit-appearance:none;height:6px;border-radius:3px;background:rgba(255,255,255,0.08);outline:none;transition:background 0.2s}
+  .sim-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--red);cursor:pointer;box-shadow:0 2px 8px var(--red-glow);transition:transform 0.2s}
+  .sim-slider::-webkit-slider-thumb:hover{transform:scale(1.15)}
+  .sim-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+  .sim-metric{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center}
+  .sim-metric .val{font-size:28px;font-weight:900}.sim-metric .lbl{font-size:11px;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:1px;font-weight:700}
+
+  /* Methodology */
+  .method-accordion{margin:8px 0}
+  .method-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all 0.2s;font-weight:700;font-size:15px}
+  .method-header:hover{border-color:var(--border-hover);background:var(--surface3)}
+  .method-header .arrow{transition:transform 0.3s;color:var(--text-dim)}
+  .method-header.open .arrow{transform:rotate(180deg)}
+  .method-body{max-height:0;overflow:hidden;transition:max-height 0.4s ease;padding:0 24px}
+  .method-body.open{max-height:500px;padding:20px 24px}
+  .method-body p{font-size:14px;color:var(--text-dim);line-height:1.8;margin-bottom:12px}
+  .method-formula{font-family:monospace;background:rgba(207,10,44,0.08);color:var(--red);padding:10px 16px;border-radius:8px;font-size:14px;display:inline-block;margin:8px 0;border:1px solid rgba(207,10,44,0.15)}
+  .method-threshold{display:flex;gap:12px;margin-top:8px}
+  .method-threshold span{font-size:12px;padding:4px 10px;border-radius:6px;font-weight:700}
+
+  /* Sources */
+  .source-card{display:flex;align-items:flex-start;gap:16px;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:14px;transition:all 0.3s;text-decoration:none;color:var(--text)}
+  .source-card:hover{border-color:var(--border-hover);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+  .source-icon{width:40px;height:40px;border-radius:10px;background:rgba(207,10,44,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .source-icon svg{width:20px;height:20px;stroke:var(--red)}
+  .source-card h4{font-size:15px;font-weight:700;margin-bottom:4px}
+  .source-card p{font-size:13px;color:var(--text-dim)}
+
+  /* Timeline */
+  .timeline{position:relative;padding-left:40px;margin-top:20px}
+  .timeline::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--red),rgba(207,10,44,0.1))}
+  .timeline-item{position:relative;padding-bottom:32px}
+  .timeline-item::before{content:'';position:absolute;left:-29px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--red);border:3px solid var(--bg);box-shadow:0 0 0 2px var(--red)}
+  .timeline-item .phase{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700;margin-bottom:4px}
+  .timeline-item h3{font-size:18px;font-weight:800;margin-bottom:4px}
+  .timeline-item p{font-size:14px;color:var(--text-dim)}
 
   /* Footer */
-  footer {
-    text-align: center;
-    padding: 60px 40px;
-    border-top: 1px solid var(--border);
-    color: var(--text-dim);
-    font-size: 14px;
-  }
-  footer h2 {
-    font-size: 36px;
-    font-weight: 900;
-    color: var(--text);
-    margin-bottom: 8px;
-  }
-  footer .tagline { color: var(--red); font-size: 20px; font-weight: 700; margin-bottom: 24px; }
+  footer{text-align:center;padding:80px 48px;border-top:1px solid var(--border);position:relative}
+  footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:200px;height:1px;background:linear-gradient(to right,transparent,var(--red),transparent)}
+  footer h2{font-size:42px;font-weight:900;letter-spacing:-1px;margin-bottom:8px}
+  footer .tagline{color:var(--red);font-size:22px;font-weight:700;margin-bottom:28px}
 
-  /* Chart containers */
-  .chart-container { margin-top: 20px; }
+  .chart-container{margin-top:16px}
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .hero h1 { font-size: 36px; }
-    .hero-stats { flex-direction: column; gap: 20px; }
-    .metrics-row { grid-template-columns: 1fr; }
-    .sim-metrics { grid-template-columns: repeat(2, 1fr); }
-    nav { padding: 0 20px; }
-    .nav-links { display: none; }
-    section { padding: 40px 20px; }
+  @media(max-width:768px){
+    .hero h1{font-size:40px;letter-spacing:-1.5px}
+    .hero-stats{flex-direction:column;gap:24px}
+    .metrics-row,.sim-metrics{grid-template-columns:1fr}
+    nav{padding:0 20px}.nav-links{display:none}
+    section{padding:60px 20px}
+    .hero{padding:120px 20px 60px}
   }
 </style>
 </head>
@@ -346,6 +180,8 @@
   <div class="nav-links">
     <a href="#features">Features</a>
     <a href="#dashboard">Dashboard</a>
+    <a href="#methodology">Methodology</a>
+    <a href="#sources">Sources</a>
     <a href="#about">About</a>
     <a href="#" class="nav-cta" id="live-tool-link">Try Live Tool</a>
   </div>
@@ -353,41 +189,54 @@
 
 <!-- Hero -->
 <div class="hero">
-  <div class="hero-badge">CSUN AI Jam 2026</div>
-  <h1>Every Matador Deserves a <span>Fair Shot</span></h1>
-  <p>AI-powered fairness auditing that empowers non-technical administrators to detect bias, understand its causes, and explore solutions — no coding required.</p>
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    CSUN AI Jam 2026
+  </div>
+  <h1>Every Matador Deserves<br>a <span>Fair Shot</span></h1>
+  <p>AI-powered fairness auditing that empowers non-technical administrators to detect bias, understand its causes, and explore solutions.</p>
   <div class="hero-stats">
-    <div class="hero-stat"><div class="num">61%</div><div class="label">Hispanic/Latino students</div></div>
-    <div class="hero-stat"><div class="num">56%</div><div class="label">Pell Grant eligible</div></div>
-    <div class="hero-stat"><div class="num">45%</div><div class="label">First-generation</div></div>
-    <div class="hero-stat"><div class="num">38K</div><div class="label">Students at stake</div></div>
+    <div class="hero-stat"><div class="num" data-target="56.2">0</div><div class="label">Hispanic / Latino</div></div>
+    <div class="hero-stat"><div class="num" data-target="58">0</div><div class="label">Pell Eligible</div></div>
+    <div class="hero-stat"><div class="num" data-target="47">0</div><div class="label">First Generation</div></div>
+    <div class="hero-stat"><div class="num" data-target="38000" data-suffix="">0</div><div class="label">Students at Stake</div></div>
   </div>
 </div>
 
 <!-- Features -->
 <section id="features">
   <div class="section-header">
-    <h2>Four Tools, <span>One Mission</span></h2>
-    <p>Everything administrators need to verify AI fairness across university systems.</p>
+    <h2 class="reveal">Four Tools, <span>One Mission</span></h2>
+    <p class="reveal reveal-delay-1">Everything administrators need to verify AI fairness across university systems.</p>
   </div>
   <div class="card-grid">
-    <div class="card">
-      <div class="card-icon" style="background:rgba(207,10,44,0.12)">&#x1F50D;</div>
+    <div class="card reveal reveal-delay-1">
+      <div class="icon-wrap" style="background:rgba(207,10,44,0.1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#CF0A2C" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </div>
       <h3>Automated Fairness Analysis</h3>
       <p>Upload any dataset. MatadorAudit auto-detects demographics, identifies outcomes, and computes a full suite of fairness metrics across all groups.</p>
     </div>
-    <div class="card">
-      <div class="card-icon" style="background:rgba(59,130,246,0.12)">&#x1F517;</div>
+    <div class="card reveal reveal-delay-2">
+      <div class="icon-wrap" style="background:rgba(59,130,246,0.1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </div>
       <h3>Proxy Discrimination Detection</h3>
-      <p>Catches hidden correlations — when zip code predicts race, or GPA weighting tracks income. The most insidious biases are the ones you can't see directly.</p>
+      <p>Catches hidden correlations  when zip code predicts race, or GPA weighting tracks income. The most insidious biases are the ones you cannot see directly.</p>
     </div>
-    <div class="card">
-      <div class="card-icon" style="background:rgba(34,197,94,0.12)">&#x1F4DD;</div>
+    <div class="card reveal reveal-delay-3">
+      <div class="icon-wrap" style="background:rgba(34,197,94,0.1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
       <h3>AI-Generated Report Card</h3>
-      <p>Claude AI transforms raw statistics into plain-English findings with risk levels and actionable recommendations. No statistics PhD required.</p>
+      <p>Claude AI transforms raw statistics into plain-English findings with risk levels and actionable recommendations. No statistics background required.</p>
     </div>
-    <div class="card">
-      <div class="card-icon" style="background:rgba(139,92,246,0.12)">&#x1F39B;</div>
+    <div class="card reveal reveal-delay-4">
+      <div class="icon-wrap" style="background:rgba(139,92,246,0.1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+      </div>
       <h3>What-If Simulator</h3>
       <p>Adjust decision thresholds and watch fairness metrics update in real time. Find the balance between accuracy and equity before making changes.</p>
     </div>
@@ -397,43 +246,36 @@
 <!-- Live Dashboard -->
 <section id="dashboard">
   <div class="section-header">
-    <h2>Live <span>Dashboard</span></h2>
-    <p>Real results from our synthetic CSUN dataset — 5,000 student records with known biases.</p>
+    <h2 class="reveal">Live <span>Dashboard</span></h2>
+    <p class="reveal reveal-delay-1">Real results from our synthetic CSUN dataset modeled on public institutional data.</p>
   </div>
-
-  <div class="dashboard">
+  <div class="dashboard reveal reveal-delay-2">
     <div class="dash-titlebar">
       <div class="dash-dot" style="background:#ff5f57"></div>
       <div class="dash-dot" style="background:#ffbd2e"></div>
       <div class="dash-dot" style="background:#28c940"></div>
-      <span style="margin-left:12px;font-size:13px;color:var(--text-dim)">MatadorAudit — Financial Aid Audit</span>
+      <span style="margin-left:12px;font-size:13px;color:var(--text-muted);font-weight:500">MatadorAudit  /  Financial Aid Audit</span>
     </div>
     <div class="dash-tabs">
-      <button class="dash-tab active" onclick="showPanel('report')">Fairness Report</button>
-      <button class="dash-tab" onclick="showPanel('proxy')">Proxy Detection</button>
-      <button class="dash-tab" onclick="showPanel('simulator')">What-If Simulator</button>
-      <button class="dash-tab" onclick="showPanel('audits')">Other Audits</button>
+      <button class="dash-tab active" onclick="showPanel('report',this)">Fairness Report</button>
+      <button class="dash-tab" onclick="showPanel('proxy',this)">Proxy Detection</button>
+      <button class="dash-tab" onclick="showPanel('simulator',this)">What-If Simulator</button>
+      <button class="dash-tab" onclick="showPanel('audits',this)">All Audits</button>
     </div>
-
-    <!-- Report Panel -->
     <div class="dash-body">
       <div class="dash-panel active" id="panel-report">
         <div class="metrics-row" id="metrics-row"></div>
         <div class="chart-container" id="chart-rates"></div>
         <div class="report-box" id="report-text"></div>
       </div>
-
-      <!-- Proxy Panel -->
       <div class="dash-panel" id="panel-proxy">
-        <h3 style="margin-bottom:16px">Proxy Correlation with Race/Ethnicity</h3>
-        <p style="color:var(--text-dim);margin-bottom:20px;font-size:14px">Variables that correlate with race — even when race isn't used directly — can reproduce racial bias in AI decisions.</p>
+        <h3 style="margin-bottom:8px">Proxy Correlation with Race/Ethnicity</h3>
+        <p style="color:var(--text-dim);margin-bottom:20px;font-size:14px">Variables that correlate with race can reproduce racial bias in AI decisions, even when race is not used directly.</p>
         <div id="proxy-list"></div>
         <div class="chart-container" id="chart-proxy"></div>
       </div>
-
-      <!-- Simulator Panel -->
       <div class="dash-panel" id="panel-simulator">
-        <h3 style="margin-bottom:16px">Predicted Persistence Threshold</h3>
+        <h3 style="margin-bottom:8px">Predicted Persistence Threshold</h3>
         <p style="color:var(--text-dim);margin-bottom:20px;font-size:14px">Adjust the decision threshold and watch how it affects fairness across groups.</p>
         <div class="sim-slider-wrap">
           <label>Threshold: <strong id="threshold-val">0.55</strong></label>
@@ -442,47 +284,145 @@
         <div class="sim-metrics" id="sim-metrics"></div>
         <div class="chart-container" id="chart-sim"></div>
       </div>
-
-      <!-- Other Audits Panel -->
       <div class="dash-panel" id="panel-audits">
         <h3 style="margin-bottom:20px">Multiple System Audits</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-          <div>
-            <h4 style="margin-bottom:12px;color:var(--blue)">STEM Recommendation Quality</h4>
-            <div class="chart-container" id="chart-stem"></div>
-          </div>
-          <div>
-            <h4 style="margin-bottom:12px;color:var(--purple)">Plagiarism Flag Rates</h4>
-            <div class="chart-container" id="chart-plag"></div>
-          </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" id="audits-grid">
+          <div><h4 style="margin-bottom:12px;color:var(--blue);font-weight:800">STEM Recommendation Quality</h4><div id="chart-stem"></div></div>
+          <div><h4 style="margin-bottom:12px;color:var(--purple);font-weight:800">Plagiarism Flag Rates</h4><div id="chart-plag"></div></div>
+          <div><h4 style="margin-bottom:12px;color:var(--green);font-weight:800">Admissions Screening</h4><div id="chart-admissions"></div></div>
+          <div><h4 style="margin-bottom:12px;color:var(--amber);font-weight:800">At-Risk Flagging</h4><div id="chart-atrisk"></div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- Methodology -->
+<section id="methodology">
+  <div class="section-header">
+    <h2 class="reveal">How We <span>Measure</span> Fairness</h2>
+    <p class="reveal reveal-delay-1">Transparent methodology grounded in established fairness research and legal standards.</p>
+  </div>
+
+  <div class="reveal reveal-delay-2">
+    <div class="method-accordion">
+      <div class="method-header" onclick="toggleMethod(this)">
+        <span>Demographic Parity Gap</span>
+        <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="method-body">
+        <p>Measures the difference in positive outcome rates between the most and least favored demographic groups.</p>
+        <div class="method-formula">Gap = max(group_rate) - min(group_rate)</div>
+        <p>A gap of 0 means perfect parity. The larger the gap, the greater the disparity between groups.</p>
+        <div class="method-threshold">
+          <span class="risk-badge risk-low">&lt; 0.08 = Low Risk</span>
+          <span class="risk-badge risk-med">0.08 - 0.15 = Medium</span>
+          <span class="risk-badge risk-high">&gt; 0.15 = High Risk</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="method-accordion">
+      <div class="method-header" onclick="toggleMethod(this)">
+        <span>Disparate Impact Ratio (Four-Fifths Rule)</span>
+        <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="method-body">
+        <p>Compares the selection rate of the least-favored group to the most-favored group. Based on the EEOC "four-fifths rule" established in <em>Griggs v. Duke Power Co.</em> (1971) and codified in the Uniform Guidelines on Employee Selection Procedures.</p>
+        <div class="method-formula">Ratio = min(group_rate) / max(group_rate)</div>
+        <p>A ratio below 0.80 (80%) is considered evidence of potential adverse impact under Title VII of the Civil Rights Act.</p>
+        <div class="method-threshold">
+          <span class="risk-badge risk-low">&ge; 0.80 = Passing</span>
+          <span class="risk-badge risk-med">0.60 - 0.80 = Concern</span>
+          <span class="risk-badge risk-high">&lt; 0.60 = Failing</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="method-accordion">
+      <div class="method-header" onclick="toggleMethod(this)">
+        <span>Equalized Odds</span>
+        <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="method-body">
+        <p>Measures whether the true positive rate (and false positive rate) are equal across demographic groups. A system satisfies equalized odds when it performs equally well for all groups, not just overall.</p>
+        <div class="method-formula">EO Gap = max(TPR_group) - min(TPR_group)</div>
+        <p>This is especially important for decisions that affect opportunities: financial aid, admissions, and course recommendations.</p>
+      </div>
+    </div>
+
+    <div class="method-accordion">
+      <div class="method-header" onclick="toggleMethod(this)">
+        <span>Proxy Discrimination Detection</span>
+        <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="method-body">
+        <p>Uses point-biserial correlation to measure the relationship between each feature and protected demographic membership. Even when race is not used as an input, variables like zip code, high school ranking, or "predicted persistence" scores can act as proxies.</p>
+        <div class="method-formula">r_pb = (M1 - M0) / S * sqrt(n1 * n0 / N^2)</div>
+        <p>A variable with a strong correlation to a protected attribute is a potential proxy, meaning the system may effectively "know" a student's race through supposedly neutral data.</p>
+        <div class="method-threshold">
+          <span class="risk-badge risk-low">&lt; 0.15 = Low</span>
+          <span class="risk-badge risk-med">0.15 - 0.25 = Medium</span>
+          <span class="risk-badge risk-high">&gt; 0.25 = High Proxy Risk</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Data Sources -->
+<section id="sources">
+  <div class="section-header">
+    <h2 class="reveal">Data <span>Sources</span></h2>
+    <p class="reveal reveal-delay-1">Our synthetic dataset is modeled on publicly available institutional data from these sources.</p>
+  </div>
+  <div class="card-grid reveal reveal-delay-2" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+    <a class="source-card" href="https://www.csun.edu/counts/demographic.php" target="_blank" rel="noopener">
+      <div class="source-icon"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>
+      <div><h4>CSUN Institutional Research</h4><p>Official student demographic breakdowns by race, ethnicity, gender, and enrollment status</p></div>
+    </a>
+    <a class="source-card" href="https://www.csun.edu/about/facts" target="_blank" rel="noopener">
+      <div class="source-icon"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+      <div><h4>CSUN Fact Sheet</h4><p>Enrollment totals, HSI designation, Pell Grant eligibility, and first-generation student rates</p></div>
+    </a>
+    <a class="source-card" href="https://www.calstate.edu/data-center" target="_blank" rel="noopener">
+      <div class="source-icon"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+      <div><h4>CSU System Data Center</h4><p>CSU-wide graduation rates, retention metrics, and demographic outcomes across 23 campuses</p></div>
+    </a>
+    <a class="source-card" href="https://collegescorecard.ed.gov/" target="_blank" rel="noopener">
+      <div class="source-icon"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+      <div><h4>US Dept of Education College Scorecard</h4><p>Federal data on completion rates, post-graduation earnings, and financial aid distribution</p></div>
+    </a>
+    <a class="source-card" href="https://nces.ed.gov/ipeds/" target="_blank" rel="noopener">
+      <div class="source-icon"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+      <div><h4>IPEDS / NCES</h4><p>National enrollment, retention, and graduation data by demographics from the federal Integrated Postsecondary Education Data System</p></div>
+    </a>
+  </div>
+</section>
+
 <!-- About -->
 <section id="about">
   <div class="section-header">
-    <h2>Built for <span>CSUN</span></h2>
-    <p>A Hispanic-Serving Institution with a responsibility to ensure AI equity.</p>
+    <h2 class="reveal">Built for <span>CSUN</span></h2>
+    <p class="reveal reveal-delay-1">A Hispanic-Serving Institution with a responsibility to ensure AI equity.</p>
   </div>
-  <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
+  <div class="card-grid reveal reveal-delay-2" style="grid-template-columns:repeat(2,1fr)">
     <div class="card">
       <h3>The Problem</h3>
-      <p>Universities deploy AI for admissions, financial aid, course recommendations, and plagiarism detection — but nobody checks if these systems treat all students fairly. Accuracy metrics can mask severe disparities across demographic groups.</p>
+      <p>Universities deploy AI for admissions, financial aid, course recommendations, and plagiarism detection. Nobody checks if these systems treat all students fairly. Accuracy metrics can mask severe disparities across demographic groups.</p>
     </div>
     <div class="card">
       <h3>The Gap</h3>
-      <p>Existing fairness tools (Fairlearn, AIF360) require Python expertise. The people who need auditing most — department chairs, aid directors, admissions officers — cannot use them. MatadorAudit bridges this gap.</p>
+      <p>Existing fairness tools require Python expertise. The people who need auditing most  department chairs, financial aid directors, admissions officers  cannot use them. MatadorAudit bridges this gap with a no-code dashboard.</p>
     </div>
-    <div class="card">
-      <h3>Technology</h3>
-      <p>Microsoft Fairlearn + IBM AIF360 for metrics. Anthropic Claude API for plain-English reports. Microsoft Copilot & Google Gemini for follow-up Q&A. All open-source, under $500/year to operate.</p>
-    </div>
-    <div class="card">
-      <h3>Vision</h3>
-      <p>Pilot at CSUN Financial Aid (Summer 2026), expand campus-wide, then scale to all 23 CSU campuses serving 460,000+ students. Open-source release for any university to deploy.</p>
+  </div>
+  <div class="reveal reveal-delay-3" style="margin-top:40px">
+    <h3 style="font-size:22px;font-weight:800;margin-bottom:24px">Implementation Timeline</h3>
+    <div class="timeline">
+      <div class="timeline-item"><div class="phase">Phase 1 / Summer 2026</div><h3>Pilot</h3><p>Deploy with CSUN Financial Aid Office for one audit cycle</p></div>
+      <div class="timeline-item"><div class="phase">Phase 2 / Fall 2026</div><h3>Expand</h3><p>Add Admissions and Academic Advising departments</p></div>
+      <div class="timeline-item"><div class="phase">Phase 3 / Spring 2027</div><h3>Institutionalize</h3><p>Integrate into CSUN annual equity review process</p></div>
+      <div class="timeline-item"><div class="phase">Phase 4 / 2027-2028</div><h3>Scale</h3><p>Package for all 23 CSU campuses serving 460,000+ students. Open-source release.</p></div>
     </div>
   </div>
 </section>
@@ -490,262 +430,145 @@
 <footer>
   <h2>MatadorAudit</h2>
   <div class="tagline">Because every Matador deserves a fair shot.</div>
-  <p>Ido Cohen & Zach Bar — CSUN AI Jam 2026</p>
+  <p style="color:var(--text-muted)">Ido Cohen &middot; Zach Bar &middot; CSUN AI Jam 2026</p>
 </footer>
 
 <script>
-let DATA = {};
+let DATA={};
 
-fetch('data.json').then(r => r.json()).then(d => {
-  DATA = d;
-  renderReport();
-  renderProxies();
-  renderSimulator();
-  renderOtherAudits();
-});
+// Scroll reveal
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}});
+},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 
-function showPanel(name) {
-  document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
-  event.target.classList.add('active');
-  // Re-render charts on panel switch (Plotly needs visible container)
-  setTimeout(() => {
-    if (name === 'simulator') renderSimChart();
-    if (name === 'audits') renderOtherAudits();
-    if (name === 'proxy') renderProxyChart();
-  }, 50);
+// Counter animation
+function animateCounters(){
+  document.querySelectorAll('.hero-stat .num').forEach(el=>{
+    const target=parseFloat(el.dataset.target);
+    const suffix=el.dataset.suffix!==undefined?el.dataset.suffix:'%';
+    const isLarge=target>1000;
+    const duration=1500;
+    const start=performance.now();
+    function update(now){
+      const elapsed=now-start;
+      const progress=Math.min(elapsed/duration,1);
+      const eased=1-Math.pow(1-progress,3);
+      const current=target*eased;
+      if(isLarge){el.textContent=Math.floor(current).toLocaleString()+suffix}
+      else{el.textContent=current.toFixed(current<10?1:0)+suffix}
+      if(progress<1)requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  });
+}
+const heroObs=new IntersectionObserver((entries)=>{
+  if(entries[0].isIntersecting){animateCounters();heroObs.disconnect()}
+},{threshold:0.3});
+heroObs.observe(document.querySelector('.hero-stats'));
+
+// Data loading
+fetch('data.json').then(r=>r.json()).then(d=>{DATA=d;renderReport();renderProxies();renderSimulator();renderOtherAudits()});
+
+function showPanel(name,btn){
+  document.querySelectorAll('.dash-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.dash-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+  setTimeout(()=>{
+    if(name==='simulator')renderSimChart();
+    if(name==='audits')renderOtherAudits();
+    if(name==='proxy')renderProxyChart();
+  },50);
 }
 
-function riskBadge(val, type) {
-  if (type === 'di') {
-    if (val >= 0.8) return '<span class="risk-badge risk-low">LOW RISK</span>';
-    if (val >= 0.6) return '<span class="risk-badge risk-med">MEDIUM</span>';
-    return '<span class="risk-badge risk-high">HIGH RISK</span>';
+function toggleMethod(header){
+  const body=header.nextElementSibling;
+  const isOpen=body.classList.contains('open');
+  document.querySelectorAll('.method-body').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.method-header').forEach(h=>h.classList.remove('open'));
+  if(!isOpen){body.classList.add('open');header.classList.add('open')}
+}
+
+const plotLayout={paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#71717a',family:'Inter'},xaxis:{gridcolor:'rgba(255,255,255,0.03)'},yaxis:{gridcolor:'rgba(255,255,255,0.03)'},margin:{t:40,b:80,l:50,r:20}};
+const plotConfig={responsive:true,displayModeBar:false};
+
+function riskBadge(val,type){
+  if(type==='di'){
+    if(val>=0.8)return'<span class="risk-badge risk-low"><span class="risk-dot low"></span>LOW RISK</span>';
+    if(val>=0.6)return'<span class="risk-badge risk-med"><span class="risk-dot med"></span>MEDIUM</span>';
+    return'<span class="risk-badge risk-high"><span class="risk-dot high"></span>HIGH RISK</span>';
   }
-  if (Math.abs(val) > 0.15) return '<span class="risk-badge risk-high">HIGH RISK</span>';
-  if (Math.abs(val) > 0.08) return '<span class="risk-badge risk-med">MEDIUM</span>';
-  return '<span class="risk-badge risk-low">LOW RISK</span>';
+  if(Math.abs(val)>0.15)return'<span class="risk-badge risk-high"><span class="risk-dot high"></span>HIGH RISK</span>';
+  if(Math.abs(val)>0.08)return'<span class="risk-badge risk-med"><span class="risk-dot med"></span>MEDIUM</span>';
+  return'<span class="risk-badge risk-low"><span class="risk-dot low"></span>LOW RISK</span>';
 }
 
-function renderReport() {
-  const m = DATA.aid.metrics;
-  const dp = m.demographic_parity;
-  const eo = m.equalized_odds;
-  const di = m.disparate_impact;
-
-  document.getElementById('metrics-row').innerHTML = `
-    <div class="metric-box">
-      <div class="val" style="color:${Math.abs(dp.disparity)>0.1?'#f87171':'#4ade80'}">${dp.disparity.toFixed(3)}</div>
-      <div class="lbl">Demographic Parity Gap</div>
-      ${riskBadge(dp.disparity)}
-    </div>
-    <div class="metric-box">
-      <div class="val" style="color:${Math.abs(eo.gap)>0.1?'#f87171':'#4ade80'}">${eo.gap.toFixed(3)}</div>
-      <div class="lbl">Equalized Odds Gap</div>
-      ${riskBadge(eo.gap)}
-    </div>
-    <div class="metric-box">
-      <div class="val" style="color:${di.ratio<0.8?'#fbbf24':'#4ade80'}">${di.ratio.toFixed(3)}</div>
-      <div class="lbl">Disparate Impact Ratio</div>
-      ${riskBadge(di.ratio, 'di')}
-    </div>
-  `;
-
-  // Bar chart
-  const rates = DATA.aid.rates;
-  Plotly.newPlot('chart-rates', [{
-    x: rates.map(r => r.group),
-    y: rates.map(r => r.rate),
-    type: 'bar',
-    marker: {
-      color: rates.map(r => r.rate < 0.88 ? '#ef4444' : (r.rate < 0.93 ? '#f59e0b' : '#22c55e')),
-      cornerradius: 6,
-    },
-    text: rates.map(r => (r.rate * 100).toFixed(1) + '%'),
-    textposition: 'outside',
-    textfont: { color: '#e4e4e7', size: 13 },
-  }], {
-    title: { text: 'Financial Aid Approval Rate by Race/Ethnicity', font: { color: '#e4e4e7', size: 16 } },
-    paper_bgcolor: 'rgba(0,0,0,0)',
-    plot_bgcolor: 'rgba(0,0,0,0)',
-    font: { color: '#71717a' },
-    xaxis: { gridcolor: 'rgba(255,255,255,0.04)' },
-    yaxis: { gridcolor: 'rgba(255,255,255,0.04)', range: [0, 1.05], tickformat: '.0%' },
-    margin: { t: 50, b: 80, l: 50, r: 20 },
-    height: 350,
-  }, { responsive: true, displayModeBar: false });
-
-  // Report text
-  const worst = rates[rates.length - 1];
-  const best = rates[0];
-  const gap = ((best.rate - worst.rate) * 100).toFixed(1);
-  document.getElementById('report-text').innerHTML = `
-    <strong>Finding:</strong> <strong>${worst.group}</strong> students have the lowest financial aid approval rate at
-    <strong>${(worst.rate*100).toFixed(1)}%</strong>, compared to <strong>${(best.rate*100).toFixed(1)}%</strong> for
-    <strong>${best.group}</strong> students — a gap of <strong>${gap} percentage points</strong>.<br><br>
-    <strong>Root Cause:</strong> Proxy analysis shows the "predicted persistence" variable correlates strongly with zip code, which correlates with race/ethnicity in the CSUN student population. This constitutes proxy discrimination — the model effectively "knows" race through neutral-seeming variables.<br><br>
-    <strong>Recommended Action:</strong> Review and re-weight the "predicted persistence" variable. Use the What-If Simulator to find thresholds that maintain prediction accuracy while reducing demographic disparity.
-    <br><br><span class="risk-badge risk-high" style="font-size:13px">IMMEDIATE ACTION RECOMMENDED</span>
-  `;
+function renderReport(){
+  const m=DATA.aid.metrics,dp=m.demographic_parity,eo=m.equalized_odds,di=m.disparate_impact;
+  document.getElementById('metrics-row').innerHTML=`
+    <div class="metric-box"><div class="val" style="color:${Math.abs(dp.disparity)>0.1?'#f87171':'#4ade80'}">${dp.disparity.toFixed(3)}</div><div class="lbl">Demographic Parity Gap</div>${riskBadge(dp.disparity)}<div class="desc">Difference between highest and lowest group outcome rates</div></div>
+    <div class="metric-box"><div class="val" style="color:${Math.abs(eo.gap)>0.1?'#f87171':'#4ade80'}">${eo.gap.toFixed(3)}</div><div class="lbl">Equalized Odds Gap</div>${riskBadge(eo.gap)}<div class="desc">Gap in true positive rates across demographic groups</div></div>
+    <div class="metric-box"><div class="val" style="color:${di.ratio<0.8?'#fbbf24':'#4ade80'}">${di.ratio.toFixed(3)}</div><div class="lbl">Disparate Impact Ratio</div>${riskBadge(di.ratio,'di')}<div class="desc">EEOC four-fifths rule: below 0.80 = potential discrimination</div></div>`;
+  const rates=DATA.aid.rates;
+  Plotly.newPlot('chart-rates',[{x:rates.map(r=>r.group),y:rates.map(r=>r.rate),type:'bar',marker:{color:rates.map(r=>r.rate<0.88?'#ef4444':(r.rate<0.93?'#f59e0b':'#22c55e')),line:{width:0}},text:rates.map(r=>(r.rate*100).toFixed(1)+'%'),textposition:'outside',textfont:{color:'#e4e4e7',size:13}}],{...plotLayout,title:{text:'Financial Aid Approval Rate by Race/Ethnicity',font:{color:'#e4e4e7',size:16,family:'Inter'}},yaxis:{...plotLayout.yaxis,range:[0,1.08],tickformat:'.0%'},height:350},plotConfig);
+  const worst=rates[rates.length-1],best=rates[0],gap=((best.rate-worst.rate)*100).toFixed(1);
+  document.getElementById('report-text').innerHTML=`<strong>Finding:</strong> <strong>${worst.group}</strong> students have the lowest financial aid approval rate at <strong>${(worst.rate*100).toFixed(1)}%</strong>, compared to <strong>${(best.rate*100).toFixed(1)}%</strong> for <strong>${best.group}</strong> students &mdash; a gap of <strong>${gap} percentage points</strong>.<br><br><strong>Root Cause:</strong> Proxy analysis shows the "predicted persistence" variable correlates strongly with zip code, which correlates with race/ethnicity in the CSUN student population. This constitutes proxy discrimination &mdash; the model effectively "knows" race through neutral-seeming variables.<br><br><strong>Recommended Action:</strong> Review and re-weight the "predicted persistence" variable. Use the What-If Simulator to find thresholds that maintain prediction accuracy while reducing demographic disparity.<br><br><span class="risk-badge risk-high" style="font-size:13px"><span class="risk-dot high"></span>IMMEDIATE ACTION RECOMMENDED</span>`;
 }
 
-function renderProxies() {
-  const proxies = DATA.proxies;
-  const list = document.getElementById('proxy-list');
-  list.innerHTML = proxies.map(p => {
-    const abs = Math.abs(p.correlation);
-    const color = p.risk === 'HIGH' ? '#ef4444' : (p.risk === 'MEDIUM' ? '#f59e0b' : '#22c55e');
-    const riskCls = p.risk === 'HIGH' ? 'risk-high' : (p.risk === 'MEDIUM' ? 'risk-med' : 'risk-low');
-    return `
-      <div class="proxy-item" style="border-left-color:${color}">
-        <div class="proxy-name">${p.column.replace(/_/g, ' ')}</div>
-        <div class="proxy-bar-wrap"><div class="proxy-bar" style="width:${abs*300}%;background:${color}"></div></div>
-        <div class="proxy-val" style="color:${color}">${p.correlation > 0 ? '+' : ''}${p.correlation.toFixed(3)}</div>
-        <div class="proxy-risk ${riskCls}">${p.risk}</div>
-      </div>
-    `;
+function renderProxies(){
+  const proxies=DATA.proxies;
+  document.getElementById('proxy-list').innerHTML=proxies.map(p=>{
+    const abs=Math.abs(p.correlation);
+    const color=p.risk==='HIGH'?'#ef4444':(p.risk==='MEDIUM'?'#f59e0b':'#22c55e');
+    const cls=p.risk==='HIGH'?'risk-high':(p.risk==='MEDIUM'?'risk-med':'risk-low');
+    return`<div class="proxy-item" style="border-left-color:${color}"><div class="proxy-name">${p.column.replace(/_/g,' ')}</div><div class="proxy-bar-wrap"><div class="proxy-bar" style="width:${abs*300}%;background:${color}"></div></div><div class="proxy-val" style="color:${color}">${p.correlation>0?'+':''}${p.correlation.toFixed(3)}</div><div class="proxy-risk ${cls}">${p.risk}</div></div>`;
   }).join('');
   renderProxyChart();
 }
 
-function renderProxyChart() {
-  const proxies = DATA.proxies;
-  Plotly.newPlot('chart-proxy', [{
-    y: proxies.map(p => p.column.replace(/_/g, ' ')),
-    x: proxies.map(p => Math.abs(p.correlation)),
-    type: 'bar',
-    orientation: 'h',
-    marker: {
-      color: proxies.map(p => p.risk === 'HIGH' ? '#ef4444' : (p.risk === 'MEDIUM' ? '#f59e0b' : '#22c55e')),
-      cornerradius: 4,
-    },
-    text: proxies.map(p => `r = ${p.correlation > 0 ? '+' : ''}${p.correlation.toFixed(3)}`),
-    textposition: 'outside',
-    textfont: { color: '#e4e4e7', size: 12 },
-  }], {
-    title: { text: 'Proxy Correlation Strength with Race/Ethnicity', font: { color: '#e4e4e7', size: 15 } },
-    paper_bgcolor: 'rgba(0,0,0,0)',
-    plot_bgcolor: 'rgba(0,0,0,0)',
-    font: { color: '#71717a' },
-    xaxis: { gridcolor: 'rgba(255,255,255,0.04)', title: 'Absolute correlation' },
-    yaxis: { gridcolor: 'rgba(255,255,255,0.04)', automargin: true },
-    margin: { t: 50, b: 50, l: 160, r: 80 },
-    height: 300,
-  }, { responsive: true, displayModeBar: false });
+function renderProxyChart(){
+  const proxies=DATA.proxies;
+  Plotly.newPlot('chart-proxy',[{y:proxies.map(p=>p.column.replace(/_/g,' ')),x:proxies.map(p=>Math.abs(p.correlation)),type:'bar',orientation:'h',marker:{color:proxies.map(p=>p.risk==='HIGH'?'#ef4444':(p.risk==='MEDIUM'?'#f59e0b':'#22c55e'))},text:proxies.map(p=>`r = ${p.correlation>0?'+':''}${p.correlation.toFixed(3)}`),textposition:'outside',textfont:{color:'#e4e4e7',size:12}}],{...plotLayout,title:{text:'Proxy Correlation Strength with Race/Ethnicity',font:{color:'#e4e4e7',size:15,family:'Inter'}},xaxis:{...plotLayout.xaxis,title:'Absolute correlation'},yaxis:{...plotLayout.yaxis,automargin:true},margin:{t:50,b:50,l:180,r:80},height:300},plotConfig);
 }
 
-function renderSimulator() {
-  const slider = document.getElementById('threshold-slider');
-  slider.addEventListener('input', updateSim);
+function renderSimulator(){
+  document.getElementById('threshold-slider').addEventListener('input',updateSim);
   updateSim();
 }
 
-function updateSim() {
-  const val = parseFloat(document.getElementById('threshold-slider').value);
-  document.getElementById('threshold-val').textContent = val.toFixed(2);
-
-  // Find closest whatif data point
-  const wif = DATA.whatif;
-  let closest = wif[0];
-  for (const w of wif) {
-    if (Math.abs(w.threshold - val) < Math.abs(closest.threshold - val)) closest = w;
-  }
-
-  const groups = closest.groups;
-  const vals = Object.values(groups);
-  const names = Object.keys(groups);
-
-  document.getElementById('sim-metrics').innerHTML = `
-    <div class="sim-metric">
-      <div class="val" style="color:var(--text)">${(closest.overall_rate*100).toFixed(1)}%</div>
-      <div class="lbl">Approval Rate</div>
-    </div>
-    <div class="sim-metric">
-      <div class="val" style="color:${closest.dp_gap>0.15?'#f87171':'#4ade80'}">${closest.dp_gap.toFixed(3)}</div>
-      <div class="lbl">Dem. Parity Gap</div>
-    </div>
-    <div class="sim-metric">
-      <div class="val" style="color:${closest.disparate_impact<0.8?'#fbbf24':'#4ade80'}">${closest.disparate_impact.toFixed(3)}</div>
-      <div class="lbl">Disparate Impact</div>
-    </div>
-    <div class="sim-metric">
-      <div class="val" style="color:${closest.disparate_impact>=0.8?'#4ade80':'#f87171'}">${closest.disparate_impact>=0.8?'PASS':'FAIL'}</div>
-      <div class="lbl">Four-Fifths Rule</div>
-    </div>
-  `;
+function updateSim(){
+  const val=parseFloat(document.getElementById('threshold-slider').value);
+  document.getElementById('threshold-val').textContent=val.toFixed(2);
+  const wif=DATA.whatif;let closest=wif[0];
+  for(const w of wif){if(Math.abs(w.threshold-val)<Math.abs(closest.threshold-val))closest=w}
+  document.getElementById('sim-metrics').innerHTML=`
+    <div class="sim-metric"><div class="val" style="color:var(--text)">${(closest.overall_rate*100).toFixed(1)}%</div><div class="lbl">Approval Rate</div></div>
+    <div class="sim-metric"><div class="val" style="color:${closest.dp_gap>0.15?'#f87171':'#4ade80'}">${closest.dp_gap.toFixed(3)}</div><div class="lbl">Parity Gap</div></div>
+    <div class="sim-metric"><div class="val" style="color:${closest.disparate_impact<0.8?'#fbbf24':'#4ade80'}">${closest.disparate_impact.toFixed(3)}</div><div class="lbl">Disparate Impact</div></div>
+    <div class="sim-metric"><div class="val" style="color:${closest.disparate_impact>=0.8?'#4ade80':'#f87171'}">${closest.disparate_impact>=0.8?'PASS':'FAIL'}</div><div class="lbl">4/5 Rule</div></div>`;
   renderSimChart();
 }
 
-function renderSimChart() {
-  const val = parseFloat(document.getElementById('threshold-slider').value);
-  const wif = DATA.whatif;
-  let closest = wif[0];
-  for (const w of wif) {
-    if (Math.abs(w.threshold - val) < Math.abs(closest.threshold - val)) closest = w;
-  }
-  const groups = closest.groups;
-  const colors = { 'Hispanic/Latino': '#ef4444', 'White': '#3b82f6', 'Asian': '#22c55e',
-    'Black/African American': '#f59e0b', 'Two or More': '#8b5cf6', 'Other': '#71717a' };
-
-  Plotly.newPlot('chart-sim', [{
-    x: Object.keys(groups),
-    y: Object.values(groups),
-    type: 'bar',
-    marker: { color: Object.keys(groups).map(g => colors[g] || '#71717a'), cornerradius: 6 },
-    text: Object.values(groups).map(v => (v*100).toFixed(1) + '%'),
-    textposition: 'outside',
-    textfont: { color: '#e4e4e7', size: 13 },
-  }], {
-    title: { text: `Approval Rates at Threshold = ${val.toFixed(2)}`, font: { color: '#e4e4e7', size: 15 } },
-    paper_bgcolor: 'rgba(0,0,0,0)',
-    plot_bgcolor: 'rgba(0,0,0,0)',
-    font: { color: '#71717a' },
-    xaxis: { gridcolor: 'rgba(255,255,255,0.04)' },
-    yaxis: { gridcolor: 'rgba(255,255,255,0.04)', range: [0, 1.1], tickformat: '.0%' },
-    margin: { t: 50, b: 80, l: 50, r: 20 },
-    height: 350,
-    shapes: [{ type: 'line', x0: -0.5, x1: 5.5, y0: 0.8 * Math.max(...Object.values(groups)),
-               y1: 0.8 * Math.max(...Object.values(groups)),
-               line: { color: '#f59e0b', width: 2, dash: 'dash' } }],
-    annotations: [{ x: 5, y: 0.8 * Math.max(...Object.values(groups)),
-                     text: '4/5 rule threshold', showarrow: false,
-                     font: { color: '#f59e0b', size: 11 }, yshift: 12 }],
-  }, { responsive: true, displayModeBar: false });
+function renderSimChart(){
+  const val=parseFloat(document.getElementById('threshold-slider').value);
+  const wif=DATA.whatif;let closest=wif[0];
+  for(const w of wif){if(Math.abs(w.threshold-val)<Math.abs(closest.threshold-val))closest=w}
+  const groups=closest.groups;
+  const colors={'Hispanic/Latino':'#ef4444','White':'#3b82f6','Asian':'#22c55e','Black/African American':'#f59e0b','Two or More':'#8b5cf6','Other':'#71717a'};
+  Plotly.newPlot('chart-sim',[{x:Object.keys(groups),y:Object.values(groups),type:'bar',marker:{color:Object.keys(groups).map(g=>colors[g]||'#71717a')},text:Object.values(groups).map(v=>(v*100).toFixed(1)+'%'),textposition:'outside',textfont:{color:'#e4e4e7',size:13}}],{...plotLayout,title:{text:`Approval Rates at Threshold = ${val.toFixed(2)}`,font:{color:'#e4e4e7',size:15,family:'Inter'}},yaxis:{...plotLayout.yaxis,range:[0,1.12],tickformat:'.0%'},height:350,shapes:[{type:'line',x0:-0.5,x1:5.5,y0:0.8*Math.max(...Object.values(groups)),y1:0.8*Math.max(...Object.values(groups)),line:{color:'#f59e0b',width:2,dash:'dash'}}],annotations:[{x:5,y:0.8*Math.max(...Object.values(groups)),text:'4/5 rule line',showarrow:false,font:{color:'#f59e0b',size:11},yshift:14}]},plotConfig);
 }
 
-function renderOtherAudits() {
-  const stem = DATA.stem.rates;
-  Plotly.newPlot('chart-stem', [{
-    x: stem.map(r => r.group),
-    y: stem.map(r => r.rate),
-    type: 'bar',
-    marker: { color: stem.map(r => r.rate < 0.65 ? '#ef4444' : (r.rate < 0.72 ? '#f59e0b' : '#3b82f6')), cornerradius: 6 },
-    text: stem.map(r => (r.rate*100).toFixed(1) + '%'),
-    textposition: 'outside',
-    textfont: { color: '#e4e4e7', size: 12 },
-  }], {
-    paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
-    font: { color: '#71717a' }, xaxis: { gridcolor: 'rgba(255,255,255,0.04)' },
-    yaxis: { gridcolor: 'rgba(255,255,255,0.04)', range: [0, 1.05], tickformat: '.0%' },
-    margin: { t: 20, b: 100, l: 50, r: 20 }, height: 300,
-  }, { responsive: true, displayModeBar: false });
+function makeAuditChart(id,data,color){
+  if(!data||!data.rates)return;
+  Plotly.newPlot(id,[{x:data.rates.map(r=>r.group),y:data.rates.map(r=>r.rate),type:'bar',marker:{color:color},text:data.rates.map(r=>(r.rate*100).toFixed(1)+'%'),textposition:'outside',textfont:{color:'#e4e4e7',size:12}}],{...plotLayout,yaxis:{...plotLayout.yaxis,range:[0,Math.max(...data.rates.map(r=>r.rate))*1.25],tickformat:'.0%'},margin:{t:10,b:100,l:50,r:20},height:280},plotConfig);
+}
 
-  const plag = DATA.plagiarism.rates;
-  Plotly.newPlot('chart-plag', [{
-    x: plag.map(r => r.group),
-    y: plag.map(r => r.rate),
-    type: 'bar',
-    marker: { color: plag.map(r => r.rate > 0.08 ? '#ef4444' : (r.rate > 0.05 ? '#f59e0b' : '#22c55e')), cornerradius: 6 },
-    text: plag.map(r => (r.rate*100).toFixed(1) + '%'),
-    textposition: 'outside',
-    textfont: { color: '#e4e4e7', size: 12 },
-  }], {
-    paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
-    font: { color: '#71717a' }, xaxis: { gridcolor: 'rgba(255,255,255,0.04)' },
-    yaxis: { gridcolor: 'rgba(255,255,255,0.04)', tickformat: '.0%' },
-    margin: { t: 20, b: 100, l: 50, r: 20 }, height: 300,
-  }, { responsive: true, displayModeBar: false });
+function renderOtherAudits(){
+  makeAuditChart('chart-stem',DATA.stem,'#3b82f6');
+  makeAuditChart('chart-plag',DATA.plagiarism,'#8b5cf6');
+  makeAuditChart('chart-admissions',DATA.admissions,'#22c55e');
+  makeAuditChart('chart-atrisk',DATA.at_risk,'#f59e0b');
 }
 </script>
 </body>

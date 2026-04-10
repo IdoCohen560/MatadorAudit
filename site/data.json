@@ -2,319 +2,644 @@
   "aid": {
     "metrics": {
       "demographic_parity": {
-        "disparity": 0.1181315948735654,
+        "disparity": 0.09359454007231605,
         "max_group": "White",
         "min_group": "Hispanic/Latino",
         "rates": {
-          "Asian": 0.9483471074380165,
-          "Black/African American": 0.9431438127090301,
-          "Hispanic/Latino": 0.8304475661548514,
-          "Other": 0.9387755102040817,
-          "Two or More": 0.9074074074074074,
-          "White": 0.9485791610284168
+          "Asian": 0.9339449541284404,
+          "Black/African American": 0.9217081850533808,
+          "Hispanic/Latino": 0.8460702643969576,
+          "Other": 0.9157894736842105,
+          "Two or More": 0.8841201716738197,
+          "White": 0.9396648044692737
         }
       },
       "equalized_odds": {
-        "gap": 0.1181315948735654
+        "gap": 0.09359454007231605
       },
       "disparate_impact": {
-        "ratio": 0.8754646952759417,
+        "ratio": 0.9003958223962867,
         "passes_four_fifths": true
       },
       "group_rates": [
         {
           "group": "White",
-          "rate": 0.9485791610284168
+          "rate": 0.9396648044692737
         },
         {
           "group": "Asian",
-          "rate": 0.9483471074380165
+          "rate": 0.9339449541284404
         },
         {
           "group": "Black/African American",
-          "rate": 0.9431438127090301
+          "rate": 0.9217081850533808
         },
         {
           "group": "Other",
-          "rate": 0.9387755102040817
+          "rate": 0.9157894736842105
         },
         {
           "group": "Two or More",
-          "rate": 0.9074074074074074
+          "rate": 0.8841201716738197
         },
         {
           "group": "Hispanic/Latino",
-          "rate": 0.8304475661548514
+          "rate": 0.8460702643969576
         }
       ]
     },
     "rates": [
       {
         "group": "White",
-        "rate": 0.9485791610284168
+        "rate": 0.9396648044692737
       },
       {
         "group": "Asian",
-        "rate": 0.9483471074380165
+        "rate": 0.9339449541284404
       },
       {
         "group": "Black/African American",
-        "rate": 0.9431438127090301
+        "rate": 0.9217081850533808
       },
       {
         "group": "Other",
-        "rate": 0.9387755102040817
+        "rate": 0.9157894736842105
       },
       {
         "group": "Two or More",
-        "rate": 0.9074074074074074
+        "rate": 0.8841201716738197
       },
       {
         "group": "Hispanic/Latino",
-        "rate": 0.8304475661548514
+        "rate": 0.8460702643969576
       }
     ]
   },
   "stem": {
     "metrics": {
       "demographic_parity": {
-        "disparity": 0.35607944582602724,
-        "max_group": "Other",
+        "disparity": 0.29699262877388366,
+        "max_group": "White",
         "min_group": "Hispanic/Latino",
         "rates": {
-          "Asian": 0.6239669421487604,
-          "Black/African American": 0.5752508361204013,
-          "Hispanic/Latino": 0.3377981051943809,
-          "Other": 0.6938775510204082,
-          "Two or More": 0.6814814814814815,
-          "White": 0.5967523680649527
+          "Asian": 0.6018348623853211,
+          "Black/African American": 0.6192170818505338,
+          "Hispanic/Latino": 0.347700108656284,
+          "Other": 0.6280701754385964,
+          "Two or More": 0.5493562231759657,
+          "White": 0.6446927374301676
         }
       },
       "equalized_odds": {
-        "gap": 0.35607944582602724
+        "gap": 0.29699262877388366
       },
       "disparate_impact": {
-        "ratio": 0.4868266810154313,
+        "ratio": 0.5393268583143399,
         "passes_four_fifths": false
       },
       "group_rates": [
         {
-          "group": "Other",
-          "rate": 0.6938775510204082
-        },
-        {
-          "group": "Two or More",
-          "rate": 0.6814814814814815
-        },
-        {
-          "group": "Asian",
-          "rate": 0.6239669421487604
-        },
-        {
           "group": "White",
-          "rate": 0.5967523680649527
+          "rate": 0.6446927374301676
+        },
+        {
+          "group": "Other",
+          "rate": 0.6280701754385964
         },
         {
           "group": "Black/African American",
-          "rate": 0.5752508361204013
+          "rate": 0.6192170818505338
+        },
+        {
+          "group": "Asian",
+          "rate": 0.6018348623853211
+        },
+        {
+          "group": "Two or More",
+          "rate": 0.5493562231759657
         },
         {
           "group": "Hispanic/Latino",
-          "rate": 0.3377981051943809
+          "rate": 0.347700108656284
         }
       ]
     },
     "rates": [
       {
-        "group": "Other",
-        "rate": 0.6938775510204082
-      },
-      {
-        "group": "Two or More",
-        "rate": 0.6814814814814815
-      },
-      {
-        "group": "Asian",
-        "rate": 0.6239669421487604
-      },
-      {
         "group": "White",
-        "rate": 0.5967523680649527
+        "rate": 0.6446927374301676
+      },
+      {
+        "group": "Other",
+        "rate": 0.6280701754385964
       },
       {
         "group": "Black/African American",
-        "rate": 0.5752508361204013
+        "rate": 0.6192170818505338
+      },
+      {
+        "group": "Asian",
+        "rate": 0.6018348623853211
+      },
+      {
+        "group": "Two or More",
+        "rate": 0.5493562231759657
       },
       {
         "group": "Hispanic/Latino",
-        "rate": 0.3377981051943809
-      }
-    ]
-  },
-  "gender": {
-    "metrics": {
-      "demographic_parity": {
-        "disparity": 0.02656055652786493,
-        "max_group": "Female",
-        "min_group": "Non-binary",
-        "rates": {
-          "Female": 0.8750454050127134,
-          "Male": 0.87243947858473,
-          "Non-binary": 0.8484848484848485
-        }
-      },
-      "equalized_odds": {
-        "gap": 0.02656055652786493
-      },
-      "disparate_impact": {
-        "ratio": 0.9696466533328302,
-        "passes_four_fifths": true
-      },
-      "group_rates": [
-        {
-          "group": "Female",
-          "rate": 0.8750454050127134
-        },
-        {
-          "group": "Male",
-          "rate": 0.87243947858473
-        },
-        {
-          "group": "Non-binary",
-          "rate": 0.8484848484848485
-        }
-      ]
-    },
-    "rates": [
-      {
-        "group": "Female",
-        "rate": 0.8750454050127134
-      },
-      {
-        "group": "Male",
-        "rate": 0.87243947858473
-      },
-      {
-        "group": "Non-binary",
-        "rate": 0.8484848484848485
+        "rate": 0.347700108656284
       }
     ]
   },
   "plagiarism": {
     "metrics": {
       "demographic_parity": {
-        "disparity": 0.050083573562196546,
+        "disparity": 0.04083570026115633,
         "max_group": "Hispanic/Latino",
-        "min_group": "White",
+        "min_group": "Other",
         "rates": {
-          "Asian": 0.0743801652892562,
-          "Black/African American": 0.04013377926421405,
-          "Hispanic/Latino": 0.08526625285854296,
-          "Other": 0.04081632653061224,
-          "Two or More": 0.05185185185185185,
-          "White": 0.035182679296346414
+          "Asian": 0.08256880733944955,
+          "Black/African American": 0.05693950177935943,
+          "Hispanic/Latino": 0.08294096341905106,
+          "Other": 0.042105263157894736,
+          "Two or More": 0.05150214592274678,
+          "White": 0.05027932960893855
         }
       },
       "equalized_odds": {
-        "gap": 0.050083573562196546
+        "gap": 0.04083570026115633
       },
       "disparate_impact": {
-        "ratio": 0.41262138439125046,
+        "ratio": 0.5076534130085039,
         "passes_four_fifths": false
       },
       "group_rates": [
         {
           "group": "Hispanic/Latino",
-          "rate": 0.08526625285854296
+          "rate": 0.08294096341905106
         },
         {
           "group": "Asian",
-          "rate": 0.0743801652892562
-        },
-        {
-          "group": "Two or More",
-          "rate": 0.05185185185185185
-        },
-        {
-          "group": "Other",
-          "rate": 0.04081632653061224
+          "rate": 0.08256880733944955
         },
         {
           "group": "Black/African American",
-          "rate": 0.04013377926421405
+          "rate": 0.05693950177935943
+        },
+        {
+          "group": "Two or More",
+          "rate": 0.05150214592274678
         },
         {
           "group": "White",
-          "rate": 0.035182679296346414
+          "rate": 0.05027932960893855
+        },
+        {
+          "group": "Other",
+          "rate": 0.042105263157894736
         }
       ]
     },
     "rates": [
       {
         "group": "Hispanic/Latino",
-        "rate": 0.08526625285854296
+        "rate": 0.08294096341905106
       },
       {
         "group": "Asian",
-        "rate": 0.0743801652892562
-      },
-      {
-        "group": "Two or More",
-        "rate": 0.05185185185185185
-      },
-      {
-        "group": "Other",
-        "rate": 0.04081632653061224
+        "rate": 0.08256880733944955
       },
       {
         "group": "Black/African American",
-        "rate": 0.04013377926421405
+        "rate": 0.05693950177935943
+      },
+      {
+        "group": "Two or More",
+        "rate": 0.05150214592274678
       },
       {
         "group": "White",
-        "rate": 0.035182679296346414
+        "rate": 0.05027932960893855
+      },
+      {
+        "group": "Other",
+        "rate": 0.042105263157894736
+      }
+    ]
+  },
+  "gender": {
+    "metrics": {
+      "demographic_parity": {
+        "disparity": 0.019141255818371783,
+        "max_group": "Non-binary",
+        "min_group": "Male",
+        "rates": {
+          "Female": 0.8859232175502743,
+          "Male": 0.8774104683195593,
+          "Non-binary": 0.896551724137931
+        }
+      },
+      "equalized_odds": {
+        "gap": 0.019141255818371783
+      },
+      "disparate_impact": {
+        "ratio": 0.9786501377410468,
+        "passes_four_fifths": true
+      },
+      "group_rates": [
+        {
+          "group": "Non-binary",
+          "rate": 0.896551724137931
+        },
+        {
+          "group": "Female",
+          "rate": 0.8859232175502743
+        },
+        {
+          "group": "Male",
+          "rate": 0.8774104683195593
+        }
+      ]
+    },
+    "rates": [
+      {
+        "group": "Non-binary",
+        "rate": 0.896551724137931
+      },
+      {
+        "group": "Female",
+        "rate": 0.8859232175502743
+      },
+      {
+        "group": "Male",
+        "rate": 0.8774104683195593
+      }
+    ]
+  },
+  "admissions": {
+    "metrics": {
+      "demographic_parity": {
+        "disparity": 0.056275882840147506,
+        "max_group": "Two or More",
+        "min_group": "Other",
+        "rates": {
+          "Asian": 0.6587155963302752,
+          "Black/African American": 0.6725978647686833,
+          "Hispanic/Latino": 0.6403477001086563,
+          "Other": 0.6175438596491228,
+          "Two or More": 0.6738197424892703,
+          "White": 0.6670391061452514
+        }
+      },
+      "equalized_odds": {
+        "gap": 0.056275882840147506
+      },
+      "disparate_impact": {
+        "ratio": 0.9164822885238575,
+        "passes_four_fifths": true
+      },
+      "group_rates": [
+        {
+          "group": "Two or More",
+          "rate": 0.6738197424892703
+        },
+        {
+          "group": "Black/African American",
+          "rate": 0.6725978647686833
+        },
+        {
+          "group": "White",
+          "rate": 0.6670391061452514
+        },
+        {
+          "group": "Asian",
+          "rate": 0.6587155963302752
+        },
+        {
+          "group": "Hispanic/Latino",
+          "rate": 0.6403477001086563
+        },
+        {
+          "group": "Other",
+          "rate": 0.6175438596491228
+        }
+      ]
+    },
+    "rates": [
+      {
+        "group": "Two or More",
+        "rate": 0.6738197424892703
+      },
+      {
+        "group": "Black/African American",
+        "rate": 0.6725978647686833
+      },
+      {
+        "group": "White",
+        "rate": 0.6670391061452514
+      },
+      {
+        "group": "Asian",
+        "rate": 0.6587155963302752
+      },
+      {
+        "group": "Hispanic/Latino",
+        "rate": 0.6403477001086563
+      },
+      {
+        "group": "Other",
+        "rate": 0.6175438596491228
+      }
+    ]
+  },
+  "at_risk": {
+    "metrics": {
+      "demographic_parity": {
+        "disparity": 0.18416795338581876,
+        "max_group": "Hispanic/Latino",
+        "min_group": "Other",
+        "rates": {
+          "Asian": 0.20733944954128442,
+          "Black/African American": 0.302491103202847,
+          "Hispanic/Latino": 0.3806591814559942,
+          "Other": 0.19649122807017544,
+          "Two or More": 0.22317596566523606,
+          "White": 0.2100558659217877
+        }
+      },
+      "equalized_odds": {
+        "gap": 0.18416795338581876
+      },
+      "disparate_impact": {
+        "ratio": 0.5161867561386816,
+        "passes_four_fifths": false
+      },
+      "group_rates": [
+        {
+          "group": "Hispanic/Latino",
+          "rate": 0.3806591814559942
+        },
+        {
+          "group": "Black/African American",
+          "rate": 0.302491103202847
+        },
+        {
+          "group": "Two or More",
+          "rate": 0.22317596566523606
+        },
+        {
+          "group": "White",
+          "rate": 0.2100558659217877
+        },
+        {
+          "group": "Asian",
+          "rate": 0.20733944954128442
+        },
+        {
+          "group": "Other",
+          "rate": 0.19649122807017544
+        }
+      ]
+    },
+    "rates": [
+      {
+        "group": "Hispanic/Latino",
+        "rate": 0.3806591814559942
+      },
+      {
+        "group": "Black/African American",
+        "rate": 0.302491103202847
+      },
+      {
+        "group": "Two or More",
+        "rate": 0.22317596566523606
+      },
+      {
+        "group": "White",
+        "rate": 0.2100558659217877
+      },
+      {
+        "group": "Asian",
+        "rate": 0.20733944954128442
+      },
+      {
+        "group": "Other",
+        "rate": 0.19649122807017544
+      }
+    ]
+  },
+  "scholarship": {
+    "metrics": {
+      "demographic_parity": {
+        "disparity": 0.08636576092784776,
+        "max_group": "White",
+        "min_group": "Hispanic/Latino",
+        "rates": {
+          "Asian": 0.26605504587155965,
+          "Black/African American": 0.3096085409252669,
+          "Hispanic/Latino": 0.23542194856935894,
+          "Other": 0.312280701754386,
+          "Two or More": 0.30472103004291845,
+          "White": 0.3217877094972067
+        }
+      },
+      "equalized_odds": {
+        "gap": 0.08636576092784776
+      },
+      "disparate_impact": {
+        "ratio": 0.7316064026721398,
+        "passes_four_fifths": false
+      },
+      "group_rates": [
+        {
+          "group": "White",
+          "rate": 0.3217877094972067
+        },
+        {
+          "group": "Other",
+          "rate": 0.312280701754386
+        },
+        {
+          "group": "Black/African American",
+          "rate": 0.3096085409252669
+        },
+        {
+          "group": "Two or More",
+          "rate": 0.30472103004291845
+        },
+        {
+          "group": "Asian",
+          "rate": 0.26605504587155965
+        },
+        {
+          "group": "Hispanic/Latino",
+          "rate": 0.23542194856935894
+        }
+      ]
+    },
+    "rates": [
+      {
+        "group": "White",
+        "rate": 0.3217877094972067
+      },
+      {
+        "group": "Other",
+        "rate": 0.312280701754386
+      },
+      {
+        "group": "Black/African American",
+        "rate": 0.3096085409252669
+      },
+      {
+        "group": "Two or More",
+        "rate": 0.30472103004291845
+      },
+      {
+        "group": "Asian",
+        "rate": 0.26605504587155965
+      },
+      {
+        "group": "Hispanic/Latino",
+        "rate": 0.23542194856935894
+      }
+    ]
+  },
+  "advising": {
+    "metrics": {
+      "demographic_parity": {
+        "disparity": 0.2183052452455288,
+        "max_group": "White",
+        "min_group": "Hispanic/Latino",
+        "rates": {
+          "Asian": 0.5192660550458715,
+          "Black/African American": 0.40213523131672596,
+          "Hispanic/Latino": 0.3045997826874321,
+          "Other": 0.512280701754386,
+          "Two or More": 0.5064377682403434,
+          "White": 0.5229050279329609
+        }
+      },
+      "equalized_odds": {
+        "gap": 0.2183052452455288
+      },
+      "disparate_impact": {
+        "ratio": 0.5825145416778883,
+        "passes_four_fifths": false
+      },
+      "group_rates": [
+        {
+          "group": "White",
+          "rate": 0.5229050279329609
+        },
+        {
+          "group": "Asian",
+          "rate": 0.5192660550458715
+        },
+        {
+          "group": "Other",
+          "rate": 0.512280701754386
+        },
+        {
+          "group": "Two or More",
+          "rate": 0.5064377682403434
+        },
+        {
+          "group": "Black/African American",
+          "rate": 0.40213523131672596
+        },
+        {
+          "group": "Hispanic/Latino",
+          "rate": 0.3045997826874321
+        }
+      ]
+    },
+    "rates": [
+      {
+        "group": "White",
+        "rate": 0.5229050279329609
+      },
+      {
+        "group": "Asian",
+        "rate": 0.5192660550458715
+      },
+      {
+        "group": "Other",
+        "rate": 0.512280701754386
+      },
+      {
+        "group": "Two or More",
+        "rate": 0.5064377682403434
+      },
+      {
+        "group": "Black/African American",
+        "rate": 0.40213523131672596
+      },
+      {
+        "group": "Hispanic/Latino",
+        "rate": 0.3045997826874321
       }
     ]
   },
   "proxies": [
     {
       "column": "stem_rec_quality",
-      "correlation": -0.329,
+      "correlation": -0.332,
       "p_value": 0.0,
       "strongest_group": "Hispanic/Latino",
       "risk": "HIGH"
     },
     {
-      "column": "pell_eligible",
-      "correlation": 0.264,
+      "column": "stem_rec_good",
+      "correlation": -0.27,
       "p_value": 0.0,
       "strongest_group": "Hispanic/Latino",
       "risk": "HIGH"
+    },
+    {
+      "column": "competitive_program_rec",
+      "correlation": -0.242,
+      "p_value": 0.0,
+      "strongest_group": "Hispanic/Latino",
+      "risk": "MEDIUM"
+    },
+    {
+      "column": "competitive_program_rec_good",
+      "correlation": -0.203,
+      "p_value": 0.0,
+      "strongest_group": "Hispanic/Latino",
+      "risk": "MEDIUM"
     },
     {
       "column": "predicted_persistence",
-      "correlation": -0.255,
+      "correlation": -0.189,
       "p_value": 0.0,
       "strongest_group": "Hispanic/Latino",
-      "risk": "HIGH"
+      "risk": "MEDIUM"
     },
     {
-      "column": "first_generation",
-      "correlation": 0.193,
+      "column": "at_risk_flag",
+      "correlation": 0.172,
       "p_value": 0.0,
       "strongest_group": "Hispanic/Latino",
       "risk": "MEDIUM"
     },
     {
       "column": "financial_aid_approved",
-      "correlation": -0.162,
+      "correlation": -0.125,
       "p_value": 0.0,
       "strongest_group": "Hispanic/Latino",
-      "risk": "MEDIUM"
+      "risk": "LOW"
+    },
+    {
+      "column": "first_generation",
+      "correlation": 0.086,
+      "p_value": 0.0,
+      "strongest_group": "Hispanic/Latino",
+      "risk": "LOW"
     },
     {
       "column": "zip_code",
-      "correlation": 0.09,
+      "correlation": 0.081,
       "p_value": 0.0,
       "strongest_group": "Hispanic/Latino",
       "risk": "LOW"
@@ -323,367 +648,394 @@
   "whatif": [
     {
       "threshold": 0.3,
-      "overall_rate": 0.9994,
+      "overall_rate": 0.9998,
       "groups": {
-        "White": 0.9986468200270636,
-        "Hispanic/Latino": 0.9993466187520418,
+        "White": 1.0,
+        "Hispanic/Latino": 0.9996378123868164,
+        "Black/African American": 1.0,
         "Asian": 1.0,
         "Other": 1.0,
-        "Black/African American": 1.0,
         "Two or More": 1.0
       },
-      "disparate_impact": 0.9986,
-      "dp_gap": 0.0014
+      "disparate_impact": 0.9996,
+      "dp_gap": 0.0004
     },
     {
       "threshold": 0.32,
-      "overall_rate": 0.9982,
+      "overall_rate": 0.9996,
       "groups": {
-        "White": 0.9986468200270636,
-        "Hispanic/Latino": 0.9973864750081672,
+        "White": 1.0,
+        "Hispanic/Latino": 0.9992756247736327,
+        "Black/African American": 1.0,
         "Asian": 1.0,
         "Other": 1.0,
-        "Black/African American": 1.0,
         "Two or More": 1.0
       },
-      "disparate_impact": 0.9974,
-      "dp_gap": 0.0026
+      "disparate_impact": 0.9993,
+      "dp_gap": 0.0007
     },
     {
       "threshold": 0.34,
-      "overall_rate": 0.9962,
+      "overall_rate": 0.9988,
       "groups": {
-        "White": 0.9986468200270636,
-        "Hispanic/Latino": 0.9950996406403136,
-        "Asian": 1.0,
+        "White": 1.0,
+        "Hispanic/Latino": 0.9981890619340819,
+        "Black/African American": 1.0,
+        "Asian": 0.998165137614679,
         "Other": 1.0,
-        "Black/African American": 0.9966555183946488,
-        "Two or More": 0.9925925925925926
+        "Two or More": 1.0
       },
-      "disparate_impact": 0.9926,
-      "dp_gap": 0.0074
+      "disparate_impact": 0.9982,
+      "dp_gap": 0.0018
     },
     {
       "threshold": 0.36,
-      "overall_rate": 0.9954,
+      "overall_rate": 0.9976,
       "groups": {
-        "White": 0.9986468200270636,
-        "Hispanic/Latino": 0.9937928781443972,
-        "Asian": 1.0,
+        "White": 1.0,
+        "Hispanic/Latino": 0.9967403114813473,
+        "Black/African American": 1.0,
+        "Asian": 0.9944954128440368,
         "Other": 1.0,
-        "Black/African American": 0.9966555183946488,
-        "Two or More": 0.9925925925925926
+        "Two or More": 1.0
       },
-      "disparate_impact": 0.9926,
-      "dp_gap": 0.0074
+      "disparate_impact": 0.9945,
+      "dp_gap": 0.0055
     },
     {
       "threshold": 0.38,
-      "overall_rate": 0.9926,
+      "overall_rate": 0.9964,
       "groups": {
-        "White": 0.9972936400541272,
-        "Hispanic/Latino": 0.9895459000326691,
-        "Asian": 1.0,
+        "White": 1.0,
+        "Hispanic/Latino": 0.9949293734154292,
+        "Black/African American": 1.0,
+        "Asian": 0.9926605504587156,
         "Other": 1.0,
-        "Black/African American": 0.9966555183946488,
-        "Two or More": 0.9925925925925926
+        "Two or More": 1.0
       },
-      "disparate_impact": 0.9895,
-      "dp_gap": 0.0105
+      "disparate_impact": 0.9927,
+      "dp_gap": 0.0073
     },
     {
       "threshold": 0.4,
-      "overall_rate": 0.9884,
+      "overall_rate": 0.9918,
       "groups": {
-        "White": 0.993234100135318,
-        "Hispanic/Latino": 0.9843188500490035,
-        "Asian": 1.0,
-        "Other": 1.0,
-        "Black/African American": 0.9933110367892977,
-        "Two or More": 0.9888888888888889
+        "White": 0.9988826815642458,
+        "Hispanic/Latino": 0.990220934444042,
+        "Black/African American": 0.9893238434163701,
+        "Asian": 0.9889908256880734,
+        "Other": 0.9964912280701754,
+        "Two or More": 0.9871244635193133
       },
-      "disparate_impact": 0.9843,
-      "dp_gap": 0.0157
+      "disparate_impact": 0.9882,
+      "dp_gap": 0.0118
     },
     {
       "threshold": 0.42,
-      "overall_rate": 0.9834,
+      "overall_rate": 0.9862,
       "groups": {
-        "White": 0.9918809201623816,
-        "Hispanic/Latino": 0.9777850375694218,
-        "Asian": 0.993801652892562,
-        "Other": 0.9931972789115646,
-        "Black/African American": 0.9933110367892977,
-        "Two or More": 0.9888888888888889
+        "White": 0.9977653631284916,
+        "Hispanic/Latino": 0.9822528069540022,
+        "Black/African American": 0.9857651245551602,
+        "Asian": 0.9853211009174312,
+        "Other": 0.9929824561403509,
+        "Two or More": 0.9828326180257511
       },
-      "disparate_impact": 0.9839,
-      "dp_gap": 0.016
+      "disparate_impact": 0.9845,
+      "dp_gap": 0.0155
     },
     {
       "threshold": 0.44,
-      "overall_rate": 0.9754,
+      "overall_rate": 0.9802,
       "groups": {
-        "White": 0.9891745602165088,
-        "Hispanic/Latino": 0.9673309376020908,
-        "Asian": 0.9896694214876033,
-        "Other": 0.9931972789115646,
-        "Black/African American": 0.9899665551839465,
-        "Two or More": 0.9777777777777777
+        "White": 0.9955307262569832,
+        "Hispanic/Latino": 0.974646867077146,
+        "Black/African American": 0.9750889679715302,
+        "Asian": 0.9834862385321101,
+        "Other": 0.9894736842105263,
+        "Two or More": 0.9742489270386266
       },
-      "disparate_impact": 0.974,
-      "dp_gap": 0.0259
+      "disparate_impact": 0.9786,
+      "dp_gap": 0.0213
     },
     {
       "threshold": 0.46,
-      "overall_rate": 0.9682,
+      "overall_rate": 0.9712,
       "groups": {
-        "White": 0.9878213802435724,
-        "Hispanic/Latino": 0.9562234563868017,
-        "Asian": 0.987603305785124,
-        "Other": 0.9931972789115646,
-        "Black/African American": 0.9899665551839465,
-        "Two or More": 0.9777777777777777
+        "White": 0.9877094972067039,
+        "Hispanic/Latino": 0.9630568634552699,
+        "Black/African American": 0.9750889679715302,
+        "Asian": 0.9779816513761468,
+        "Other": 0.9824561403508771,
+        "Two or More": 0.9699570815450643
       },
-      "disparate_impact": 0.9628,
-      "dp_gap": 0.037
+      "disparate_impact": 0.975,
+      "dp_gap": 0.0247
     },
     {
       "threshold": 0.48,
-      "overall_rate": 0.955,
+      "overall_rate": 0.9572,
       "groups": {
-        "White": 0.9851150202976996,
-        "Hispanic/Latino": 0.9372754001960144,
-        "Asian": 0.981404958677686,
-        "Other": 0.9863945578231292,
-        "Black/African American": 0.9866220735785953,
-        "Two or More": 0.9740740740740741
+        "White": 0.9832402234636871,
+        "Hispanic/Latino": 0.9438609199565375,
+        "Black/African American": 0.9679715302491103,
+        "Asian": 0.9688073394495413,
+        "Other": 0.9719298245614035,
+        "Two or More": 0.9570815450643777
       },
-      "disparate_impact": 0.95,
-      "dp_gap": 0.0493
+      "disparate_impact": 0.9599,
+      "dp_gap": 0.0394
     },
     {
       "threshold": 0.5,
-      "overall_rate": 0.9406,
+      "overall_rate": 0.9434,
       "groups": {
-        "White": 0.9769959404600812,
-        "Hispanic/Latino": 0.9186540346292061,
-        "Asian": 0.9772727272727273,
-        "Other": 0.9727891156462585,
-        "Black/African American": 0.9765886287625418,
-        "Two or More": 0.9666666666666667
+        "White": 0.9798882681564246,
+        "Hispanic/Latino": 0.9261137269105396,
+        "Black/African American": 0.9572953736654805,
+        "Asian": 0.9577981651376147,
+        "Other": 0.9578947368421052,
+        "Two or More": 0.9399141630901288
       },
-      "disparate_impact": 0.94,
-      "dp_gap": 0.0586
+      "disparate_impact": 0.9451,
+      "dp_gap": 0.0538
     },
     {
       "threshold": 0.52,
-      "overall_rate": 0.9174,
+      "overall_rate": 0.922,
       "groups": {
-        "White": 0.9688768606224628,
-        "Hispanic/Latino": 0.8882718065991506,
-        "Asian": 0.9710743801652892,
-        "Other": 0.9455782312925171,
-        "Black/African American": 0.9632107023411371,
-        "Two or More": 0.9444444444444444
+        "White": 0.9631284916201117,
+        "Hispanic/Latino": 0.9000362187613183,
+        "Black/African American": 0.9430604982206405,
+        "Asian": 0.9486238532110092,
+        "Other": 0.9403508771929825,
+        "Two or More": 0.9141630901287554
       },
-      "disparate_impact": 0.9147,
-      "dp_gap": 0.0828
+      "disparate_impact": 0.9345,
+      "dp_gap": 0.0631
     },
     {
       "threshold": 0.54,
-      "overall_rate": 0.889,
+      "overall_rate": 0.8964,
       "groups": {
-        "White": 0.952638700947226,
-        "Hispanic/Latino": 0.8510290754655342,
-        "Asian": 0.9566115702479339,
-        "Other": 0.9387755102040817,
-        "Black/African American": 0.9531772575250836,
-        "Two or More": 0.9259259259259259
+        "White": 0.9541899441340782,
+        "Hispanic/Latino": 0.8627308946034046,
+        "Black/African American": 0.9252669039145908,
+        "Asian": 0.9394495412844037,
+        "Other": 0.9298245614035088,
+        "Two or More": 0.8969957081545065
       },
-      "disparate_impact": 0.8896,
-      "dp_gap": 0.1056
+      "disparate_impact": 0.9042,
+      "dp_gap": 0.0915
     },
     {
       "threshold": 0.56,
-      "overall_rate": 0.8586,
+      "overall_rate": 0.8636,
       "groups": {
-        "White": 0.939106901217862,
-        "Hispanic/Latino": 0.8131329630839594,
-        "Asian": 0.9421487603305785,
-        "Other": 0.9319727891156463,
-        "Black/African American": 0.9230769230769231,
-        "Two or More": 0.8925925925925926
+        "White": 0.9329608938547486,
+        "Hispanic/Latino": 0.8228902571532054,
+        "Black/African American": 0.9181494661921709,
+        "Asian": 0.9155963302752294,
+        "Other": 0.8982456140350877,
+        "Two or More": 0.8497854077253219
       },
-      "disparate_impact": 0.8631,
-      "dp_gap": 0.129
+      "disparate_impact": 0.882,
+      "dp_gap": 0.1101
     },
     {
       "threshold": 0.58,
-      "overall_rate": 0.8214,
+      "overall_rate": 0.8258,
       "groups": {
-        "White": 0.9147496617050067,
-        "Hispanic/Latino": 0.7660895132309703,
-        "Asian": 0.9235537190082644,
-        "Other": 0.9115646258503401,
-        "Black/African American": 0.9130434782608695,
-        "Two or More": 0.8592592592592593
+        "White": 0.9094972067039107,
+        "Hispanic/Latino": 0.778341180731619,
+        "Black/African American": 0.900355871886121,
+        "Asian": 0.8678899082568807,
+        "Other": 0.8736842105263158,
+        "Two or More": 0.8197424892703863
       },
-      "disparate_impact": 0.8295,
-      "dp_gap": 0.1575
+      "disparate_impact": 0.8558,
+      "dp_gap": 0.1312
     },
     {
       "threshold": 0.6,
-      "overall_rate": 0.778,
+      "overall_rate": 0.7838,
       "groups": {
-        "White": 0.8809201623815968,
-        "Hispanic/Latino": 0.7174126102580856,
-        "Asian": 0.8760330578512396,
-        "Other": 0.891156462585034,
-        "Black/African American": 0.8862876254180602,
-        "Two or More": 0.825925925925926
+        "White": 0.8715083798882681,
+        "Hispanic/Latino": 0.7312567910177472,
+        "Black/African American": 0.8754448398576512,
+        "Asian": 0.8366972477064221,
+        "Other": 0.8140350877192982,
+        "Two or More": 0.7982832618025751
       },
-      "disparate_impact": 0.805,
-      "dp_gap": 0.1737
+      "disparate_impact": 0.8353,
+      "dp_gap": 0.1442
     },
     {
       "threshold": 0.62,
-      "overall_rate": 0.7282,
+      "overall_rate": 0.7312,
       "groups": {
-        "White": 0.8470906630581867,
-        "Hispanic/Latino": 0.6602417510617445,
-        "Asian": 0.8388429752066116,
-        "Other": 0.8163265306122449,
-        "Black/African American": 0.862876254180602,
-        "Two or More": 0.7777777777777778
+        "White": 0.8212290502793296,
+        "Hispanic/Latino": 0.6729445852951829,
+        "Black/African American": 0.8398576512455516,
+        "Asian": 0.7853211009174312,
+        "Other": 0.7684210526315789,
+        "Two or More": 0.7725321888412017
       },
-      "disparate_impact": 0.7652,
-      "dp_gap": 0.2026
+      "disparate_impact": 0.8013,
+      "dp_gap": 0.1669
     },
     {
       "threshold": 0.64,
-      "overall_rate": 0.6738,
+      "overall_rate": 0.676,
       "groups": {
-        "White": 0.803788903924222,
-        "Hispanic/Latino": 0.597517151257759,
-        "Asian": 0.7975206611570248,
-        "Other": 0.7619047619047619,
-        "Black/African American": 0.8093645484949833,
-        "Two or More": 0.762962962962963
+        "White": 0.7743016759776536,
+        "Hispanic/Latino": 0.6117348786671496,
+        "Black/African American": 0.7864768683274022,
+        "Asian": 0.7357798165137615,
+        "Other": 0.7192982456140351,
+        "Two or More": 0.7339055793991416
       },
-      "disparate_impact": 0.7383,
-      "dp_gap": 0.2118
+      "disparate_impact": 0.7778,
+      "dp_gap": 0.1747
     },
     {
       "threshold": 0.66,
-      "overall_rate": 0.6192,
+      "overall_rate": 0.6128,
       "groups": {
-        "White": 0.7726657645466847,
-        "Hispanic/Latino": 0.5351192420777524,
-        "Asian": 0.7582644628099173,
-        "Other": 0.7142857142857143,
-        "Black/African American": 0.7591973244147158,
-        "Two or More": 0.6962962962962963
+        "White": 0.7251396648044692,
+        "Hispanic/Latino": 0.5382107931908728,
+        "Black/African American": 0.7437722419928826,
+        "Asian": 0.673394495412844,
+        "Other": 0.6807017543859649,
+        "Two or More": 0.6824034334763949
       },
-      "disparate_impact": 0.6926,
-      "dp_gap": 0.2375
+      "disparate_impact": 0.7236,
+      "dp_gap": 0.2056
     },
     {
       "threshold": 0.68,
-      "overall_rate": 0.5596,
+      "overall_rate": 0.5516,
       "groups": {
-        "White": 0.7198917456021651,
-        "Hispanic/Latino": 0.4684743547860176,
-        "Asian": 0.7004132231404959,
-        "Other": 0.673469387755102,
-        "Black/African American": 0.7224080267558528,
-        "Two or More": 0.6592592592592592
+        "White": 0.6659217877094972,
+        "Hispanic/Latino": 0.4748279608837378,
+        "Black/African American": 0.6903914590747331,
+        "Asian": 0.6,
+        "Other": 0.6385964912280702,
+        "Two or More": 0.6351931330472103
       },
-      "disparate_impact": 0.6485,
-      "dp_gap": 0.2539
+      "disparate_impact": 0.6878,
+      "dp_gap": 0.2156
     },
     {
       "threshold": 0.7,
-      "overall_rate": 0.4938,
+      "overall_rate": 0.4838,
       "groups": {
-        "White": 0.6346414073071719,
-        "Hispanic/Latino": 0.4024828487422411,
-        "Asian": 0.6384297520661157,
-        "Other": 0.6394557823129252,
-        "Black/African American": 0.6555183946488294,
-        "Two or More": 0.6259259259259259
+        "White": 0.6078212290502794,
+        "Hispanic/Latino": 0.4089098152843173,
+        "Black/African American": 0.6156583629893239,
+        "Asian": 0.5174311926605505,
+        "Other": 0.5649122807017544,
+        "Two or More": 0.5579399141630901
       },
-      "disparate_impact": 0.614,
-      "dp_gap": 0.253
+      "disparate_impact": 0.6642,
+      "dp_gap": 0.2067
     },
     {
       "threshold": 0.72,
-      "overall_rate": 0.4306,
+      "overall_rate": 0.4174,
       "groups": {
-        "White": 0.5805142083897158,
-        "Hispanic/Latino": 0.34139170205815095,
-        "Asian": 0.5702479338842975,
-        "Other": 0.5918367346938775,
-        "Black/African American": 0.5785953177257525,
-        "Two or More": 0.5296296296296297
+        "White": 0.5374301675977654,
+        "Hispanic/Latino": 0.3426294820717131,
+        "Black/African American": 0.5444839857651246,
+        "Asian": 0.45871559633027525,
+        "Other": 0.5052631578947369,
+        "Two or More": 0.48497854077253216
       },
-      "disparate_impact": 0.5768,
-      "dp_gap": 0.2504
+      "disparate_impact": 0.6293,
+      "dp_gap": 0.2019
     },
     {
       "threshold": 0.74,
-      "overall_rate": 0.3626,
+      "overall_rate": 0.3576,
       "groups": {
-        "White": 0.5074424898511503,
-        "Hispanic/Latino": 0.2757268866383535,
-        "Asian": 0.493801652892562,
-        "Other": 0.4965986394557823,
-        "Black/African American": 0.5083612040133779,
-        "Two or More": 0.48148148148148145
+        "White": 0.4748603351955307,
+        "Hispanic/Latino": 0.28612821441506703,
+        "Black/African American": 0.47686832740213525,
+        "Asian": 0.4055045871559633,
+        "Other": 0.4421052631578947,
+        "Two or More": 0.3948497854077253
       },
-      "disparate_impact": 0.5424,
-      "dp_gap": 0.2326
+      "disparate_impact": 0.6,
+      "dp_gap": 0.1907
     },
     {
       "threshold": 0.76,
-      "overall_rate": 0.3036,
+      "overall_rate": 0.3012,
       "groups": {
-        "White": 0.43437077131258456,
-        "Hispanic/Latino": 0.22606991179353153,
-        "Asian": 0.4194214876033058,
-        "Other": 0.43537414965986393,
-        "Black/African American": 0.431438127090301,
-        "Two or More": 0.40370370370370373
+        "White": 0.4011173184357542,
+        "Hispanic/Latino": 0.2361463237957262,
+        "Black/African American": 0.40213523131672596,
+        "Asian": 0.3559633027522936,
+        "Other": 0.3649122807017544,
+        "Two or More": 0.3605150214592275
       },
-      "disparate_impact": 0.5193,
-      "dp_gap": 0.2093
+      "disparate_impact": 0.5872,
+      "dp_gap": 0.166
     },
     {
       "threshold": 0.78,
-      "overall_rate": 0.25,
+      "overall_rate": 0.249,
       "groups": {
-        "White": 0.3761840324763194,
-        "Hispanic/Latino": 0.1826200588043123,
-        "Asian": 0.3347107438016529,
-        "Other": 0.3401360544217687,
-        "Black/African American": 0.35785953177257523,
-        "Two or More": 0.34814814814814815
+        "White": 0.3452513966480447,
+        "Hispanic/Latino": 0.19123505976095617,
+        "Black/African American": 0.3202846975088968,
+        "Asian": 0.29357798165137616,
+        "Other": 0.29473684210526313,
+        "Two or More": 0.31759656652360513
       },
-      "disparate_impact": 0.4855,
-      "dp_gap": 0.1936
+      "disparate_impact": 0.5539,
+      "dp_gap": 0.154
     }
   ],
   "demographics": {
     "total": 5000,
     "race_counts": {
-      "Hispanic/Latino": 3061,
-      "White": 739,
-      "Asian": 484,
-      "Black/African American": 299,
-      "Two or More": 270,
-      "Other": 147
+      "Hispanic/Latino": 2761,
+      "White": 895,
+      "Asian": 545,
+      "Other": 285,
+      "Black/African American": 281,
+      "Two or More": 233
     },
-    "pell_pct": 0.566,
-    "firstgen_pct": 0.463,
-    "disability_pct": 0.126
-  }
+    "pell_pct": 0.598,
+    "firstgen_pct": 0.514,
+    "disability_pct": 0.123
+  },
+  "sources": [
+    {
+      "name": "CSUN Institutional Research",
+      "url": "https://www.csun.edu/counts/demographic.php",
+      "description": "Official student demographic breakdowns"
+    },
+    {
+      "name": "CSUN Fact Sheet",
+      "url": "https://www.csun.edu/about/facts",
+      "description": "Enrollment, HSI designation, Pell and first-gen rates"
+    },
+    {
+      "name": "CSU System Data Center",
+      "url": "https://www.calstate.edu/data-center",
+      "description": "CSU-wide graduation and retention data"
+    },
+    {
+      "name": "US Dept of Education College Scorecard",
+      "url": "https://collegescorecard.ed.gov/",
+      "description": "Federal completion, earnings, financial aid data"
+    },
+    {
+      "name": "IPEDS (NCES)",
+      "url": "https://nces.ed.gov/ipeds/",
+      "description": "National enrollment and graduation data by demographics"
+    }
+  ]
 }
