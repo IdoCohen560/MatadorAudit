@@ -914,6 +914,7 @@ def qa_page():
 
     # Provider selection
     provider = st.selectbox("Choose AI Provider", [
+        "Ollama (Local - Free)",
         "Claude (Anthropic)",
         "ChatGPT (OpenAI)",
         "Gemini (Google)",
@@ -948,7 +949,9 @@ Always explain technical terms. When recommending actions, be specific about who
 
 {audit_context}"""
 
-    if provider == "Claude (Anthropic)":
+    if provider == "Ollama (Local - Free)":
+        _qa_ollama(system_prompt)
+    elif provider == "Claude (Anthropic)":
         _qa_claude(system_prompt)
     elif provider == "ChatGPT (OpenAI)":
         _qa_external(provider, system_prompt, "https://chat.openai.com", "OpenAI API key", "openai")
@@ -956,6 +959,83 @@ Always explain technical terms. When recommending actions, be specific about who
         _qa_external(provider, system_prompt, "https://gemini.google.com", "Google AI API key", "google")
     elif provider == "Copilot (Microsoft)":
         _qa_external(provider, system_prompt, "https://copilot.microsoft.com", "Microsoft API key", "microsoft")
+
+
+def _qa_ollama(system_prompt):
+    """Ollama-powered Q&A — runs locally, completely free, no API key needed."""
+    st.success("Ollama runs locally on your machine — completely free, no API key required, and your data never leaves your computer.")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        ollama_url = st.text_input("Ollama URL", value="http://localhost:11434",
+                                    help="Default Ollama address. Change if running on a different port.")
+    with col2:
+        model = st.text_input("Model", value="llama3.2",
+                               help="Any model you have pulled in Ollama (e.g., llama3.2, mistral, phi3, gemma2)")
+
+    with st.expander("Setup instructions (if you don't have Ollama yet)"):
+        st.markdown("""
+        1. **Install Ollama** from [ollama.com](https://ollama.com) (Mac, Windows, Linux)
+        2. **Pull a model**: open terminal and run `ollama pull llama3.2`
+        3. **Ollama starts automatically** — it runs at `http://localhost:11434`
+        4. Come back here and start chatting — no API key needed
+        """)
+
+    # Check connection
+    if st.button("Test Connection"):
+        try:
+            import urllib.request
+            import json
+            req = urllib.request.Request(f"{ollama_url}/api/tags")
+            resp = urllib.request.urlopen(req, timeout=5)
+            data = json.loads(resp.read())
+            models = [m['name'] for m in data.get('models', [])]
+            if models:
+                st.success(f"Connected. Available models: {', '.join(models)}")
+            else:
+                st.warning("Connected to Ollama but no models found. Run `ollama pull llama3.2` in your terminal.")
+        except Exception as e:
+            st.error(f"Cannot connect to Ollama at {ollama_url}. Make sure Ollama is running. Error: {e}")
+            return
+
+    # Chat history
+    if 'qa_ollama_messages' not in st.session_state:
+        st.session_state.qa_ollama_messages = []
+
+    for msg in st.session_state.qa_ollama_messages:
+        with st.chat_message(msg['role']):
+            st.markdown(msg['content'])
+
+    if prompt := st.chat_input("Ask a question (runs locally via Ollama)..."):
+        st.session_state.qa_ollama_messages.append({'role': 'user', 'content': prompt})
+        with st.chat_message('user'):
+            st.markdown(prompt)
+
+        with st.chat_message('assistant'):
+            with st.spinner("Thinking locally..."):
+                try:
+                    import urllib.request
+                    import json
+                    messages = [{'role': 'system', 'content': system_prompt}]
+                    messages += [{'role': m['role'], 'content': m['content']}
+                                 for m in st.session_state.qa_ollama_messages]
+                    payload = json.dumps({
+                        'model': model,
+                        'messages': messages,
+                        'stream': False,
+                    }).encode('utf-8')
+                    req = urllib.request.Request(
+                        f"{ollama_url}/api/chat",
+                        data=payload,
+                        headers={'Content-Type': 'application/json'},
+                    )
+                    resp = urllib.request.urlopen(req, timeout=120)
+                    data = json.loads(resp.read())
+                    reply = data.get('message', {}).get('content', 'No response received.')
+                except Exception as e:
+                    reply = f"Error communicating with Ollama: {str(e)}\n\nMake sure Ollama is running and the model `{model}` is pulled."
+            st.markdown(reply)
+        st.session_state.qa_ollama_messages.append({'role': 'assistant', 'content': reply})
 
 
 def _qa_claude(system_prompt):
