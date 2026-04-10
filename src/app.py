@@ -190,6 +190,16 @@ def upload_page():
             )
             st.plotly_chart(fig, use_container_width=True)
 
+            # Quick next steps
+            st.markdown("---")
+            st.markdown("#### What to do next")
+            st.markdown(f"""
+            - Go to **Fairness Report Card** for a detailed plain-English report with risk levels and recommended actions
+            - Go to **Proxy Detection** to check if any input variables are acting as hidden stand-ins for `{selected_demo}`
+            - Go to **What-If Simulator** to explore how adjusting decision thresholds could improve fairness
+            - Go to **Multi-Audit Dashboard** to run all 8 audit scenarios at once
+            """)
+
         st.markdown("---")
         with st.expander("Preview raw data"):
             st.dataframe(df.head(50))
@@ -573,6 +583,12 @@ def proxy_page():
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.info("No significant proxy correlations detected.")
+            st.markdown("""
+            **What this means:** No variables in this dataset show a statistically significant
+            correlation with the selected demographic attribute. This is a positive finding, but
+            it does not guarantee the absence of bias -- only that proxy discrimination through
+            simple correlations is not present. More complex interactions may still exist.
+            """)
 
 
 def simulator_page():
@@ -668,6 +684,27 @@ def simulator_page():
     )
     fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
     st.plotly_chart(fig, use_container_width=True)
+
+    # Next steps
+    st.markdown("---")
+    st.subheader("Next Steps After Simulation")
+    if sim_di >= 0.8 and sim_dp < 0.1:
+        st.success(f"At threshold {threshold:.2f}, the system passes the four-fifths rule and shows acceptable parity.")
+    st.markdown(f"""
+    1. **Document the optimal threshold** -- the threshold of **{threshold:.2f}** produces a disparate
+       impact ratio of **{sim_di:.3f}** {"(passing)" if sim_di >= 0.8 else "(failing)"} the four-fifths rule,
+       with an overall approval rate of **{simulated_outcome.mean():.1%}**.
+
+    2. **Present trade-offs to leadership** -- prepare a brief for the department head showing the
+       current vs. proposed threshold, the fairness improvement, and the cost in terms of changed outcomes.
+
+    3. **Pilot before deploying** -- apply the adjusted threshold to one semester as a pilot. Monitor
+       actual outcomes and compare against this simulation.
+
+    4. **This is exploratory only** -- any changes to real decision thresholds must go through
+       institutional review, including the department head, Institutional Research, and the Office
+       of Equity and Diversity.
+    """)
 
 
 # --- Helpers ---
