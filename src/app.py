@@ -917,54 +917,128 @@ def render_report_inline(engine):
 
 
 def qa_page():
-    st.title("AI Q&A Assistant")
+    # Custom CSS for chat UI
     st.markdown("""
-    Ask follow-up questions about your fairness audit results using your preferred AI assistant.
-    Choose a provider, enter your API key, and ask anything about your audit findings.
-    """)
+    <style>
+        .qa-header {
+            background: linear-gradient(135deg, #CF0A2C 0%, #A00823 100%);
+            padding: 24px 28px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+        .qa-header h2 { color: white; margin: 0 0 4px 0; font-size: 24px; }
+        .qa-header p { color: rgba(255,255,255,0.8); margin: 0; font-size: 14px; }
+        .qa-context {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+        .qa-context strong { color: #CF0A2C; }
+        .qa-suggestion {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #a1a1aa;
+        }
+        .qa-suggestion:hover {
+            background: rgba(207,10,44,0.08);
+            border-color: rgba(207,10,44,0.3);
+            color: #e4e4e7;
+        }
+    </style>
+    """, unsafe_allow_html=True)
 
-    if st.session_state.engine is None:
-        st.warning("Run an analysis first from the Upload & Analyze tab to give the AI context about your audit.")
-        st.info("You can still use this page without audit data, but the AI will not have specific findings to reference.")
+    # Header
+    st.markdown("""
+    <div class="qa-header">
+        <h2>AI Q&A Assistant</h2>
+        <p>Ask questions about your fairness audit results and get expert guidance</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # Provider selection
-    provider = st.selectbox("Choose AI Provider", [
-        "OpenRouter (Free - Recommended)",
-        "Claude (Anthropic)",
-        "ChatGPT (OpenAI)",
-        "Gemini (Google)",
-        "Copilot (Microsoft)",
-    ])
-
-    # Build context from current audit results
-    audit_context = ""
+    # Show audit context if available
     if st.session_state.engine is not None:
         engine = st.session_state.engine
         r = engine.results
         rates = engine.group_rates()
         best = rates.loc[rates['rate'].idxmax()]
         worst = rates.loc[rates['rate'].idxmin()]
+        di = r['disparate_impact']['ratio']
+        dp = r['demographic_parity']['disparity']
+
+        status = "PASS" if di >= 0.8 else "FAIL"
+        status_color = "#22c55e" if di >= 0.8 else "#ef4444"
+
+        st.markdown(f"""
+        <div class="qa-context">
+            <strong>Current audit loaded:</strong> {engine.outcome_col} by {engine.demo_col} |
+            {len(engine.df):,} records |
+            Disparate Impact: <span style="color:{status_color};font-weight:700">{di:.3f} ({status})</span> |
+            Gap: {dp:.3f} |
+            Lowest: {worst['group']} ({worst['rate']:.1%}) |
+            Highest: {best['group']} ({best['rate']:.1%})
+        </div>
+        """, unsafe_allow_html=True)
+
         audit_context = f"""
 Current audit results:
 - Auditing: {engine.outcome_col} by {engine.demo_col}
 - Records: {len(engine.df):,}
-- Demographic Parity Gap: {r['demographic_parity']['disparity']:.4f}
-- Disparate Impact Ratio: {r['disparate_impact']['ratio']:.4f} ({'PASSES' if r['disparate_impact']['ratio'] >= 0.8 else 'FAILS'} four-fifths rule)
+- Demographic Parity Gap: {dp:.4f}
+- Disparate Impact Ratio: {di:.4f} ({'PASSES' if di >= 0.8 else 'FAILS'} four-fifths rule)
 - Equalized Odds Gap: {r['equalized_odds']['gap']:.4f}
 - Highest outcome group: {best['group']} at {best['rate']:.1%}
 - Lowest outcome group: {worst['group']} at {worst['rate']:.1%}
 - Gap: {best['rate'] - worst['rate']:.1%}
 """
+    else:
+        st.info("Load data and run an analysis first to give the AI context about your specific audit. You can still ask general questions about fairness auditing.")
+        audit_context = ""
+
+    # Provider selector in sidebar-style columns
+    col_provider, col_model = st.columns([2, 1])
+    with col_provider:
+        provider = st.selectbox("AI Provider", [
+            "OpenRouter (Free)",
+            "Claude (Anthropic)",
+            "ChatGPT (OpenAI)",
+            "Gemini (Google)",
+            "Copilot (Microsoft)",
+        ], label_visibility="collapsed")
+    with col_model:
+        st.caption(f"Using: {provider.split('(')[0].strip()}")
 
     system_prompt = f"""You are a fairness auditing expert helping a university administrator at CSUN
 (California State University, Northridge), a Hispanic-Serving Institution. You are embedded in
 MatadorAudit, an AI-powered fairness auditing tool. Answer questions clearly and simply.
 Always explain technical terms. When recommending actions, be specific about who to contact
 (Financial Aid Director, Office of Equity and Diversity, Institutional Research, etc.).
+Format your responses with markdown for readability. Use bullet points for lists and bold for key terms.
 
 {audit_context}"""
 
-    if provider == "OpenRouter (Free - Recommended)":
+    # Suggested questions (only show if no messages yet)
+    qa_key = 'qa_or_messages' if 'OpenRouter' in provider else 'qa_messages'
+    if qa_key not in st.session_state or not st.session_state.get(qa_key, []):
+        st.markdown("**Try asking:**")
+        suggestions = st.columns(2)
+        with suggestions[0]:
+            st.markdown('<div class="qa-suggestion">What does the disparate impact ratio mean?</div>', unsafe_allow_html=True)
+            st.markdown('<div class="qa-suggestion">Who should I contact about these findings?</div>', unsafe_allow_html=True)
+        with suggestions[1]:
+            st.markdown('<div class="qa-suggestion">What are the next steps for this audit?</div>', unsafe_allow_html=True)
+            st.markdown('<div class="qa-suggestion">Is this legally concerning?</div>', unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    if provider == "OpenRouter (Free)":
         _qa_openrouter(system_prompt)
     elif provider == "Claude (Anthropic)":
         _qa_claude(system_prompt)
@@ -978,40 +1052,29 @@ Always explain technical terms. When recommending actions, be specific about who
 
 def _qa_openrouter(system_prompt):
     """OpenRouter-powered Q&A — free models, no credit card required."""
-    # Try to load built-in key from Streamlit secrets
     builtin_key = None
     try:
         builtin_key = st.secrets.get("OPENROUTER_API_KEY", None)
     except Exception:
         pass
 
-    custom_key = st.text_input("Use your own OpenRouter API key (optional — leave blank to use the built-in free key)",
-                               type="password")
+    with st.expander("Settings", expanded=False):
+        custom_key = st.text_input("Your own OpenRouter key (optional)", type="password",
+                                    help="Leave blank to use the built-in free key")
+        model = st.selectbox("Model", [
+            "nvidia/nemotron-nano-9b-v2:free",
+            "openai/gpt-oss-20b:free",
+            "google/gemma-4-26b-a4b-it:free",
+            "liquid/lfm-2.5-1.2b-instruct:free",
+        ])
 
     if custom_key:
         api_key = custom_key
-        st.success("Using your API key.")
     elif builtin_key:
         api_key = builtin_key
-        st.success("AI Q&A is ready — ask any question about your audit results.")
     else:
-        st.info("Enter an OpenRouter API key to chat. Free at [openrouter.ai](https://openrouter.ai) — sign up with Google, no credit card required.")
-        with st.expander("How to get a free OpenRouter API key"):
-            st.markdown("""
-            1. Go to [openrouter.ai](https://openrouter.ai)
-            2. Sign up with Google or GitHub (free, no credit card)
-            3. Go to **Keys** in your dashboard
-            4. Click **Create Key**, copy it
-            5. Paste it above and start chatting
-            """)
+        st.warning("No API key available. Enter your own OpenRouter key in Settings above. Free at [openrouter.ai](https://openrouter.ai).")
         return
-
-    model = st.selectbox("Model", [
-        "nvidia/nemotron-nano-9b-v2:free",
-        "openai/gpt-oss-20b:free",
-        "google/gemma-4-26b-a4b-it:free",
-        "liquid/lfm-2.5-1.2b-instruct:free",
-    ], help="All models are free — no usage cost")
 
     # Chat history
     if 'qa_or_messages' not in st.session_state:
