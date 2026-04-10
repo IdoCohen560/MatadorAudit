@@ -533,6 +533,28 @@ def proxy_page():
                 </div>
                 """, unsafe_allow_html=True)
 
+            # Next steps for proxy findings
+            high_proxies = [c for c in correlations if c.get('risk') == 'HIGH']
+            if high_proxies:
+                st.markdown("---")
+                st.markdown("### What to do about proxy variables")
+                st.markdown(f"""
+                **{len(high_proxies)} high-risk proxy variable(s) detected.** These variables
+                strongly correlate with the protected attribute `{selected}`, meaning any AI system
+                using them as inputs may be indirectly discriminating based on {selected}.
+
+                **Recommended actions:**
+                1. **Audit downstream systems** -- check if the flagged variables are used as inputs
+                   in any AI model or decision rule. If so, those systems likely have disparate impact.
+                2. **Test with and without** -- re-run the fairness analysis after removing each proxy
+                   variable to measure its contribution to the overall disparity.
+                3. **Consult Institutional Research** -- verify whether the correlations reflect real
+                   structural factors (e.g., geographic segregation) or data artifacts.
+                4. **Report to the Office of Equity and Diversity** -- proxy discrimination findings
+                   should be shared with equity officers, especially for variables used in financial
+                   aid, admissions, or academic integrity systems.
+                """)
+
             # Heatmap
             st.markdown("### Correlation Heatmap")
             numeric_df = df.select_dtypes(include=['number', 'bool']).copy()
@@ -674,36 +696,129 @@ def generate_template_report(engine):
     r = engine.results
     dp = r['demographic_parity']
     di = r['disparate_impact']
+    eo = r['equalized_odds']
     rates = engine.group_rates()
 
     best = rates.loc[rates['rate'].idxmax()]
     worst = rates.loc[rates['rate'].idxmin()]
 
     gap = best['rate'] - worst['rate']
-    ratio = worst['rate'] / best['rate'] if best['rate'] > 0 else 0
+    is_high_risk = di['ratio'] < 0.8 or abs(dp['disparity']) > 0.1
+
+    # Determine overall risk
+    if di['ratio'] < 0.6 or abs(dp['disparity']) > 0.2:
+        overall_risk = "CRITICAL"
+        risk_color = "#ef4444"
+    elif is_high_risk:
+        overall_risk = "HIGH"
+        risk_color = "#ef4444"
+    elif di['ratio'] < 0.9 or abs(dp['disparity']) > 0.05:
+        overall_risk = "MEDIUM"
+        risk_color = "#f59e0b"
+    else:
+        overall_risk = "LOW"
+        risk_color = "#22c55e"
 
     report = f"""
     <h3>Fairness Report Card</h3>
-    <p><strong>Audit:</strong> {engine.outcome_col} by {engine.demo_col}</p>
+    <p><strong>Audit:</strong> {engine.outcome_col} by {engine.demo_col}<br>
+    <strong>Records analyzed:</strong> {len(engine.df):,}<br>
+    <strong>Overall risk level:</strong> <span style="color:{risk_color};font-weight:900">{overall_risk}</span></p>
+
+    <hr style="border-color:rgba(255,255,255,0.1);margin:16px 0">
+
+    <h4>What the numbers mean</h4>
+
+    <p><strong>Demographic Parity Gap: {dp['disparity']:.3f}</strong><br>
+    This measures the difference in positive outcome rates between the best- and worst-performing
+    demographic groups. A gap of 0 means all groups have identical rates.
+    {"Your gap of " + f"{dp['disparity']:.3f}" + " exceeds the 0.10 threshold, meaning there is a statistically meaningful difference in how groups are treated." if abs(dp['disparity']) > 0.1 else "Your gap is within acceptable bounds."}</p>
+
+    <p><strong>Disparate Impact Ratio: {di['ratio']:.3f}</strong><br>
+    This is the ratio of the lowest group's rate to the highest group's rate, based on the
+    EEOC "four-fifths rule" (Uniform Guidelines on Employee Selection Procedures, 1978).
+    Under Title VII of the Civil Rights Act, a ratio below 0.80 is considered evidence of
+    potential adverse impact.
+    {"<strong style='color:#ef4444'>Your ratio of " + f"{di['ratio']:.3f}" + " is below the 0.80 threshold.</strong>" if di['ratio'] < 0.8 else "<strong style='color:#22c55e'>Your ratio meets the legal threshold.</strong>"}</p>
+
+    <p><strong>Equalized Odds Gap: {eo['gap']:.3f}</strong><br>
+    This measures whether the system performs equally well across groups, not just on average.
+    A system can be accurate overall but still have very different error rates for different
+    demographics.</p>
+
+    <hr style="border-color:rgba(255,255,255,0.1);margin:16px 0">
 
     <h4>Key Finding</h4>
     <p><strong>{worst['group']}</strong> students have the lowest positive outcome rate at
     <strong>{worst['rate']:.1%}</strong>, compared to <strong>{best['rate']:.1%}</strong> for
     <strong>{best['group']}</strong> students — a gap of <strong>{gap:.1%}</strong>.</p>
-
-    <h4>Disparate Impact Analysis</h4>
-    <p>The disparate impact ratio is <strong>{di['ratio']:.3f}</strong>.
-    {"This is below the 0.80 threshold established by the EEOC four-fifths rule, indicating potential discrimination." if di['ratio'] < 0.8 else "This meets the EEOC four-fifths rule threshold."}
-    </p>
-
-    <h4>Demographic Parity</h4>
-    <p>The demographic parity gap is <strong>{dp['disparity']:.3f}</strong>.
-    {"This indicates a significant disparity in outcomes across groups." if abs(dp['disparity']) > 0.1 else "This is within acceptable bounds."}</p>
-
-    <h4>Recommendation</h4>
-    <p>{"⚠️ <strong>Immediate review recommended.</strong> The disparity levels detected suggest systemic bias in this decision process. Use the What-If Simulator to explore threshold adjustments that could reduce the gap while maintaining decision quality." if di['ratio'] < 0.8 or abs(dp['disparity']) > 0.1 else "✅ Fairness metrics are within acceptable ranges. Continue monitoring on a regular schedule."}
-    </p>
     """
+
+    if is_high_risk:
+        report += f"""
+    <hr style="border-color:rgba(255,255,255,0.1);margin:16px 0">
+
+    <h4 style="color:#ef4444">Recommended Next Steps</h4>
+
+    <p><strong>1. Escalate to the appropriate office</strong><br>
+    Share this report with the department head or director responsible for the system being audited.
+    If this involves financial aid, contact the <strong>Financial Aid Director</strong>.
+    For admissions, contact the <strong>Director of Admissions</strong>.
+    For academic systems, contact the <strong>Associate Dean</strong> of the relevant college.
+    Include the specific metrics and group disparities documented above.</p>
+
+    <p><strong>2. Convene a review committee</strong><br>
+    Form a cross-functional team including:
+    representatives from the <strong>Office of Equity and Diversity</strong>,
+    the <strong>department that owns the system</strong>,
+    <strong>Institutional Research</strong> for data validation,
+    and <strong>IT/data science staff</strong> who maintain the system.
+    Schedule a review meeting within 30 days.</p>
+
+    <p><strong>3. Investigate root causes</strong><br>
+    Use the <strong>Proxy Detection</strong> tab to identify which input variables may be
+    driving the disparity. Common causes include:
+    zip code or geographic data correlating with race,
+    historical data reflecting past discrimination,
+    and "predicted success" scores trained on biased outcomes.</p>
+
+    <p><strong>4. Test alternative thresholds</strong><br>
+    Use the <strong>What-If Simulator</strong> to explore whether adjusting decision thresholds
+    can reduce the disparity while maintaining acceptable accuracy. Document the trade-offs
+    between fairness and accuracy for each threshold setting.</p>
+
+    <p><strong>5. Document and monitor</strong><br>
+    Export this report as a PDF (use the Export Report tab) and file it as part of the
+    department's equity review documentation. Schedule a follow-up audit in 90 days to
+    measure whether interventions have improved outcomes. This documentation also supports
+    WASC/WSCUC accreditation requirements around equity.</p>
+
+    <p><strong>6. Consider external review</strong><br>
+    For disparate impact ratios below 0.60, consider engaging the university's
+    <strong>Office of General Counsel</strong> or an external fairness auditor to assess
+    legal compliance under Title VII and applicable state regulations.</p>
+    """
+    else:
+        report += f"""
+    <hr style="border-color:rgba(255,255,255,0.1);margin:16px 0">
+
+    <h4 style="color:#22c55e">Status: Within Acceptable Bounds</h4>
+
+    <p><strong>Recommended next steps:</strong></p>
+
+    <p><strong>1. Continue regular monitoring</strong><br>
+    Schedule quarterly fairness audits to ensure metrics remain within acceptable ranges.
+    Disparities can emerge gradually as student populations shift or systems are updated.</p>
+
+    <p><strong>2. Document this baseline</strong><br>
+    Export this report as a PDF and file it as your baseline measurement. Future audits
+    should be compared against this baseline to detect any regression.</p>
+
+    <p><strong>3. Expand audit coverage</strong><br>
+    If this system passes, audit other university AI systems using the Multi-Audit Dashboard.
+    A passing result here does not guarantee fairness in other systems.</p>
+    """
+
     return report
 
 
