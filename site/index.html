@@ -81,6 +81,8 @@
 
   /* Dashboard */
   .dashboard{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.2);overflow:hidden}
+  .dash-body{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .dash-panel.active .chart-container{min-width:600px}
   .dash-body{padding:36px}
   .dash-titlebar{background:var(--surface2);padding:16px 20px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
   .dash-dot{width:12px;height:12px;border-radius:50%}
@@ -306,7 +308,7 @@
           <h3 style="font-size:17px;margin-bottom:8px">Auditing multiple university systems</h3>
           <p style="color:var(--text-dim);font-size:14px;line-height:1.7;margin:0">Bias can appear in any AI-driven system. Below are four additional audits showing outcome rates by race/ethnicity. <strong style="color:var(--text)">When bars are roughly equal across groups, the system is fair. When one group's bar is significantly lower, there is a disparity that needs investigation.</strong></p>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px" id="audits-grid">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;min-width:700px" id="audits-grid">
           <div>
             <h4 style="margin-bottom:4px;color:var(--blue);font-weight:800">STEM Recommendation Quality</h4>
             <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Rate of students receiving high-quality STEM course recommendations</p>
