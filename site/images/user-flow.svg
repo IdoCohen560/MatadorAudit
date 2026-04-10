@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 200" fill="none">
+  <style>
+    text { font-family: 'Inter', sans-serif; fill: #e4e4e7; }
+    .box { fill: #12121a; stroke: rgba(255,255,255,0.1); stroke-width: 1; rx: 12; }
+    .box-active { fill: #12121a; stroke: #CF0A2C; stroke-width: 1.5; rx: 12; }
+    .label { font-size: 13px; font-weight: 700; text-anchor: middle; }
+    .sublabel { font-size: 10px; fill: #71717a; text-anchor: middle; }
+    .arrow { stroke: #CF0A2C; stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#CF0A2C"/>
+    </marker>
+  </defs>
+
+  <!-- Step 1: Upload -->
+  <rect x="20" y="50" width="150" height="100" class="box-active"/>
+  <text x="95" y="90" class="label">Upload Data</text>
+  <text x="95" y="110" class="sublabel">CSV from Canvas,</text>
+  <text x="95" y="124" class="sublabel">PeopleSoft, or demo</text>
+
+  <!-- Arrow 1 -->
+  <path d="M175 100 L205 100" class="arrow"/>
+
+  <!-- Step 2: Analyze -->
+  <rect x="210" y="50" width="150" height="100" class="box-active"/>
+  <text x="285" y="90" class="label">Auto-Analyze</text>
+  <text x="285" y="110" class="sublabel">Detect demographics,</text>
+  <text x="285" y="124" class="sublabel">compute fairness metrics</text>
+
+  <!-- Arrow 2 -->
+  <path d="M365 100 L395 100" class="arrow"/>
+
+  <!-- Step 3: Report -->
+  <rect x="400" y="50" width="150" height="100" class="box-active"/>
+  <text x="475" y="90" class="label">AI Report Card</text>
+  <text x="475" y="110" class="sublabel">Plain-English findings</text>
+  <text x="475" y="124" class="sublabel">via Claude AI</text>
+
+  <!-- Arrow 3 -->
+  <path d="M555 100 L585 100" class="arrow"/>
+
+  <!-- Step 4: Simulate -->
+  <rect x="590" y="50" width="150" height="100" class="box-active"/>
+  <text x="665" y="90" class="label">What-If Sim</text>
+  <text x="665" y="110" class="sublabel">Adjust thresholds,</text>
+  <text x="665" y="124" class="sublabel">explore trade-offs</text>
+
+  <!-- Arrow 4 -->
+  <path d="M745 100 L775 100" class="arrow"/>
+
+  <!-- Step 5: Act -->
+  <rect x="780" y="50" width="100" height="100" class="box" style="stroke:#22c55e"/>
+  <text x="830" y="90" class="label" style="fill:#22c55e">Act</text>
+  <text x="830" y="110" class="sublabel">Informed policy</text>
+  <text x="830" y="124" class="sublabel">decisions</text>
+</svg>

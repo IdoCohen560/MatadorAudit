@@ -1,121 +1,171 @@
 # MatadorAudit -- Competition Video Script
 
-**Duration:** 3:30 -- 4:00
+**Duration:** 4:30 -- 5:00
 **Presenters:** Ido Cohen & Zach Bar
 **Format:** Screen-recorded demo with voiceover
+**Track:** AI and Ethics
 
 ---
 
-## 1. OPENING HOOK (0:00 -- 0:15)
+## 1. INTRODUCTION AND TRACK (0:00 -- 0:50)
 
-[SCREEN: Black screen fading into a bold stat -- "Universities deploy 40+ AI systems that affect student outcomes. Most have never been audited for bias."]
+[SCREEN: Black screen fading into the MatadorAudit logo, then the CSUN campus or CSUN seal]
 
-**IDO:** "What if the AI deciding your financial aid package was quietly discriminating against you -- and nobody even knew?"
+**IDO:** "Hi, I am Ido Cohen, a Computer Science student here at CSUN."
 
-[SCREEN: Quick montage of university AI touchpoints -- course recommendation screens, admissions portals, plagiarism detection tools]
+**ZACH:** "And I am Zach Bar, also studying Computer Science at CSUN. Together, we built MatadorAudit."
 
----
+**IDO:** "Our project falls under the AI and Ethics track. We are tackling a question that affects every student on this campus: are the AI systems CSUN uses treating all of us fairly?"
 
-## 2. PROBLEM STATEMENT (0:15 -- 0:45)
+[SCREEN: Bold text on dark background -- "Universities deploy AI across admissions, financial aid, course recommendations, and plagiarism detection. Most have never been audited for bias."]
 
-[SCREEN: Split view -- left side shows a generic AI admissions dashboard, right side shows a bar chart with stark demographic gaps in approval rates]
+**ZACH:** "Right now, AI tools are making decisions about financial aid allocation, admissions screening, course recommendations through Canvas, and academic integrity through Turnitin. These systems affect who gets funded, who gets admitted, and who gets flagged. But nobody is systematically checking whether those decisions are equitable across demographics."
 
-**ZACH:** "Universities are rolling out AI everywhere -- course recommendations, admissions scoring, financial aid decisions, even plagiarism detection. But here is the problem: these systems can carry hidden biases that disproportionately affect students of color, first-generation students, and Pell-eligible students."
+[SCREEN: Quick montage -- Canvas dashboard, a PeopleSoft financial aid screen, Turnitin interface]
 
-[SCREEN: Animated graphic -- "zip code" morphing into a heat map overlaid with racial demographics, illustrating proxy discrimination]
+**IDO:** "As students at CSUN, we have seen firsthand how much these systems shape our experience. And as a federally recognized Hispanic-Serving Institution with 56 percent Hispanic and Latino students, 58 percent Pell-eligible, and 47 percent first-generation -- the stakes here are not theoretical. If AI bias exists in these systems, our classmates are the ones being harmed."
 
-**IDO:** "And it is not always obvious. A model that uses zip code as a feature might look neutral on the surface -- but zip code is a proxy for race. That is proxy discrimination, and it is almost invisible without the right tools."
-
----
-
-## 3. CSUN CONTEXT (0:45 -- 1:15)
-
-[SCREEN: CSUN campus aerial shot or logo, with text overlay -- "61% Hispanic | 56% Pell-eligible | 45% First-gen"]
-
-**ZACH:** "This is not an abstract problem. Right here at CSUN -- a federally recognized Hispanic-Serving Institution -- 61 percent of our students are Hispanic, more than half qualify for Pell grants, and nearly half are the first in their families to attend college. If biased AI gets deployed at CSUN, our students are the ones who get hurt."
-
-[SCREEN: Simple animated diagram showing how a biased course-recommendation system could steer underrepresented students away from high-value courses]
-
-**IDO:** "We built MatadorAudit because the students who need the most support should not be the ones harmed by the systems meant to help them."
+[SCREEN: CSUN campus photo with text overlay -- "56.2% Hispanic/Latino | 58% Pell-Eligible | 47% First-Generation | 38,000 Students"]
 
 ---
 
-## 4. SOLUTION DEMO WALKTHROUGH (1:15 -- 2:45)
+## 2. CONCEPT AND USE OF AI (0:50 -- 2:00)
 
-### Step 1 -- Upload (1:15 -- 1:35)
+[SCREEN: MatadorAudit Netlify landing page hero section]
 
-[SCREEN: MatadorAudit Streamlit dashboard -- the Upload & Analyze page. Cursor drags a CSV file into the upload area.]
+**ZACH:** "MatadorAudit is an AI-powered fairness auditing toolkit designed for non-technical university administrators. A financial aid director or department chair can upload a dataset and get a complete fairness audit without writing a single line of code."
 
-**ZACH:** "MatadorAudit is designed for non-technical administrators. You upload a dataset -- say, course recommendation outcomes -- and the tool does the rest."
+[SCREEN: Scroll through the four feature cards on the Netlify site]
 
-[SCREEN: The dataset preview loads showing columns like student_id, ethnicity, pell_status, gpa, recommendation_score, admitted]
+**IDO:** "The tool has four core capabilities. First, Automated Fairness Analysis. You upload a CSV -- say, financial aid outcomes -- and MatadorAudit automatically detects demographic columns, identifies outcome variables, and computes established fairness metrics including demographic parity, equalized odds, and the disparate impact ratio based on the EEOC four-fifths rule."
 
-### Step 2 -- Automated Fairness Analysis (1:35 -- 2:00)
+[SCREEN: Navigate to the Methodology section, expand the Disparate Impact accordion]
 
-[SCREEN: Dashboard populates with fairness metrics -- Demographic Parity, Equalized Odds, Disparate Impact Ratio. Interactive Plotly bar charts show metric breakdowns by demographic group. Red/yellow/green risk indicators light up.]
+**ZACH:** "Second, Proxy Discrimination Detection. This is where it gets important. Many AI systems do not use race directly. But they use zip code, high school ranking, or a predicted persistence score that correlates strongly with race. Our tool uses point-biserial correlation to flag these hidden proxies. In our synthetic CSUN data, the predicted persistence variable correlates 0.25 with race -- meaning the model effectively knows a student's ethnicity through a supposedly neutral variable."
 
-**IDO:** "Instantly, you see the numbers that matter. Demographic parity, equalized odds, disparate impact ratio -- all calculated automatically using Fairlearn and AIF360. Red means there is a problem. Green means the system is performing fairly across groups."
+[SCREEN: Show the proxy detection tab in the dashboard with correlation bars]
 
-[SCREEN: Hover over a red-flagged metric to show the tooltip with the exact disparity percentage]
+**IDO:** "Third, we use the Claude AI API to generate plain-English Fairness Report Cards. Instead of a table of statistics, an administrator reads something like: Hispanic and Latino students are 2.3 times more likely to be denied aid renewal than white students with equivalent GPAs. Risk level: high. Recommended action: review the predicted persistence variable."
 
-### Step 3 -- Proxy Detection (2:00 -- 2:15)
+[SCREEN: Show the AI-generated report card in the dashboard]
 
-[SCREEN: Navigate to the Proxy Detection tab. A correlation heatmap appears showing that zip_code has a 0.87 correlation with ethnicity.]
+**ZACH:** "And fourth, the What-If Simulator. Administrators can adjust decision thresholds in real time and watch fairness metrics update live. This turns fairness from a one-time audit into an ongoing design tool."
 
-**ZACH:** "Our proxy detection engine flags when a seemingly neutral feature -- like zip code or high school name -- is acting as a stand-in for a protected attribute. This is the kind of hidden bias most tools completely miss."
+[SCREEN: Show the What-If Simulator -- drag the slider, metrics and chart update]
 
-### Step 4 -- Plain-English Report Card (2:15 -- 2:30)
-
-[SCREEN: Navigate to the Fairness Report Card tab. A formatted report appears with sections like "Key Findings," "Risk Level: HIGH," and specific recommendations written in plain language.]
-
-**IDO:** "And because not everyone reads statistical tables, we send all the findings to Claude AI, which generates a plain-English Fairness Report Card. An associate dean can read this and actually understand what needs to change."
-
-### Step 5 -- What-If Simulator (2:30 -- 2:45)
-
-[SCREEN: Navigate to the What-If Simulator. Sliders for decision thresholds and feature weights. As Zach adjusts a slider, the fairness metrics and charts update in real time.]
-
-**ZACH:** "The What-If Simulator lets you ask: what happens if we change the admission threshold from 0.7 to 0.6? You see fairness metrics update live. Administrators can find the sweet spot between accuracy and equity before deploying anything."
+**IDO:** "What makes this responsible is what it does not do. MatadorAudit does not make decisions. It does not automatically debias anything. It provides transparency and lets humans decide what trade-offs are acceptable. We also never send raw student data to any external API. Claude receives only statistical summaries."
 
 ---
 
-## 5. ETHICS & RESPONSIBILITY (2:45 -- 3:05)
+## 3. VISUAL REPRESENTATION (2:00 -- 3:10)
 
-[SCREEN: A simple slide with three principles -- "Transparency. Accountability. Student-centered design." with the MatadorAudit logo]
+[SCREEN: Open the live Streamlit app at matadoraudit.streamlit.app]
 
-**IDO:** "We want to be clear -- MatadorAudit does not make decisions. It shines a light on decisions that are already being made. The goal is transparency, not replacement. We believe every university deploying AI owes its students an audit, and that audit should be accessible to the people responsible for those students -- not locked behind a data science team."
+**ZACH:** "Let me walk you through the actual tool. Here is our live Streamlit dashboard."
+
+### Step 1 -- Upload
+
+[SCREEN: Click "Load CSUN Demo Data" button. Dataset loads with 5,000 records.]
+
+**ZACH:** "An administrator clicks Load CSUN Demo Data -- or uploads their own CSV. The tool instantly detects 7 demographic columns and 8 outcome columns."
+
+### Step 2 -- Run Analysis
+
+[SCREEN: Select race_ethnicity as demographic, financial_aid_approved as outcome, click Run Fairness Analysis. Metrics populate.]
+
+**IDO:** "Select the demographic dimension and outcome to audit, then hit Run Fairness Analysis. In seconds, you see the demographic parity gap, equalized odds gap, and disparate impact ratio -- all color-coded by risk level."
+
+[SCREEN: Show the bar chart of approval rates by race/ethnicity]
+
+### Step 3 -- Proxy Detection
+
+[SCREEN: Navigate to Proxy Detection tab, run analysis]
+
+**ZACH:** "The proxy detection tab reveals that STEM recommendation quality, Pell eligibility, and predicted persistence all correlate significantly with race. These are the invisible pathways through which bias operates."
+
+### Step 4 -- What-If Simulator
+
+[SCREEN: Navigate to What-If Simulator, drag the threshold slider from 0.55 down to 0.40. Show metrics updating.]
+
+**IDO:** "In the What-If Simulator, watch what happens when we lower the persistence threshold from 0.55 to 0.40. The approval rate increases, the parity gap shrinks, and the disparate impact ratio crosses above the 0.80 four-fifths rule line. Administrators can see exactly what fixing the bias would look like before making any changes."
+
+### Step 5 -- Multiple Audits
+
+[SCREEN: Navigate to All Audits tab showing STEM recs, plagiarism, admissions, at-risk flagging]
+
+**ZACH:** "And this is not limited to financial aid. We audit eight different scenarios: financial aid, STEM recommendations, plagiarism detection, admissions screening, at-risk flagging, scholarship allocation, academic advising, and gender parity."
+
+[SCREEN: Show the Netlify site architecture diagram and user flow in slides]
 
 ---
 
-## 6. FEASIBILITY & VISION (3:05 -- 3:25)
+## 4. IMPLEMENTATION CONSIDERATIONS (3:10 -- 4:10)
 
-[SCREEN: Tech stack diagram -- Python, Streamlit, Fairlearn, AIF360, Claude API, Plotly -- with arrows showing the data flow from upload to report]
+[SCREEN: Show the Netlify site About section with the implementation timeline]
 
-**ZACH:** "MatadorAudit runs today. It is built on proven open-source libraries -- Fairlearn, AIF360, Plotly -- with Claude handling the natural-language reporting. Our vision is to make this a standard tool that any CSU campus can deploy to audit their AI systems before they affect a single student."
+**IDO:** "MatadorAudit is built on proven open-source tools: Python, Streamlit, Plotly for the dashboard, and the Claude API for natural-language report generation. The total annual cost is under 500 dollars."
 
-[SCREEN: Map of the 23-campus CSU system with text: "23 campuses. 460,000+ students. One auditing standard."]
+[SCREEN: Show the feasibility section -- tech stack table and cost breakdown]
+
+**ZACH:** "For integration with existing CSUN systems, administrators would export data from Canvas LMS or PeopleSoft as CSV files and upload them directly. No IT infrastructure changes needed. In a future phase, we envision direct API connectors to these systems for automated scheduled audits."
+
+[SCREEN: Simple flow diagram -- "Canvas/PeopleSoft Export -> CSV Upload -> MatadorAudit Analysis -> Fairness Report -> Admin Action"]
+
+**IDO:** "Our implementation timeline has four phases. Pilot with the CSUN Financial Aid Office in Summer 2026. Expand to Admissions and Academic Advising in Fall 2026. Integrate into the annual equity review process by Spring 2027. And ultimately, package this as an open-source tool for all 23 CSU campuses serving 460,000 students."
+
+[SCREEN: Map of CSU system with "23 campuses. 460,000+ students. One auditing standard."]
+
+**ZACH:** "The challenges we anticipate are institutional resistance from departments whose tools show bias, and the mathematical reality that fairness metrics can conflict with each other -- you cannot satisfy all definitions simultaneously. We address this by framing audits as improvement opportunities, not blame, and by presenting multiple metrics so humans choose the right trade-offs."
+
+**IDO:** "To keep the tool responsible and adaptable over time, we designed it with modular fairness metrics that can be updated as the field evolves, WCAG 2.1 AA accessibility compliance, and clear labeling that the What-If Simulator is exploratory -- all changes require institutional review before implementation."
 
 ---
 
-## 7. CLOSING (3:25 -- 3:40)
+## 5. CLOSING (4:10 -- 4:35)
 
-[SCREEN: MatadorAudit logo centered, with the tagline appearing below it]
+[SCREEN: MatadorAudit logo centered on dark background]
+
+**IDO:** "All data used in this demo is synthetic. No real CSUN student data was accessed, uploaded, or shared with any AI platform. Our synthetic dataset is modeled on publicly available institutional data from CSUN Institutional Research, the CSUN Fact Sheet, IPEDS, and the US Department of Education College Scorecard."
+
+[SCREEN: Data Sources section from the Netlify site]
+
+**ZACH:** "We used Claude AI to assist with generating natural-language fairness reports and to help structure our analysis framework. The fairness metrics are computed using our own implementation based on established research."
+
+[SCREEN: Tagline fades in -- "Every Matador Deserves a Fair Shot"]
 
 **IDO:** "Fair AI is not optional. It is an obligation."
 
-**ZACH:** "MatadorAudit. Audit the algorithm before it audits your students."
+**ZACH:** "MatadorAudit. Because every Matador deserves a fair shot."
 
-[SCREEN: Fade to team credit -- "Built by Ido Cohen & Zach Bar for CSUN AI Jam 2026" with a QR code linking to the live demo]
+[SCREEN: Fade to team credit -- "Built by Ido Cohen & Zach Bar | CSUN AI Jam 2026 | AI and Ethics Track" with URLs for the live demo]
 
 ---
 
 ## Production Notes
 
-- **Total runtime target:** 3:35
+- **Total runtime target:** 4:35
 - **Recording tool:** OBS or Loom for screen + voiceover
-- **Demo data:** Use the included synthetic dataset to avoid any real student data
-- **Tip:** Rehearse the What-If Simulator section -- live slider interaction is the most visually compelling moment and directly demonstrates Innovation (30pts)
+- **Demo data:** Use the included synthetic dataset -- no real student data
+- **Key moments to rehearse:**
+  - The What-If Simulator slider interaction (most visually compelling)
+  - The proxy detection reveal (most intellectually striking)
+  - The AI report card (demonstrates the "non-technical users" value prop)
+- **Submission:** Upload final video through the designated Canvas assignment
 - **Rubric alignment:**
-  - Impact (30pts): CSUN demographics, proxy discrimination, plain-English reports for non-technical users
-  - Innovation (30pts): Proxy detection, What-If Simulator with live metric updates, Claude-generated report cards
-  - Feasibility (20pts): Running today, open-source stack, CSU-wide scalability
-  - Presentation (20pts): Conversational tone, clear screen markers, strong hook and closing tagline
+  - Impact & Relevance (30pts): CSUN demographics, 8 audit scenarios, lived experience framing, CSU-wide scalability
+  - Innovation & Responsible AI (30pts): Proxy detection, What-If Simulator, Claude reports, ethics-first design, no automated debiasing
+  - Feasibility (20pts): Running today at matadoraudit.streamlit.app, open-source stack, <$500/yr, phased rollout
+  - Presentation (20pts): Individual intros, clear track statement, live demo walkthrough, data source disclosure, strong tagline
+- **All four required sections covered:**
+  1. Introduction and Track -- 0:00-0:50
+  2. Concept and Use of AI -- 0:50-2:00
+  3. Visual Representation -- 2:00-3:10
+  4. Implementation Considerations -- 3:10-4:10
+  5. Closing + disclosures -- 4:10-4:35
+- **Data ethics compliance:**
+  - No real CSUN data used
+  - No copyrighted data
+  - No data involving minors
+  - No commercial promotion
+  - Synthetic data disclosure stated in video
+  - AI usage disclosure stated in video

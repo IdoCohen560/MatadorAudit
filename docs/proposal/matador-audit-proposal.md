@@ -231,7 +231,20 @@ All core components are mature, open-source, and free:
 
 ---
 
-## 6. Conclusion
+## 6. Data Disclosure
+
+All data used in this proposal and demonstration is **synthetic**. No real CSUN student data was accessed, uploaded, or shared with any AI platform. Our synthetic dataset is modeled on publicly available institutional data from:
+
+- CSUN Institutional Research (csun.edu/counts/demographic.php)
+- CSUN Fact Sheet (csun.edu/about/facts)
+- IPEDS / NCES (nces.ed.gov/ipeds/)
+- US Department of Education College Scorecard (collegescorecard.ed.gov)
+
+Claude AI was used to assist with generating natural-language fairness reports. All fairness metrics are computed using our own implementation based on established fairness research.
+
+---
+
+## 7. Conclusion
 
 CSUN has the most diverse student body in the CSU system. That diversity is a strength — but only if the AI systems CSUN deploys serve all students equitably. Right now, there is no systematic way to verify that they do.
 
