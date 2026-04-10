@@ -1,8 +1,12 @@
-# MatadorAudit
+<p align="center">
+  <img src="site/assets/csun-matador-audit-logo-dark.png" alt="MatadorAudit" width="400">
+</p>
 
-**AI-Powered Fairness Auditing for University Systems**
+<h1 align="center">MatadorAudit</h1>
 
-CSUN AI Jam 2026 | Ido Cohen & Zach Bar
+<p align="center"><strong>AI-Powered Fairness Auditing for University Systems</strong></p>
+
+<p align="center">CSUN AI Jam 2026 | Ido Cohen & Zach Bar</p>
 
 ---
 
