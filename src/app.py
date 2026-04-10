@@ -1024,17 +1024,28 @@ Format your responses with markdown for readability. Use bullet points for lists
 
 {audit_context}"""
 
-    # Suggested questions (only show if no messages yet)
+    # Initialize pending question state
+    if 'qa_pending' not in st.session_state:
+        st.session_state.qa_pending = None
+
+    # Suggested questions — clickable buttons
     qa_key = 'qa_or_messages' if 'OpenRouter' in provider else 'qa_messages'
     if qa_key not in st.session_state or not st.session_state.get(qa_key, []):
-        st.markdown("**Try asking:**")
-        suggestions = st.columns(2)
-        with suggestions[0]:
-            st.markdown('<div class="qa-suggestion">What does the disparate impact ratio mean?</div>', unsafe_allow_html=True)
-            st.markdown('<div class="qa-suggestion">Who should I contact about these findings?</div>', unsafe_allow_html=True)
-        with suggestions[1]:
-            st.markdown('<div class="qa-suggestion">What are the next steps for this audit?</div>', unsafe_allow_html=True)
-            st.markdown('<div class="qa-suggestion">Is this legally concerning?</div>', unsafe_allow_html=True)
+        st.markdown("**Suggested questions:**")
+        suggestions = [
+            "What does the disparate impact ratio mean?",
+            "Who should I contact about these findings?",
+            "What are the next steps for this audit?",
+            "Is this legally concerning?",
+            "How do I explain these results to my department head?",
+            "What is proxy discrimination and why does it matter?",
+        ]
+        cols = st.columns(2)
+        for i, q in enumerate(suggestions):
+            with cols[i % 2]:
+                if st.button(q, key=f"suggest_{i}", use_container_width=True):
+                    st.session_state.qa_pending = q
+                    st.rerun()
 
     st.markdown("---")
 
@@ -1084,7 +1095,15 @@ def _qa_openrouter(system_prompt):
         with st.chat_message(msg['role']):
             st.markdown(msg['content'])
 
-    if prompt := st.chat_input("Ask a question about your fairness audit..."):
+    # Handle suggested question or typed question
+    prompt = st.chat_input("Ask a question about your fairness audit...")
+
+    # Check for pending suggested question
+    if st.session_state.get('qa_pending'):
+        prompt = st.session_state.qa_pending
+        st.session_state.qa_pending = None
+
+    if prompt:
         st.session_state.qa_or_messages.append({'role': 'user', 'content': prompt})
         with st.chat_message('user'):
             st.markdown(prompt)
