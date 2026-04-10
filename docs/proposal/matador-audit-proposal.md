@@ -12,7 +12,7 @@
 
 ## Executive Summary
 
-California State University, Northridge is one of the most diverse universities in the nation. With a student body that is 61% Hispanic/Latino, 56% Pell Grant-eligible, and representative of over 100 languages spoken at home, CSUN holds the designation of a Hispanic-Serving Institution (HSI) — a responsibility, not just a label.
+California State University, Northridge is one of the most diverse universities in the nation. With a student body that is 56.2% Hispanic/Latino, 58% Pell Grant-eligible, and representative of over 100 languages spoken at home, CSUN holds the designation of a Hispanic-Serving Institution (HSI) — a responsibility, not just a label.
 
 As CSUN and universities nationwide adopt AI-driven systems for course recommendations, admissions screening, financial aid allocation, and plagiarism detection, a critical question goes unanswered: **Are these systems treating all students fairly?**
 
@@ -41,10 +41,10 @@ These systems are typically evaluated on **accuracy** — do they make correct p
 
 CSUN's demographics make fairness auditing not optional but essential:
 
-- **61% Hispanic/Latino** — the largest demographic group, yet historically underrepresented in the training data that commercial AI tools are built on
-- **56% Pell Grant-eligible** — socioeconomic status is one of the strongest proxy variables for race, meaning income-based filtering can replicate racial discrimination
+- **56.2% Hispanic/Latino** — the largest demographic group, yet historically underrepresented in the training data that commercial AI tools are built on
+- **58% Pell Grant-eligible** — socioeconomic status is one of the strongest proxy variables for race, meaning income-based filtering can replicate racial discrimination
 - **12% students with disabilities** — disability status intersects with every other demographic dimension
-- **45% first-generation college students** — these students have thinner institutional data trails, which can bias predictive models against them
+- **47% first-generation college students** — these students have thinner institutional data trails, which can bias predictive models against them
 
 Without proactive auditing, CSUN risks allowing AI systems to quietly undermine the equity mission that defines the institution.
 
@@ -104,11 +104,11 @@ This transforms fairness from a one-time audit into an ongoing design tool.
 │  Connect    │   Engine     │    Simulator            │
 │  Module     │              │                         │
 ├─────────────┼──────────────┼────────────────────────┤
-│             │  Fairlearn   │    Claude API           │
-│   CSV/API   │  + AIF360    │  (Report Generation)   │
-│   Ingest    │  (Metrics &  │                         │
-│             │  Mitigation) │  Microsoft Copilot     │
-│             │              │  (Accessible Interface) │
+│             │  Own Python  │    Claude API           │
+│   CSV/API   │  Fairness    │  (Report Generation)   │
+│   Ingest    │  Metrics     │                         │
+│             │  Engine      │  OpenRouter / Copilot  │
+│             │              │  (AI Q&A Assistant)    │
 ├─────────────┴──────────────┴────────────────────────┤
 │          Synthetic / Real University Data             │
 └─────────────────────────────────────────────────────┘
@@ -118,11 +118,10 @@ This transforms fairness from a one-time audit into an ongoing design tool.
 
 | AI Tool | Role | Why This Tool |
 |---------|------|---------------|
-| **Anthropic Claude API** | Core intelligence — generates plain-English fairness reports from statistical output | Best-in-class at translating technical data into clear, nuanced narrative; handles sensitive topics with appropriate care |
-| **Microsoft Copilot** | Secondary interface — administrators can ask follow-up questions about their report in natural language | Accessible via CSUN Microsoft 365 licenses; familiar interface for staff |
-| **Google Gemini** | Alternative report generation pathway; data analysis assistance | Available to all CSUN users; strong at structured data interpretation |
-| **Microsoft Fairlearn** | Fairness metric computation engine | Industry-standard open-source library; actively maintained by Microsoft Research |
-| **IBM AIF360** | Bias mitigation algorithms and additional metrics | Complementary to Fairlearn; includes mitigation strategies not available elsewhere |
+| **OpenRouter (free)** | Default AI Q&A Assistant — answers follow-up questions about audit results in plain English | Completely free, no API key required; uses Nvidia Nemotron, GPT-OSS, Gemma, and Liquid models |
+| **Anthropic Claude API** | Optional report generation — generates detailed plain-English fairness reports from statistical output | Best-in-class at translating technical data into clear, nuanced narrative; user provides own API key |
+| **ChatGPT / Gemini / Copilot** | Alternative AI Q&A providers — administrators can choose their preferred AI assistant | Flexibility for institutions with existing AI subscriptions |
+| **Own Python Fairness Engine** | Fairness metric computation — demographic parity, equalized odds, disparate impact ratio | Custom implementation with no external dependencies (no scipy, Fairlearn, or AIF360 required) |
 
 ---
 
@@ -197,9 +196,9 @@ All core components are mature, open-source, and free:
 | Component | Status | Cost |
 |-----------|--------|------|
 | Python + Streamlit | Production-ready | Free |
-| Microsoft Fairlearn | v0.10+, actively maintained | Free (MIT License) |
-| IBM AIF360 | v0.6+, IBM-supported | Free (Apache 2.0) |
-| Claude API | Production API | ~$0.01 per report (affordable at scale) |
+| Own Python Fairness Engine | Custom implementation, no external dependencies | Free |
+| OpenRouter AI Q&A | Free tier, no API key needed | Free |
+| Claude API (optional) | Report generation, user provides key | ~$0.01 per report |
 | Plotly | Production-ready | Free |
 
 **We have a working prototype.** The demo accompanying this proposal is functional — it processes real (synthetic) data and generates real fairness reports. This is not a concept; it is software.
