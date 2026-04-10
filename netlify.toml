@@ -1,0 +1,12 @@
+[build]
+  publish = "site"
+  command = "echo 'Static site, no build needed'"
+  ignore = "exit 0"
+
+[build.environment]
+  PYTHON_VERSION = "0"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
