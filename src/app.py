@@ -104,10 +104,25 @@ def upload_page():
             st.success(f"Loaded {len(st.session_state.df)} records")
 
     with col2:
-        if st.button("Load CSUN Demo Data", use_container_width=True):
+        st.markdown("**Load Demo Data:**")
+        if st.button("CSUN Standard Demo", use_container_width=True):
             st.session_state.df = pd.read_csv(os.path.join(DATA_DIR, "csun_synthetic_students.csv"))
-            st.success(f"Loaded {len(st.session_state.df)} synthetic CSUN student records")
-        st.caption("Synthetic data modeled on publicly available CSUN institutional data. See About page for sources.")
+            st.success("Loaded standard demo: 5,000 records with moderate biases")
+        if st.button("CSUN High Bias Demo", use_container_width=True):
+            filepath = os.path.join(DATA_DIR, "csun_high_bias.csv")
+            if os.path.exists(filepath):
+                st.session_state.df = pd.read_csv(filepath)
+                st.success("Loaded high-bias demo: 5,000 records with severe biases")
+            else:
+                st.error("High bias dataset not found. Run scripts/generate_extra_datasets.py first.")
+        if st.button("CSUN Fair Demo", use_container_width=True):
+            filepath = os.path.join(DATA_DIR, "csun_fair.csv")
+            if os.path.exists(filepath):
+                st.session_state.df = pd.read_csv(filepath)
+                st.success("Loaded fair demo: 5,000 records with no systematic bias")
+            else:
+                st.error("Fair dataset not found. Run scripts/generate_extra_datasets.py first.")
+        st.caption("All demo data is synthetic. See About page for sources.")
 
     if st.session_state.df is not None:
         df = st.session_state.df
@@ -233,7 +248,7 @@ def multi_audit_page():
 
     if st.session_state.df is None:
         st.info("Load data first from the Upload & Analyze tab, or click below to use demo data.")
-        if st.button("Load CSUN Demo Data and Run All Audits", type="primary"):
+        if st.button("Load Standard Demo and Run All Audits", type="primary"):
             st.session_state.df = pd.read_csv(os.path.join(DATA_DIR, "csun_synthetic_students.csv"))
         else:
             return
