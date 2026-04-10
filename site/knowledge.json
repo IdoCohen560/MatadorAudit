@@ -1,0 +1,83 @@
+{
+  "project": {
+    "name": "MatadorAudit",
+    "tagline": "AI-Powered Fairness Auditing for University Systems",
+    "team": "Ido Cohen (Senior, CS) and Zach Bar (Junior, CS) at CSUN",
+    "competition": "CSUN AI Jam 2026, AI and Ethics Track",
+    "live_tool": "https://matadoraudit.streamlit.app",
+    "landing_page": "https://matadoraudit.netlify.app",
+    "github": "https://github.com/IdoCohen560/MatadorAudit"
+  },
+  "what_it_does": "MatadorAudit lets non-technical university administrators audit AI-driven systems for demographic fairness. Users upload a dataset (or use demo data), and the tool automatically detects disparities, identifies proxy discrimination, generates plain-English reports, and provides a What-If Simulator to explore fairer thresholds.",
+  "why_csun": "CSUN is a federally recognized Hispanic-Serving Institution with 56.2% Hispanic/Latino students, 58% Pell Grant eligible, and 47% first-generation college students. With 38,000 students, ensuring AI systems treat all students equitably is an institutional responsibility.",
+  "features": {
+    "automated_fairness_analysis": "Upload a CSV dataset. MatadorAudit auto-detects demographic columns and outcome columns, then computes demographic parity, equalized odds, and disparate impact ratio across all groups.",
+    "proxy_discrimination_detection": "Uses point-biserial correlation to detect when neutral-seeming variables (like zip code or predicted persistence scores) correlate with protected attributes like race. This reveals hidden pathways through which bias operates.",
+    "ai_report_card": "Generates plain-English Fairness Report Cards that explain findings, risk levels, and specific next steps. No statistics background required to understand the results.",
+    "what_if_simulator": "Administrators can adjust decision thresholds (like the minimum persistence score for financial aid approval) and watch fairness metrics update in real time. Helps find the balance between accuracy and equity.",
+    "multi_audit_dashboard": "Runs all 8 audit scenarios simultaneously with three view modes: Summary Cards for quick overview, Detailed Charts for deep dives, and a Comparison Table to prioritize by severity.",
+    "ai_qa_assistant": "Built-in Q&A powered by OpenRouter (free, no setup). Users can ask follow-up questions about their audit results. Also supports Claude, ChatGPT, and Gemini as alternative providers."
+  },
+  "audit_scenarios": [
+    "Financial aid allocation — are approval rates equitable across racial/ethnic groups?",
+    "STEM course recommendations — do recommendation quality scores differ by demographics?",
+    "Plagiarism detection — are some groups flagged at disproportionately higher rates?",
+    "Admissions screening — do screening tools produce equitable outcomes?",
+    "At-risk flagging — are prediction models biased in who they flag as at-risk?",
+    "Scholarship allocation — is merit-based funding distributed equitably?",
+    "Academic advising — are certain groups channeled away from competitive programs?",
+    "Gender parity — are outcomes equitable across gender identities?"
+  ],
+  "methodology": {
+    "demographic_parity": {
+      "what": "Measures the difference in positive outcome rates between the best- and worst-performing demographic groups. A gap of 0 means perfect parity.",
+      "formula": "Gap = max(group_rate) - min(group_rate)",
+      "thresholds": "Below 0.08 = low risk, 0.08-0.15 = medium, above 0.15 = high risk",
+      "source": "Dwork et al., 'Fairness through Awareness,' ITCS 2012"
+    },
+    "disparate_impact": {
+      "what": "The ratio of the lowest group's rate to the highest group's rate. Based on the EEOC four-fifths rule.",
+      "formula": "Ratio = min(group_rate) / max(group_rate)",
+      "thresholds": "Above 0.80 = passing (legal threshold), 0.60-0.80 = concern, below 0.60 = failing",
+      "source": "EEOC Uniform Guidelines on Employee Selection Procedures, 29 C.F.R. Part 1607 (1978). Legal precedent: Griggs v. Duke Power Co., 401 U.S. 424 (1971)"
+    },
+    "equalized_odds": {
+      "what": "Measures whether the system's true positive rate is equal across demographic groups. A system can be accurate overall but perform unevenly for different groups.",
+      "formula": "EO Gap = max(TPR_group) - min(TPR_group)",
+      "source": "Hardt, Price & Srebro, 'Equality of Opportunity in Supervised Learning,' NeurIPS 2016"
+    },
+    "proxy_detection": {
+      "what": "Uses point-biserial correlation to detect when neutral variables act as stand-ins for protected attributes. For example, zip code correlating with race means a model using zip code is indirectly using race.",
+      "thresholds": "Below 0.15 = low, 0.15-0.25 = medium, above 0.25 = high proxy risk",
+      "source": "Datta, Tschantz & Datta, 'Automated Experiments on Ad Privacy Settings,' PoPETs 2015"
+    }
+  },
+  "technology": {
+    "fairness_metrics": "Computed locally using our own Python implementation — no AI involved in the math",
+    "ai_reports": "OpenRouter API (free, using open-source models like Nvidia Nemotron and GPT-OSS) for natural-language report generation and Q&A",
+    "alternative_ai": "Claude (Anthropic), ChatGPT (OpenAI), and Gemini (Google) available as alternative providers",
+    "dashboard": "Streamlit + Plotly for interactive visualization",
+    "cost": "Under $500/year to operate at university scale"
+  },
+  "data_disclosure": "All data is synthetic. No real CSUN student data was accessed, uploaded, or shared with any platform. Demographics (56.2% Hispanic, 58% Pell, 47% first-gen) are drawn from publicly available CSUN Institutional Research, CSUN Fact Sheet, IPEDS, and US Dept of Education College Scorecard.",
+  "implementation_timeline": [
+    "Phase 1 (Summer 2026): Pilot with CSUN Financial Aid Office",
+    "Phase 2 (Fall 2026): Expand to Admissions and Academic Advising",
+    "Phase 3 (Spring 2027): Integrate into annual equity review process",
+    "Phase 4 (2027-2028): Scale to all 23 CSU campuses (460,000+ students), open-source release"
+  ],
+  "demo_datasets": {
+    "standard": "5,000 synthetic students with moderate biases — realistic scenario",
+    "high_bias": "5,000 students with severe biases — everything fails legal thresholds",
+    "fair": "5,000 students with no systematic bias — everything passes"
+  },
+  "faq": {
+    "Does MatadorAudit use real student data?": "No. All data is synthetic, modeled on publicly available institutional data. No real student data is accessed or stored.",
+    "Do I need to know statistics?": "No. MatadorAudit explains everything in plain English with color-coded risk levels (green = fair, red = disparity detected).",
+    "What should I do if the audit finds a problem?": "The report includes specific next steps: who to contact (Financial Aid Director, Office of Equity and Diversity, etc.), what to investigate, and how to use the What-If Simulator to explore solutions.",
+    "Is the AI Q&A free?": "Yes. The built-in Q&A uses OpenRouter with free open-source models. No API key or payment needed.",
+    "Can I use my own data?": "Yes. Upload any CSV file with demographic and outcome columns. MatadorAudit auto-detects the relevant columns.",
+    "What is the four-fifths rule?": "The EEOC four-fifths (80%) rule states that if a selection rate for a protected group is less than 80% of the rate for the highest group, it constitutes evidence of potential adverse impact under Title VII of the Civil Rights Act.",
+    "What is proxy discrimination?": "When an AI system does not use race directly but uses variables that correlate with race (like zip code), it can effectively discriminate based on race without ever seeing it. MatadorAudit detects these hidden correlations."
+  }
+}
