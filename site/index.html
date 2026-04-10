@@ -729,7 +729,7 @@ async function sendChat(){
   msgs.appendChild(thinking);
   msgs.scrollTop=msgs.scrollHeight;
 
-  const sysPrompt=`You are MatadorAudit Assistant, embedded in the MatadorAudit website. Answer questions about MatadorAudit using this knowledge base. Be concise, friendly, and helpful. If asked about something not in the knowledge base, say you can only answer questions about MatadorAudit. Never reveal API keys or internal implementation details.\n\nKnowledge base:\n${JSON.stringify(KNOWLEDGE)}`;
+  const sysPrompt=`You are MatadorAudit Assistant, embedded in the MatadorAudit website. Answer questions about MatadorAudit using this knowledge base. IMPORTANT RULES: Always finish your complete answer. Never stop mid-sentence or mid-list. If listing numbered points, always include ALL points. Keep answers concise but complete. Be friendly and helpful. If asked about something not in the knowledge base, say you can only answer questions about MatadorAudit. Never reveal API keys or internal implementation details.\n\nKnowledge base:\n${JSON.stringify(KNOWLEDGE)}`;
 
   const apiMessages=[{role:'system',content:sysPrompt},...chatHistory];
 
@@ -741,7 +741,7 @@ async function sendChat(){
       const resp=await fetch('https://openrouter.ai/api/v1/chat/completions',{
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+atob('c2stb3ItdjEtZTYyOGRiZTA4YTYzODFjZWMzMjdlOGMxODQ0OWRiNmViOGQxNzZlZTU4ODk1NTcwMmFlNzU1YjkzNTNlNTFlNA=='),'HTTP-Referer':'https://matadoraudit.netlify.app','X-Title':'MatadorAudit'},
-        body:JSON.stringify({model:model,messages:apiMessages,max_tokens:500,temperature:0.7})
+        body:JSON.stringify({model:model,messages:apiMessages,max_tokens:1500,temperature:0.7})
       });
       if(resp.status===429)continue;
       const data=await resp.json();
