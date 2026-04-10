@@ -47,9 +47,9 @@
 
 [SCREEN: Switch to the Streamlit app, navigate to the Proxy Detection tab, show the correlation bar chart]
 
-**IDO:** "We also built an AI Q&A Assistant directly into the tool. After running any audit, users can ask follow-up questions in plain English -- like 'Why is the gap so large for Hispanic students?' or 'What should I do next?' The assistant is powered by Groq, which is completely free with no setup required. Users can also connect Claude, ChatGPT, Gemini, or Ollama if they prefer."
+**IDO:** "We also built an AI Q&A Assistant directly into the tool. After running any audit, users can ask follow-up questions in plain English -- like 'Why is the gap so large for Hispanic students?' or 'What should I do next?' The assistant is powered by OpenRouter, which is completely free with no setup required. Users can also connect Claude, ChatGPT, Gemini, or Ollama if they prefer."
 
-[SCREEN: Navigate to the AI Q&A Assistant page, show Groq selected, type a sample question and display the response]
+[SCREEN: Navigate to the AI Q&A Assistant page, show OpenRouter selected, type a sample question and display the response]
 
 **IDO:** "What makes this responsible is what it does not do. MatadorAudit does not make decisions. It does not automatically debias anything. It provides transparency and lets humans decide what trade-offs are acceptable. We also never send raw student data to any external API -- AI models receive only statistical summaries."
 
@@ -91,7 +91,7 @@
 
 ### Step 5 -- AI Q&A and Next Steps
 
-[SCREEN: Navigate to the AI Q&A Assistant page, select Groq as the provider, type "Why is the gap so large for Hispanic students?" and show the response]
+[SCREEN: Navigate to the AI Q&A Assistant page, select OpenRouter as the provider, type "Why is the gap so large for Hispanic students?" and show the response]
 
 **IDO:** "After any audit, the AI Q&A Assistant provides instant answers. And every page includes detailed next steps -- who to contact, what actions to take, and recommended timelines. This turns data into action."
 
@@ -103,7 +103,7 @@
 
 [SCREEN: Navigate to the About section on matadoraudit.netlify.app, scroll to the implementation timeline]
 
-**IDO:** "MatadorAudit is built on proven open-source tools: Python, Streamlit, Plotly for the dashboard, and multiple AI providers for the Q&A assistant -- with Groq as the free default. The total annual cost is under 500 dollars."
+**IDO:** "MatadorAudit is built on proven open-source tools: Python, Streamlit, Plotly for the dashboard, and multiple AI providers for the Q&A assistant -- with OpenRouter as the free default. The total annual cost is under 500 dollars."
 
 [SCREEN: Scroll to the feasibility section showing the tech stack table and cost breakdown]
 
@@ -149,12 +149,12 @@
 - **Key moments to rehearse:**
   - The Multi-Audit Dashboard running all 8 audits at once (most impressive feature)
   - The What-If Simulator slider interaction (most visually compelling)
-  - The AI Q&A Assistant with Groq (demonstrates free, no-setup AI)
+  - The AI Q&A Assistant with OpenRouter (demonstrates free, no-setup AI)
   - The proxy detection reveal (most intellectually striking)
 - **Submission:** Upload final video through the designated Canvas assignment
 - **Rubric alignment:**
   - Impact & Relevance (30pts): CSUN demographics (56.2%, 58%, 47%), 8 audit scenarios, lived experience framing, CSU-wide scalability
-  - Innovation & Responsible AI (30pts): Multi-Audit Dashboard, AI Q&A with Groq, proxy detection, What-If Simulator, ethics-first design, no automated debiasing
+  - Innovation & Responsible AI (30pts): Multi-Audit Dashboard, AI Q&A with OpenRouter, proxy detection, What-If Simulator, ethics-first design, no automated debiasing
   - Feasibility (20pts): Running today at matadoraudit.streamlit.app and matadoraudit.netlify.app, open-source stack, <$500/yr, phased rollout
   - Presentation (20pts): Individual intros, clear track statement, live demo walkthrough, data source disclosure, methodology citations, strong tagline
 - **All four required sections covered:**
