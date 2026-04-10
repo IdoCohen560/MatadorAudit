@@ -80,9 +80,8 @@
   .card p{font-size:14px;color:var(--text-dim);line-height:1.7;position:relative}
 
   /* Dashboard */
-  .dashboard{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.2)}
-  .dash-titlebar{border-radius:20px 20px 0 0}
-  .dash-body{padding:36px;overflow:visible}
+  .dashboard{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.2);overflow:hidden}
+  .dash-body{padding:36px}
   .dash-titlebar{background:var(--surface2);padding:16px 20px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
   .dash-dot{width:12px;height:12px;border-radius:50%}
   .dash-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);overflow-x:auto}
@@ -90,7 +89,7 @@
   .dash-tab:hover{color:var(--text);background:rgba(255,255,255,0.02)}
   .dash-tab.active{color:var(--red);border-bottom-color:var(--red)}
   .dash-panel{display:none;animation:fadeIn 0.3s ease}
-  .dash-panel.active{display:block;overflow:visible}
+  .dash-panel.active{display:block}
 
   /* Metrics */
   .metrics-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
@@ -165,9 +164,7 @@
   footer h2{font-size:42px;font-weight:900;letter-spacing:-1px;margin-bottom:8px}
   footer .tagline{color:var(--red);font-size:22px;font-weight:700;margin-bottom:28px}
 
-  .chart-container{margin-top:16px;overflow:visible;min-height:280px}
-  .chart-container .js-plotly-plot{overflow:visible!important}
-  .chart-container .plot-container{overflow:visible!important}
+  .chart-container{margin-top:16px;min-height:280px}
 
   @media(max-width:768px){
     .hero h1{font-size:40px;letter-spacing:-1.5px}
@@ -309,7 +306,7 @@
           <h3 style="font-size:17px;margin-bottom:8px">Auditing multiple university systems</h3>
           <p style="color:var(--text-dim);font-size:14px;line-height:1.7;margin:0">Bias can appear in any AI-driven system. Below are four additional audits showing outcome rates by race/ethnicity. <strong style="color:var(--text)">When bars are roughly equal across groups, the system is fair. When one group's bar is significantly lower, there is a disparity that needs investigation.</strong></p>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;overflow:visible" id="audits-grid">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px" id="audits-grid">
           <div>
             <h4 style="margin-bottom:4px;color:var(--blue);font-weight:800">STEM Recommendation Quality</h4>
             <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Rate of students receiving high-quality STEM course recommendations</p>
@@ -594,7 +591,7 @@ function renderReport(){
     <div class="metric-box"><div class="val" style="color:${Math.abs(eo.gap)>0.1?'#f87171':'#4ade80'}">${eo.gap.toFixed(3)}</div><div class="lbl">Equalized Odds Gap</div>${riskBadge(eo.gap)}<div class="desc">Gap in true positive rates across demographic groups</div></div>
     <div class="metric-box"><div class="val" style="color:${di.ratio<0.8?'#fbbf24':'#4ade80'}">${di.ratio.toFixed(3)}</div><div class="lbl">Disparate Impact Ratio</div>${riskBadge(di.ratio,'di')}<div class="desc">EEOC four-fifths rule: below 0.80 = potential discrimination</div></div>`;
   const rates=DATA.aid.rates;
-  Plotly.newPlot('chart-rates',[{x:rates.map(r=>r.group),y:rates.map(r=>r.rate),type:'bar',marker:{color:rates.map(r=>r.rate<0.88?'#ef4444':(r.rate<0.93?'#f59e0b':'#22c55e')),line:{width:0}},text:rates.map(r=>(r.rate*100).toFixed(1)+'%'),textposition:'auto',textfont:{color:'#e4e4e7',size:13}}],{...plotLayout,title:{text:'Financial Aid Approval Rate by Race/Ethnicity',font:{color:'#e4e4e7',size:16,family:'Inter'}},yaxis:{...plotLayout.yaxis,range:[0,1.15],tickformat:'.0%'},height:380},plotConfig);
+  Plotly.newPlot('chart-rates',[{x:rates.map(r=>r.group),y:rates.map(r=>r.rate),type:'bar',marker:{color:rates.map(r=>r.rate<0.88?'#ef4444':(r.rate<0.93?'#f59e0b':'#22c55e')),line:{width:0}},text:rates.map(r=>(r.rate*100).toFixed(1)+'%'),textposition:'inside',insidetextanchor:'middle',textfont:{color:'#e4e4e7',size:13}}],{...plotLayout,title:{text:'Financial Aid Approval Rate by Race/Ethnicity',font:{color:'#e4e4e7',size:16,family:'Inter'}},yaxis:{...plotLayout.yaxis,range:[0,1.15],tickformat:'.0%'},height:380},plotConfig);
   const worst=rates[rates.length-1],best=rates[0],gap=((best.rate-worst.rate)*100).toFixed(1);
   document.getElementById('report-text').innerHTML=`<strong>Finding:</strong> <strong>${worst.group}</strong> students have the lowest financial aid approval rate at <strong>${(worst.rate*100).toFixed(1)}%</strong>, compared to <strong>${(best.rate*100).toFixed(1)}%</strong> for <strong>${best.group}</strong> students &mdash; a gap of <strong>${gap} percentage points</strong>.<br><br><strong>Root Cause:</strong> Proxy analysis shows the "predicted persistence" variable correlates strongly with zip code, which correlates with race/ethnicity in the CSUN student population. This constitutes proxy discrimination &mdash; the model effectively "knows" race through neutral-seeming variables.<br><br><strong>Recommended Action:</strong> Review and re-weight the "predicted persistence" variable. Use the What-If Simulator to find thresholds that maintain prediction accuracy while reducing demographic disparity.<br><br><span class="risk-badge risk-high" style="font-size:13px"><span class="risk-dot high"></span>IMMEDIATE ACTION RECOMMENDED</span>`;
 }
@@ -612,7 +609,7 @@ function renderProxies(){
 
 function renderProxyChart(){
   const proxies=DATA.proxies;
-  Plotly.newPlot('chart-proxy',[{y:proxies.map(p=>p.column.replace(/_/g,' ')),x:proxies.map(p=>Math.abs(p.correlation)),type:'bar',orientation:'h',marker:{color:proxies.map(p=>p.risk==='HIGH'?'#ef4444':(p.risk==='MEDIUM'?'#f59e0b':'#22c55e'))},text:proxies.map(p=>`r = ${p.correlation>0?'+':''}${p.correlation.toFixed(3)}`),textposition:'auto',textfont:{color:'#e4e4e7',size:12}}],{...plotLayout,title:{text:'Proxy Correlation Strength with Race/Ethnicity',font:{color:'#e4e4e7',size:15,family:'Inter'}},xaxis:{...plotLayout.xaxis,title:'Absolute correlation'},yaxis:{...plotLayout.yaxis,automargin:true},margin:{t:50,b:50,l:180,r:80},height:300},plotConfig);
+  Plotly.newPlot('chart-proxy',[{y:proxies.map(p=>p.column.replace(/_/g,' ')),x:proxies.map(p=>Math.abs(p.correlation)),type:'bar',orientation:'h',marker:{color:proxies.map(p=>p.risk==='HIGH'?'#ef4444':(p.risk==='MEDIUM'?'#f59e0b':'#22c55e'))},text:proxies.map(p=>`r = ${p.correlation>0?'+':''}${p.correlation.toFixed(3)}`),textposition:'inside',insidetextanchor:'middle',textfont:{color:'#e4e4e7',size:12}}],{...plotLayout,title:{text:'Proxy Correlation Strength with Race/Ethnicity',font:{color:'#e4e4e7',size:15,family:'Inter'}},xaxis:{...plotLayout.xaxis,title:'Absolute correlation'},yaxis:{...plotLayout.yaxis,automargin:true},margin:{t:50,b:50,l:180,r:80},height:300},plotConfig);
 }
 
 function renderSimulator(){
@@ -639,12 +636,12 @@ function renderSimChart(){
   for(const w of wif){if(Math.abs(w.threshold-val)<Math.abs(closest.threshold-val))closest=w}
   const groups=closest.groups;
   const colors={'Hispanic/Latino':'#ef4444','White':'#3b82f6','Asian':'#22c55e','Black/African American':'#f59e0b','Two or More':'#8b5cf6','Other':'#71717a'};
-  Plotly.newPlot('chart-sim',[{x:Object.keys(groups),y:Object.values(groups),type:'bar',marker:{color:Object.keys(groups).map(g=>colors[g]||'#71717a')},text:Object.values(groups).map(v=>(v*100).toFixed(1)+'%'),textposition:'auto',textfont:{color:'#e4e4e7',size:13}}],{...plotLayout,title:{text:`Approval Rates at Threshold = ${val.toFixed(2)}`,font:{color:'#e4e4e7',size:15,family:'Inter'}},yaxis:{...plotLayout.yaxis,range:[0,1.15],tickformat:'.0%'},height:380,shapes:[{type:'line',x0:-0.5,x1:5.5,y0:0.8*Math.max(...Object.values(groups)),y1:0.8*Math.max(...Object.values(groups)),line:{color:'#f59e0b',width:2,dash:'dash'}}],annotations:[{x:5,y:0.8*Math.max(...Object.values(groups)),text:'4/5 rule line',showarrow:false,font:{color:'#f59e0b',size:11},yshift:14}]},plotConfig);
+  Plotly.newPlot('chart-sim',[{x:Object.keys(groups),y:Object.values(groups),type:'bar',marker:{color:Object.keys(groups).map(g=>colors[g]||'#71717a')},text:Object.values(groups).map(v=>(v*100).toFixed(1)+'%'),textposition:'inside',insidetextanchor:'middle',textfont:{color:'#e4e4e7',size:13}}],{...plotLayout,title:{text:`Approval Rates at Threshold = ${val.toFixed(2)}`,font:{color:'#e4e4e7',size:15,family:'Inter'}},yaxis:{...plotLayout.yaxis,range:[0,1.15],tickformat:'.0%'},height:380,shapes:[{type:'line',x0:-0.5,x1:5.5,y0:0.8*Math.max(...Object.values(groups)),y1:0.8*Math.max(...Object.values(groups)),line:{color:'#f59e0b',width:2,dash:'dash'}}],annotations:[{x:5,y:0.8*Math.max(...Object.values(groups)),text:'4/5 rule line',showarrow:false,font:{color:'#f59e0b',size:11},yshift:14}]},plotConfig);
 }
 
 function makeAuditChart(id,data,color){
   if(!data||!data.rates)return;
-  Plotly.newPlot(id,[{x:data.rates.map(r=>r.group),y:data.rates.map(r=>r.rate),type:'bar',marker:{color:color},text:data.rates.map(r=>(r.rate*100).toFixed(1)+'%'),textposition:'auto',textfont:{color:'#e4e4e7',size:12}}],{...plotLayout,yaxis:{...plotLayout.yaxis,range:[0,Math.max(...data.rates.map(r=>r.rate))*1.35],tickformat:'.0%'},margin:{t:10,b:120,l:50,r:20},height:350,xaxis:{...plotLayout.xaxis,fixedrange:true,tickangle:-30}},plotConfig);
+  Plotly.newPlot(id,[{x:data.rates.map(r=>r.group),y:data.rates.map(r=>r.rate),type:'bar',marker:{color:color},text:data.rates.map(r=>(r.rate*100).toFixed(1)+'%'),textposition:'inside',insidetextanchor:'middle',textfont:{color:'#e4e4e7',size:12}}],{...plotLayout,yaxis:{...plotLayout.yaxis,range:[0,Math.max(...data.rates.map(r=>r.rate))*1.35],tickformat:'.0%'},margin:{t:10,b:120,l:50,r:20},height:350,xaxis:{...plotLayout.xaxis,fixedrange:true,tickangle:-30}},plotConfig);
 }
 
 function renderOtherAudits(){

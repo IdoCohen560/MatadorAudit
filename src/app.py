@@ -58,6 +58,7 @@ def main():
 
     page = st.sidebar.radio("Navigate", [
         "Upload & Analyze",
+        "Multi-Audit Dashboard",
         "Fairness Report Card",
         "Proxy Detection",
         "What-If Simulator",
@@ -73,6 +74,8 @@ def main():
 
     if page == "Upload & Analyze":
         upload_page()
+    elif page == "Multi-Audit Dashboard":
+        multi_audit_page()
     elif page == "Fairness Report Card":
         report_page()
     elif page == "Proxy Detection":
@@ -190,6 +193,229 @@ def upload_page():
         st.markdown("---")
         with st.expander("Preview raw data"):
             st.dataframe(df.head(50))
+
+
+def multi_audit_page():
+    st.title("Multi-Audit Dashboard")
+    st.markdown("Run all pre-configured fairness audits at once across multiple university systems.")
+
+    if st.session_state.df is None:
+        st.info("Load data first from the Upload & Analyze tab, or click below to use demo data.")
+        if st.button("Load CSUN Demo Data and Run All Audits", type="primary"):
+            st.session_state.df = pd.read_csv(os.path.join(DATA_DIR, "csun_synthetic_students.csv"))
+        else:
+            return
+
+    df = st.session_state.df
+
+    # Define all audit scenarios
+    AUDITS = {}
+
+    # Only add audits for columns that exist in the dataset
+    if 'financial_aid_approved' in df.columns:
+        AUDITS['Financial Aid Approval'] = {
+            'demo': 'race_ethnicity', 'outcome': 'financial_aid_approved',
+            'desc': 'Are students from all racial/ethnic backgrounds approved for financial aid at equal rates?',
+            'color': '#CF0A2C',
+        }
+    if 'stem_rec_quality' in df.columns:
+        df['_stem_good'] = df['stem_rec_quality'] >= 0.75
+        AUDITS['STEM Recommendation Quality'] = {
+            'demo': 'race_ethnicity', 'outcome': '_stem_good',
+            'desc': 'Do all students receive equally high-quality STEM course recommendations?',
+            'color': '#3b82f6',
+        }
+    if 'plagiarism_flagged' in df.columns:
+        AUDITS['Plagiarism Detection'] = {
+            'demo': 'race_ethnicity', 'outcome': 'plagiarism_flagged',
+            'desc': 'Are some groups flagged for plagiarism at disproportionately higher rates?',
+            'color': '#8b5cf6',
+        }
+    if 'admitted' in df.columns:
+        AUDITS['Admissions Screening'] = {
+            'demo': 'race_ethnicity', 'outcome': 'admitted',
+            'desc': 'Do admissions screening tools produce equitable outcomes across demographics?',
+            'color': '#22c55e',
+        }
+    if 'at_risk_flag' in df.columns:
+        AUDITS['At-Risk Flagging'] = {
+            'demo': 'race_ethnicity', 'outcome': 'at_risk_flag',
+            'desc': 'Are "at-risk" prediction flags disproportionately applied to certain groups?',
+            'color': '#f59e0b',
+        }
+    if 'scholarship_awarded' in df.columns:
+        AUDITS['Scholarship Allocation'] = {
+            'demo': 'race_ethnicity', 'outcome': 'scholarship_awarded',
+            'desc': 'Is scholarship funding distributed equitably across racial/ethnic groups?',
+            'color': '#06b6d4',
+        }
+    if 'competitive_program_rec' in df.columns:
+        df['_comp_good'] = df['competitive_program_rec'] >= 0.70
+        AUDITS['Advising: Competitive Programs'] = {
+            'demo': 'race_ethnicity', 'outcome': '_comp_good',
+            'desc': 'Are students from all backgrounds equally recommended for competitive programs?',
+            'color': '#ec4899',
+        }
+    if 'financial_aid_approved' in df.columns and 'gender' in df.columns:
+        AUDITS['Financial Aid by Gender'] = {
+            'demo': 'gender', 'outcome': 'financial_aid_approved',
+            'desc': 'Is financial aid approval equitable across gender identities?',
+            'color': '#a855f7',
+        }
+
+    if not AUDITS:
+        st.warning("No auditable outcome columns detected in this dataset.")
+        return
+
+    # View mode selector
+    view = st.radio("View mode", ["Summary Cards", "Detailed Charts", "Comparison Table"],
+                     horizontal=True)
+
+    # Run all audits
+    with st.spinner("Running all audits..."):
+        audit_results = {}
+        for name, config in AUDITS.items():
+            engine = FairnessEngine(df, config['demo'], config['outcome'])
+            engine.compute_all()
+            audit_results[name] = {
+                'engine': engine,
+                'config': config,
+                'dp': engine.results['demographic_parity']['disparity'],
+                'di': engine.results['disparate_impact']['ratio'],
+                'eo': engine.results['equalized_odds']['gap'],
+                'worst': engine.group_rates().iloc[-1],
+                'best': engine.group_rates().iloc[0],
+            }
+
+    if view == "Summary Cards":
+        _render_summary_cards(audit_results)
+    elif view == "Detailed Charts":
+        _render_detailed_charts(audit_results)
+    elif view == "Comparison Table":
+        _render_comparison_table(audit_results)
+
+
+def _render_summary_cards(audit_results):
+    """Grid of cards showing risk level and key stat for each audit."""
+    cols = st.columns(2)
+    for i, (name, data) in enumerate(audit_results.items()):
+        with cols[i % 2]:
+            di = data['di']
+            dp = data['dp']
+            if di < 0.6 or dp > 0.15:
+                risk, risk_color = "HIGH RISK", "#ef4444"
+            elif di < 0.8 or dp > 0.08:
+                risk, risk_color = "MEDIUM", "#f59e0b"
+            else:
+                risk, risk_color = "LOW RISK", "#22c55e"
+
+            st.markdown(f"""
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);
+                        border-left:4px solid {data['config']['color']};border-radius:12px;
+                        padding:20px;margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <strong style="font-size:16px">{name}</strong>
+                    <span style="background:{risk_color}22;color:{risk_color};padding:3px 10px;
+                                 border-radius:6px;font-size:12px;font-weight:800">{risk}</span>
+                </div>
+                <p style="color:#71717a;font-size:13px;margin-bottom:12px">{data['config']['desc']}</p>
+                <div style="display:flex;gap:24px">
+                    <div><span style="font-size:24px;font-weight:900;color:{risk_color}">{di:.3f}</span>
+                         <br><span style="font-size:11px;color:#71717a">Disparate Impact</span></div>
+                    <div><span style="font-size:24px;font-weight:900">{dp:.3f}</span>
+                         <br><span style="font-size:11px;color:#71717a">Parity Gap</span></div>
+                    <div><span style="font-size:14px;color:#71717a">Lowest: <strong style="color:#e4e4e7">{data['worst']['group']}</strong>
+                         at {data['worst']['rate']:.1%}</span></div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+
+def _render_detailed_charts(audit_results):
+    """Full charts for each audit."""
+    selected = st.selectbox("Select audit to view in detail",
+                             list(audit_results.keys()))
+    data = audit_results[selected]
+    engine = data['engine']
+    config = data['config']
+
+    st.markdown(f"**{config['desc']}**")
+    st.caption(f"Demographic dimension: `{config['demo']}` | Outcome: `{config['outcome']}`")
+
+    # Metrics row
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.metric("Demographic Parity Gap", f"{data['dp']:.4f}")
+        st.caption("Difference between highest and lowest group rates. >0.10 = concern.")
+    with c2:
+        st.metric("Equalized Odds Gap", f"{data['eo']:.4f}")
+        st.caption("Gap in true positive rates across groups.")
+    with c3:
+        di_pass = "PASS" if data['di'] >= 0.8 else "FAIL"
+        st.metric("Disparate Impact Ratio", f"{data['di']:.4f}")
+        st.caption(f"EEOC four-fifths rule: {'Passing' if data['di'] >= 0.8 else 'Below 0.80 threshold'}.")
+
+    # Bar chart
+    rates = engine.group_rates()
+    fig = px.bar(
+        rates, x='group', y='rate',
+        color='rate',
+        color_continuous_scale=['#ef4444', '#f59e0b', '#22c55e'],
+        labels={'group': config['demo'], 'rate': 'Positive Outcome Rate'},
+        title=f'{selected} — Outcome Rate by {config["demo"]}'
+    )
+    fig.update_layout(
+        template='plotly_dark',
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        showlegend=False,
+        yaxis_tickformat='.0%',
+        dragmode=False,
+        xaxis=dict(fixedrange=True),
+        yaxis=dict(fixedrange=True),
+    )
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+
+    # Report
+    report = generate_template_report(engine)
+    st.markdown(f"<div class='report-box'>{report}</div>", unsafe_allow_html=True)
+
+
+def _render_comparison_table(audit_results):
+    """Side-by-side comparison table of all audits."""
+    rows = []
+    for name, data in audit_results.items():
+        di = data['di']
+        dp = data['dp']
+        if di < 0.6 or dp > 0.15:
+            risk = "HIGH"
+        elif di < 0.8 or dp > 0.08:
+            risk = "MEDIUM"
+        else:
+            risk = "LOW"
+        rows.append({
+            'Audit': name,
+            'Risk Level': risk,
+            'Disparate Impact': f"{di:.4f}",
+            '4/5 Rule': 'PASS' if di >= 0.8 else 'FAIL',
+            'Parity Gap': f"{dp:.4f}",
+            'Eq. Odds Gap': f"{data['eo']:.4f}",
+            'Lowest Group': data['worst']['group'],
+            'Lowest Rate': f"{data['worst']['rate']:.1%}",
+            'Highest Rate': f"{data['best']['rate']:.1%}",
+        })
+
+    table_df = pd.DataFrame(rows)
+    st.dataframe(table_df, use_container_width=True, hide_index=True)
+
+    st.markdown("---")
+    st.markdown("**How to read this table:**")
+    st.markdown("""
+    - **Disparate Impact** below 0.80 fails the EEOC four-fifths rule
+    - **Parity Gap** above 0.10 indicates significant disparity
+    - **Risk Level** combines both metrics: HIGH = immediate review needed
+    - **Lowest Group** shows which demographic group is most disadvantaged
+    """)
 
 
 def report_page():
