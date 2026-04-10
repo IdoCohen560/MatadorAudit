@@ -152,6 +152,7 @@ def upload_page():
             # Preview
             results = engine.results
             st.markdown("#### Quick Results")
+            st.caption("These three numbers tell you whether the system treats all groups equally. Think of them like a health checkup for fairness.")
 
             metric_cols = st.columns(3)
             dp = results['demographic_parity']
@@ -160,21 +161,39 @@ def upload_page():
 
             with metric_cols[0]:
                 risk = risk_level(dp['disparity'])
-                st.metric("Demographic Parity Gap", f"{dp['disparity']:.3f}")
-                st.markdown(f"Risk: <span class='risk-{risk.lower()}'>{risk}</span>", unsafe_allow_html=True)
+                st.metric("Parity Gap", f"{dp['disparity']:.3f}")
+                if risk == "HIGH":
+                    st.error("Large gap between groups")
+                elif risk == "MEDIUM":
+                    st.warning("Moderate gap")
+                else:
+                    st.success("Groups treated similarly")
 
             with metric_cols[1]:
                 risk = risk_level(eo['gap'])
-                st.metric("Equalized Odds Gap", f"{eo['gap']:.3f}")
-                st.markdown(f"Risk: <span class='risk-{risk.lower()}'>{risk}</span>", unsafe_allow_html=True)
+                st.metric("Odds Gap", f"{eo['gap']:.3f}")
+                if risk == "HIGH":
+                    st.error("System works unevenly")
+                elif risk == "MEDIUM":
+                    st.warning("Some unevenness")
+                else:
+                    st.success("System works evenly")
 
             with metric_cols[2]:
                 di_risk = "LOW" if di['ratio'] >= 0.8 else ("MEDIUM" if di['ratio'] >= 0.6 else "HIGH")
-                st.metric("Disparate Impact Ratio", f"{di['ratio']:.3f}")
-                st.markdown(f"Risk: <span class='risk-{di_risk.lower()}'>{di_risk}</span>", unsafe_allow_html=True)
+                st.metric("Impact Ratio", f"{di['ratio']:.3f}")
+                if di_risk == "HIGH":
+                    st.error("Fails legal standard")
+                elif di_risk == "MEDIUM":
+                    st.warning("Close to legal line")
+                else:
+                    st.success("Passes legal standard")
 
             # Group breakdown chart
             st.markdown("#### Outcome Rates by Group")
+            st.caption("Each bar shows what percentage of students in that group received a positive outcome. "
+                       "If all bars are roughly the same height, the system is fair. "
+                       "If one bar is much shorter than the others, that group is being disadvantaged.")
             rates = engine.group_rates()
             fig = px.bar(
                 rates, x='group', y='rate',
@@ -485,6 +504,10 @@ def report_page():
     # Group comparison chart
     st.markdown("---")
     st.subheader("Group Comparison")
+    st.caption("This chart shows the positive outcome rate for each demographic group. "
+               "Taller bars = higher rates. If one group's bar is noticeably shorter, "
+               "that group is receiving fewer positive outcomes than the others. "
+               "The color also indicates fairness: green = good, red = concern.")
     rates = engine.group_rates()
     fig = px.bar(
         rates, x='group', y='rate',
@@ -505,7 +528,12 @@ def proxy_page():
         return
 
     df = st.session_state.df
-    st.markdown("Detecting variables that correlate with protected demographics — potential proxy discrimination.")
+    st.markdown("""
+    **What this page does:** It checks whether any variables in your data are secretly
+    linked to a protected characteristic like race. For example, if "zip code" strongly
+    predicts a student's race, then any system using zip code is indirectly using race
+    to make decisions — even if race is never mentioned. This is called **proxy discrimination**.
+    """)
 
     demo_cols = detect_demographic_cols(df)
     selected = st.selectbox("Check proxies for:", demo_cols, index=0)
@@ -598,7 +626,13 @@ def simulator_page():
     df = st.session_state.df
     engine = st.session_state.engine
 
-    st.markdown("Adjust decision thresholds and watch fairness metrics update in real time.")
+    st.markdown("""
+    **What this page does:** Many AI systems use a cutoff score to make decisions — for example,
+    "students with a persistence score above 0.55 get financial aid." But that cutoff might
+    unfairly exclude certain groups. This simulator lets you **drag the cutoff up or down**
+    and instantly see how it changes the outcome for each demographic group. The goal is to
+    find a cutoff that is both accurate and fair.
+    """)
 
     # Only works for numeric outcome columns with a threshold
     outcome = st.session_state.selected_outcome
@@ -639,6 +673,9 @@ def simulator_page():
     sim = sim_engine.results
 
     st.markdown("### Metric Comparison")
+    st.caption("These numbers update as you move the slider. The small green/red numbers show the change from the original. "
+               "Green arrows on Parity Gap and Odds Gap mean the disparity is shrinking (good). "
+               "Green arrows on Disparate Impact mean the ratio is improving toward 1.0 (good).")
     c1, c2, c3, c4 = st.columns(4)
 
     with c1:
@@ -666,6 +703,8 @@ def simulator_page():
 
     # Side-by-side group rates
     st.markdown("### Group Outcome Rates — Before vs After")
+    st.caption("Gray bars = the original rates. Red bars = the rates with your new threshold. "
+               "If the red bars are more equal in height than the gray bars, your threshold change is improving fairness.")
     orig_rates = engine.group_rates()
     sim_rates = sim_engine.group_rates()
 
