@@ -624,11 +624,11 @@
     return{
       homeX,homeY,x:homeX,y:homeY,tx:homeX,ty:homeY,
       r,g,b,
-      size:(1.5+Math.random()*2.5)*variance,
+      size:(3+Math.random()*5)*variance,
       phase:Math.random()*Math.PI*2,
       variance,
       capsuleAngle:ringAngle+Math.PI/2,
-      capsuleLen:3+Math.random()*6,
+      capsuleLen:6+Math.random()*10,
       alpha:0.3+Math.random()*0.7,
       orbitSpeed:0.1+Math.random()*0.3,
       ringAngle
@@ -717,7 +717,7 @@
       // Outer glow for brighter particles
       if(p.alpha>0.5){
         ctx.beginPath();
-        ctx.arc(p.x,p.y,p.size*2,0,Math.PI*2);
+        ctx.arc(p.x,p.y,p.size*3,0,Math.PI*2);
         ctx.fillStyle=`rgba(${p.r},${p.g},${p.b},${alpha*0.08})`;
         ctx.fill();
       }
