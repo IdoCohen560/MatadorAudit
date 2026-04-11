@@ -47,21 +47,32 @@
   .reveal-delay-3{transition-delay:0.3s}.reveal-delay-4{transition-delay:0.4s}
   .reveal-delay-5{transition-delay:0.5s}.reveal-delay-6{transition-delay:0.6s}
 
-  /* Nav */
-  nav{position:fixed;top:0;width:100%;background:rgba(6,6,11,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);z-index:100;padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:68px}
-  .nav-brand{display:flex;align-items:center;text-decoration:none;color:inherit}
-  nav{height:100px}
-  .nav-logo-wrap{display:flex;align-items:center;cursor:pointer;text-decoration:none}
-  .nav-logo-img{height:90px;width:auto;display:block}
-  .nav-links{display:flex;gap:36px;align-items:center}
-  .nav-links a{color:var(--text-dim);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;transition:color 0.3s,transform 0.3s;display:inline-block}
-  .nav-links a:hover{color:var(--text);transform:translateY(-2px)}
-  .nav-cta{background:var(--red)!important;color:white!important;padding:10px 24px;border-radius:10px;transition:transform 0.3s,box-shadow 0.3s!important}
-  .nav-cta:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 30px var(--red-glow)}
-  .nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 20px var(--red-glow)}
+  /* Pill Nav */
+  .pill-nav-outer{position:fixed;top:0;width:100%;z-index:100;display:flex;justify-content:center;padding:16px 24px;pointer-events:none}
+  .pill-nav{pointer-events:auto;display:flex;align-items:center;gap:6px;background:rgba(6,6,11,0.75);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:100px;padding:6px 8px 6px 12px;box-shadow:0 8px 32px rgba(0,0,0,0.3);animation:fadeIn 0.6s ease}
+  .pill-logo{display:flex;align-items:center;cursor:pointer;text-decoration:none;margin-right:8px;transition:transform 0.3s}
+  .pill-logo:hover{transform:rotate(8deg) scale(1.05)}
+  .pill-logo img{height:44px;width:auto;display:block}
+  .pill-item{position:relative;overflow:hidden;border-radius:100px;text-decoration:none;padding:10px 20px;font-size:13px;font-weight:600;letter-spacing:0.3px;color:var(--text-dim);transition:color 0.35s cubic-bezier(0.16,1,0.3,1);display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .pill-item .pill-bg{position:absolute;inset:0;border-radius:100px;background:var(--red);transform:scaleX(0) scaleY(0);opacity:0;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1),opacity 0.3s;transform-origin:center bottom}
+  .pill-item:hover .pill-bg{transform:scaleX(1) scaleY(1);opacity:1}
+  .pill-item .pill-label{position:relative;z-index:1;transition:color 0.35s cubic-bezier(0.16,1,0.3,1),transform 0.35s cubic-bezier(0.16,1,0.3,1)}
+  .pill-item:hover .pill-label{color:white;transform:translateY(-1px)}
+  .pill-item:hover{color:white}
+  .pill-cta{background:var(--red);color:white!important;border-radius:100px;padding:10px 22px;transition:transform 0.3s cubic-bezier(0.16,1,0.3,1),box-shadow 0.3s;margin-left:4px}
+  .pill-cta .pill-bg{display:none}
+  .pill-cta:hover{transform:scale(1.06);box-shadow:0 4px 20px var(--red-glow)}
+  .pill-cta .pill-label{color:white}
+  /* Mobile hamburger */
+  .pill-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:10px;background:none;border:none}
+  .pill-hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:transform 0.3s,opacity 0.3s}
+  .pill-mobile-menu{display:none;position:fixed;top:76px;left:50%;transform:translateX(-50%);background:rgba(6,6,11,0.95);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:20px;padding:12px;min-width:200px;box-shadow:0 16px 48px rgba(0,0,0,0.4);z-index:99}
+  .pill-mobile-menu.open{display:flex;flex-direction:column;gap:4px;animation:fadeUp 0.3s cubic-bezier(0.16,1,0.3,1)}
+  .pill-mobile-menu a{color:var(--text-dim);text-decoration:none;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;transition:all 0.2s}
+  .pill-mobile-menu a:hover{background:rgba(207,10,44,0.1);color:var(--text)}
 
   /* Hero */
-  .hero{position:relative;padding:160px 48px 100px;text-align:center;overflow:hidden}
+  .hero{position:relative;padding:140px 48px 100px;text-align:center;overflow:hidden}
   .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(207,10,44,0.08) 0%,transparent 60%);pointer-events:none}
   .hero-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
   .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(207,10,44,0.1);color:var(--red);padding:8px 20px;border-radius:24px;font-size:13px;font-weight:700;margin-bottom:32px;border:1px solid rgba(207,10,44,0.2);animation:fadeIn 0.8s ease}
@@ -195,9 +206,9 @@
     .hero h1{font-size:40px;letter-spacing:-1.5px}
     .hero-stats{flex-direction:column;gap:24px}
     .metrics-row,.sim-metrics{grid-template-columns:1fr}
-    nav{padding:0 20px}.nav-links{display:none}
-    nav{height:64px}
-    .nav-logo-img{height:52px}
+    .pill-nav .pill-item:not(.pill-cta){display:none}
+    .pill-hamburger{display:flex}
+    .pill-logo img{height:36px}
     section{padding:60px 20px}
     .hero{padding:120px 20px 60px}
   }
@@ -205,21 +216,32 @@
 </head>
 <body>
 
-<nav>
-  <a href="#" class="nav-brand" aria-label="CSUN Matador Audit — home">
-    <a href="#" class="nav-logo-wrap" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">
-      <img class="nav-logo-img" src="assets/csun-matador-audit-logo.png" alt="CSUN Matador Audit" decoding="async">
+<div class="pill-nav-outer">
+  <nav class="pill-nav">
+    <a href="#" class="pill-logo" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">
+      <img src="assets/csun-matador-audit-logo.png" alt="MatadorAudit" decoding="async">
     </a>
-  <div class="nav-links">
-    <a href="#features">Features</a>
-    <a href="#dashboard">Dashboard</a>
-    <a href="#methodology">Methodology</a>
-    <a href="#sources">Sources</a>
-    <a href="#disclosure">Disclosure</a>
-    <a href="#about">About</a>
-    <a href="https://matadoraudit.streamlit.app" target="_blank" rel="noopener" class="nav-cta" id="live-tool-link">Try Live Tool</a>
-  </div>
-</nav>
+    <a href="#features" class="pill-item"><span class="pill-bg"></span><span class="pill-label">Features</span></a>
+    <a href="#dashboard" class="pill-item"><span class="pill-bg"></span><span class="pill-label">Dashboard</span></a>
+    <a href="#methodology" class="pill-item"><span class="pill-bg"></span><span class="pill-label">Methodology</span></a>
+    <a href="#sources" class="pill-item"><span class="pill-bg"></span><span class="pill-label">Sources</span></a>
+    <a href="#disclosure" class="pill-item"><span class="pill-bg"></span><span class="pill-label">Disclosure</span></a>
+    <a href="#about" class="pill-item"><span class="pill-bg"></span><span class="pill-label">About</span></a>
+    <a href="https://matadoraudit.streamlit.app" target="_blank" rel="noopener" class="pill-item pill-cta"><span class="pill-bg"></span><span class="pill-label">Try Live Tool</span></a>
+    <button class="pill-hamburger" onclick="document.getElementById('pill-mobile').classList.toggle('open')" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </nav>
+</div>
+<div id="pill-mobile" class="pill-mobile-menu">
+  <a href="#features" onclick="this.parentElement.classList.remove('open')">Features</a>
+  <a href="#dashboard" onclick="this.parentElement.classList.remove('open')">Dashboard</a>
+  <a href="#methodology" onclick="this.parentElement.classList.remove('open')">Methodology</a>
+  <a href="#sources" onclick="this.parentElement.classList.remove('open')">Sources</a>
+  <a href="#disclosure" onclick="this.parentElement.classList.remove('open')">Disclosure</a>
+  <a href="#about" onclick="this.parentElement.classList.remove('open')">About</a>
+  <a href="https://matadoraudit.streamlit.app" target="_blank" rel="noopener">Try Live Tool</a>
+</div>
 
 <!-- Hero -->
 <div class="hero">
