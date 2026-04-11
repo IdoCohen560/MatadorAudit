@@ -76,7 +76,7 @@
   .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(207,10,44,0.08) 0%,transparent 60%);pointer-events:none}
   .hero-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
   .hero>*:not(canvas):not(.hero-bg){position:relative;z-index:2}
-  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(207,10,44,0.1);color:var(--red);padding:8px 20px;border-radius:24px;font-size:13px;font-weight:700;margin-bottom:32px;border:1px solid rgba(207,10,44,0.2);animation:fadeIn 0.8s ease}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(207,10,44,0.05);color:rgba(207,10,44,0.5);padding:8px 20px;border-radius:24px;font-size:13px;font-weight:700;margin-bottom:32px;border:1px solid rgba(207,10,44,0.1);animation:fadeIn 0.8s ease}
   .hero-badge svg{width:16px;height:16px}
   .hero h1{font-size:72px;font-weight:900;letter-spacing:-3px;line-height:1.05;margin-bottom:24px;animation:fadeUp 0.8s ease}
   .hero h1 span{background:linear-gradient(135deg,var(--red),#ff4d6d,var(--red));background-size:200% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s ease infinite}
@@ -607,8 +607,8 @@
     const cy=H/2;
     // Ring formation — particles arranged in an elliptical ring around center
     const ringAngle=(i/NUM)*Math.PI*2+Math.random()*0.3;
-    const ringRX=W*0.38+Math.random()*W*0.12; // horizontal radius
-    const ringRY=H*0.35+Math.random()*H*0.12; // vertical radius
+    const ringRX=W*0.44+Math.random()*W*0.12;
+    const ringRY=H*0.42+Math.random()*H*0.12;
     const scatter=Math.random()*0.3; // some particles scatter inward/outward
     const ringMult=0.7+scatter*0.6;
     const homeX=cx+Math.cos(ringAngle)*ringRX*ringMult;
@@ -663,8 +663,8 @@
       // Slow orbital drift
       const drift=time*p.orbitSpeed*0.15;
       const angle=p.ringAngle+drift;
-      const ringRX=W*0.38;
-      const ringRY=H*0.35;
+      const ringRX=W*0.44;
+      const ringRY=H*0.42;
       const scatter=p.variance*0.3;
       const ringMult=0.7+scatter*0.6;
 
