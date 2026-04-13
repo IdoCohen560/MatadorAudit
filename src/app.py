@@ -51,7 +51,7 @@ st.markdown("""
 
 def main():
     if os.path.isfile(LOGO_PATH):
-        st.sidebar.image(LOGO_PATH, use_container_width=True)
+        st.sidebar.image(LOGO_PATH, width="stretch")
     else:
         st.sidebar.title("MatadorAudit")
     st.sidebar.markdown("AI-Powered Fairness Auditing")
@@ -105,17 +105,17 @@ def upload_page():
 
     with col2:
         st.markdown("**Load Demo Data:**")
-        if st.button("CSUN Standard Demo", use_container_width=True):
+        if st.button("CSUN Standard Demo", width="stretch"):
             st.session_state.df = pd.read_csv(os.path.join(DATA_DIR, "csun_synthetic_students.csv"))
             st.success("Loaded standard demo: 5,000 records with moderate biases")
-        if st.button("CSUN High Bias Demo", use_container_width=True):
+        if st.button("CSUN High Bias Demo", width="stretch"):
             filepath = os.path.join(DATA_DIR, "csun_high_bias.csv")
             if os.path.exists(filepath):
                 st.session_state.df = pd.read_csv(filepath)
                 st.success("Loaded high-bias demo: 5,000 records with severe biases")
             else:
                 st.error("High bias dataset not found. Run scripts/generate_extra_datasets.py first.")
-        if st.button("CSUN Fair Demo", use_container_width=True):
+        if st.button("CSUN Fair Demo", width="stretch"):
             filepath = os.path.join(DATA_DIR, "csun_fair.csv")
             if os.path.exists(filepath):
                 st.session_state.df = pd.read_csv(filepath)
@@ -157,7 +157,7 @@ def upload_page():
         selected_demo = st.selectbox("Primary demographic column", demo_cols, index=0)
         selected_outcome = st.selectbox("Outcome column to audit", outcome_cols, index=0)
 
-        if st.button("Run Fairness Analysis", type="primary", use_container_width=True):
+        if st.button("Run Fairness Analysis", type="primary", width="stretch"):
             with st.spinner("Computing fairness metrics..."):
                 engine = FairnessEngine(df, selected_demo, selected_outcome)
                 engine.compute_all()
@@ -225,7 +225,7 @@ def upload_page():
                 plot_bgcolor='rgba(0,0,0,0)',
                 showlegend=False,
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
             # Quick next steps
             st.markdown("---")
@@ -421,7 +421,7 @@ def _render_detailed_charts(audit_results):
         xaxis=dict(fixedrange=True),
         yaxis=dict(fixedrange=True),
     )
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    st.plotly_chart(fig, width="stretch", config={'displayModeBar': False})
 
     # Report
     render_report_inline(engine)
@@ -452,7 +452,7 @@ def _render_comparison_table(audit_results):
         })
 
     table_df = pd.DataFrame(rows)
-    st.dataframe(table_df, use_container_width=True, hide_index=True)
+    st.dataframe(table_df, width="stretch", hide_index=True)
 
     st.markdown("---")
     st.markdown("**How to read this table:**")
@@ -535,7 +535,7 @@ def report_page():
         title=f"Outcome rates by {st.session_state.selected_demo}"
     )
     fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def proxy_page():
@@ -623,7 +623,7 @@ def proxy_page():
                 title="Feature Correlation Matrix"
             )
             fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', height=500)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         else:
             st.info("No significant proxy correlations detected.")
             st.markdown("""
@@ -737,7 +737,7 @@ def simulator_page():
         labels={'group': demo, 'rate': 'Positive Outcome Rate'},
     )
     fig.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     # Next steps
     st.markdown("---")
@@ -1090,7 +1090,7 @@ Format your responses with markdown for readability. Use bullet points for lists
         cols = st.columns(2)
         for i, q in enumerate(suggestions):
             with cols[i % 2]:
-                if st.button(q, key=f"suggest_{i}", use_container_width=True):
+                if st.button(q, key=f"suggest_{i}", width="stretch"):
                     st.session_state.qa_pending = q
                     st.rerun()
 
@@ -1381,7 +1381,7 @@ def export_page():
         ]
     }
     summary_df = pd.DataFrame(summary)
-    st.dataframe(summary_df, use_container_width=True)
+    st.dataframe(summary_df, width="stretch")
     st.download_button("Download Metrics CSV", summary_df.to_csv(index=False),
                        "fairness_metrics.csv", "text/csv")
 
